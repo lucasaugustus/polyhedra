@@ -2,7 +2,6 @@
 
 from os import system, mkdir, remove
 from itertools import count
-from shutil import copyfile
 from time import sleep
 from sys import argv
 
@@ -43,23 +42,36 @@ data = [
 ('pentagonal prism'                            , 'rprism(5)'                               , (6620,)),      # Infinite family
 ( 'hexagonal prism'                            , 'rprism(6)'                               , (6620,)),      # Infinite family
 ('heptagonal prism'                            , 'rprism(7)'                               , (6620,)),      # Infinite family
-(   'digonal antiprism'                        , 'antiprism(2)'                            , (6620,)),      # Infinite family
-('triangular antiprism'                        , 'antiprism(3)'                            , (6620,)),      # Infinite family
-(    'square antiprism'                        , 'antiprism(4)'                            , (6620,)),      # Infinite family
-('pentagonal antiprism'                        , 'antiprism(5)'                            , (6620,)),      # Infinite family
-( 'hexagonal antiprism'                        , 'antiprism(6)'                            , (6620,)),      # Infinite family
-('heptagonal antiprism'                        , 'antiprism(7)'                            , (6620,)),      # Infinite family
+( 'octagonal prism'                            , 'rprism(8)'                               , (6620,)),      # Infinite family
+( 'nonagonal prism'                            , 'rprism(9)'                               , (6620,)),      # Infinite family
+( 'decagonal prism'                            , 'rprism(10)'                              , (6620,)),      # Infinite family
+(       'digonal antiprism'                    , 'antiprism(2)'                            , (6620,)),      # Infinite family
+(    'triangular antiprism'                    , 'antiprism(3)'                            , (6620,)),      # Infinite family
+(        'square antiprism'                    , 'antiprism(4)'                            , (6620,)),      # Infinite family
+(    'pentagonal antiprism'                    , 'antiprism(5)'                            , (6620,)),      # Infinite family
+(     'hexagonal antiprism'                    , 'antiprism(6)'                            , (6620,)),      # Infinite family
+(    'heptagonal antiprism'                    , 'antiprism(7)'                            , (6620,)),      # Infinite family
+(     'octagonal antiprism'                    , 'antiprism(8)'                            , (6620,)),      # Infinite family
+(     'nonagonal antiprism'                    , 'antiprism(9)'                            , (6620,)),      # Infinite family
+(     'decagonal antiprism'                    , 'antiprism(10)'                           , (6620,)),      # Infinite family
+('heptadecagonal antiprism'                    , 'antiprism(17)'                           , (6620,)),      # Infinite family
 ('triangular bipyramid'                        , 'bipyramid(3)'                            , (6620,)),      # Infinite family
 (    'square bipyramid'                        , 'bipyramid(4)'                            , (6620,)),      # Infinite family
 ('pentagonal bipyramid'                        , 'bipyramid(5)'                            , (6620,)),      # Infinite family
 ( 'hexagonal bipyramid'                        , 'bipyramid(6)'                            , (6620,)),      # Infinite family
 ('heptagonal bipyramid'                        , 'bipyramid(7)'                            , (6620,)),      # Infinite family
+( 'octagonal bipyramid'                        , 'bipyramid(8)'                            , (6620,)),      # Infinite family
+( 'nonagonal bipyramid'                        , 'bipyramid(9)'                            , (6620,)),      # Infinite family
+( 'decagonal bipyramid'                        , 'bipyramid(10)'                           , (6620,)),      # Infinite family
 (   'digonal trapezohedron'                    , 'trapezohedron(2)'                        , (6620,)),      # Infinite family
 ('triangular trapezohedron'                    , 'trapezohedron(3)'                        , (6620,)),      # Infinite family
 (    'square trapezohedron'                    , 'trapezohedron(4)'                        , (6620,)),      # Infinite family
 ('pentagonal trapezohedron'                    , 'trapezohedron(5)'                        , (6620,)),      # Infinite family
 ( 'hexagonal trapezohedron'                    , 'trapezohedron(6)'                        , (6620,)),      # Infinite family
 ('heptagonal trapezohedron'                    , 'trapezohedron(7)'                        , (6620,)),      # Infinite family
+( 'octagonal trapezohedron'                    , 'trapezohedron(8)'                        , (6620,)),      # Infinite family
+( 'nonagonal trapezohedron'                    , 'trapezohedron(9)'                        , (6620,)),      # Infinite family
+( 'decagonal trapezohedron'                    , 'trapezohedron(10)'                       , (6620,)),      # Infinite family
 ('square pyramid'                              , 'square_pyramid()'                        , (84,27,29,32,75)),                             # J1
 ('pentagonal pyramid'                          , 'pentagonal_pyramid()'                    , (11,39,44,46,84,91,129)),                      # J2
 ('triangular cupola'                           , 'triangular_cupola()'                     , (11,53,58,91,142,191)),                        # J3
@@ -175,7 +187,6 @@ name, code, _ = data[-1]
 for rotation in count(0):
     solidname = name.replace(' ', '_')
     filename = 'images/' + solidname + '_' + str(rotation)
-    copyfile('head.pov', 'renderfile.pov')
     with open(filename + '.pov', 'w') as srcfile, open('head.pov', 'r') as head, open('tail.pov', 'r') as tail:
         srcfile.write(head.read())
         srcfile.write(code + ' #declare rotation=seed(%d);\n' % rotation)
