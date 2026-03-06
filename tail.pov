@@ -1058,7 +1058,7 @@
   autoface()
 #end
 
-#macro triangular_hebesphenorotunda() // J91
+#macro triangular_hebesphenorotunda() // J92
     // Coords found by taking 7 vtxs of an icosahedron, placing one vtx
     // at origin, which is centre of the one hexagonal face.
     addevenperms( <1,tau,0>-<tau,0,1>)
@@ -1069,6 +1069,76 @@
     addevenperms(-<1,tau,0>-<tau,0,1>)
     autobalance()
     autoface()
+#end
+
+#macro herschel_enneahedron()
+  // http://aperiodical.com/2013/10/an-enneahedron-for-herschel/
+  #local th=sqrt(3)/2;
+  #local h1=1/2;
+  #local h2=h1*4/3;
+  addpoint(<0.5,0,-h1>)
+  addpoint(<0,0,0>)
+  addpoint(<0.5,0,h1>)
+  addpoint(<1,0,0>)
+  addpoint(<0.5,th/3,-h2>)
+  addpoint(<0.25,th/2,-h1>)
+  addpoint(<0.25,th/2,h1>)
+  addpoint(<0.5,th/3,h2>)
+  addpoint(<0.75,th/2,h1>)
+  addpoint(<0.75,th/2,-h1>)
+  addpoint(<0.5,th,0>)
+  autobalance()
+  addplane(0,1,2)
+  addplane(5,10,6)
+  addplane(9,3,8)
+  addplane(1,6,7)
+  addplane(10,8,7)
+  addplane(3,2,7)
+  addplane(4,5,1)
+  addplane(4,9,10)
+  addplane(4,0,3)
+#end
+
+#macro addplane(a,b,c)
+  #local n=vnormalize(vcross(points[b]-points[a],points[c]-points[a]));
+  #local d=vdot(n,points[a]);
+  addface(n,d)
+#end
+
+#macro triakistruncatedtetrahedron()           
+  addpoint(<2.6666667461, 0.33333334327, 1.1785112619>)           
+  addpoint(<3, 0.66666668653, 0.70710676908>)
+  addpoint(<3.6666667461, 0, 1.6499158144>) 
+  addpoint(<3, 0, 1.6499158144>)
+  addpoint(<3.6666667461, 0.66666668653, 0.70710676908>) 
+  addpoint(<4, 0.33333334327, 1.1785112619>)
+  addpoint(<2.6666667461, 1, 1.1785112619>) 
+  addpoint(<3, 1.3333333731, 1.6499158144>)
+  addpoint(<3.3333332539, 1, 2.1213202477>) 
+  addpoint(<3.3333332539, 0.33333334327, 2.1213202477>)
+  addpoint(<4, 1, 1.1785112619>) 
+  addpoint(<3.6666667461, 1.3333333731, 1.6499158144>)
+  addpoint(<2.6666667461, 0.66666668653, 0.94280904531>) 
+  addpoint(<3.3333332539, 0, 1.8856180906>) 
+  addpoint(<4, 0.66666668653, 0.94280904531>) 
+  addpoint(<3.3333332539, 1.3333333731, 1.8856180906>)
+  autobalance() 
+  addplane(1,4,5)
+  addplane(4,1,6)
+  addplane(9,8,7)
+  addplane(8,9,2)
+  addplane(12,0,6)
+  addplane(12,6,1)
+  addplane(12,1,0)
+  addplane(14,10,5)
+  addplane(14,5,4)
+  addplane(14,4,10)
+  addplane(13,2,9)
+  addplane(13,9,3)
+  addplane(13,3,2)
+  addplane(15,8,11)
+  addplane(15,11,7)
+  addplane(15,7,8)
 #end
 
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
@@ -1368,4 +1438,3 @@ global_settings {
     autostop 0
   }
 }
-
