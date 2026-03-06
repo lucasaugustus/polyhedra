@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 
+from os import system, mkdir, remove
 from itertools import count
 from shutil import copyfile
 from time import sleep
-from os import system, mkdir
 from sys import argv
 
 data = [
@@ -152,18 +152,18 @@ data = [
 ('disphenocingulum'                            , 'disphenocingulum()'                      , (11,0,3,6,10,15,18,24)),                       # J90
 ('bilunabirotunda'                             , 'bilunabirotunda()'                       , (10,2,3,4,8,21,24,32,33)),                     # J91
 ('triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'          , (855,5,6,8,10,13,14,15,16,17,18,20,22,23,29)), # J92
+('herschel enneahedron'                        , 'herschel_enneahedron()'                  , (0,3,8,31,52,53,99,103,110,112,113)),
+('triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,11,12,16,17,18,23,32,39)),
 ]
 
 resolution = 1024
 solids = {x[0] for x in data}
-pause = ''
 
 for arg in argv:
     if '=' in arg:
         arg1, arg2 = arg.split('=')
         if arg1 == 'res': resolution = int(arg2)
         if arg1 == 'target': solids = {arg2}
-    if arg == 'pause': pause = '+p'
 
 data_reduced = [x for x in data if x[0] in solids]
 
@@ -171,18 +171,20 @@ try: mkdir('images')
 except: pass
 
 """
+name, code, _ = data[-1]
 for rotation in count(0):
-    for (name, code, _) in data[-1:]:
-        copyfile('head.pov', 'renderfile.pov')
-        with open('renderfile.pov', 'a') as renderfile:
-            renderfile.write(code + ' #declare rotation=seed(%d);\n' % rotation)
-        system('cat tail.pov >> renderfile.pov')
-        filename = name.replace(' ', '_') + str(rotation)
-        system('povray renderfile.pov +Oimages/%s.png +w%d +h%d %s' % (filename, resolution, resolution, pause))
-        sleep(0.1)
-        system('rm renderfile.pov')
-        system('rm images/%s.png' % filename)
-"""
+    solidname = name.replace(' ', '_')
+    filename = 'images/' + solidname + '_' + str(rotation)
+    copyfile('head.pov', 'renderfile.pov')
+    with open(filename + '.pov', 'w') as srcfile, open('head.pov', 'r') as head, open('tail.pov', 'r') as tail:
+        srcfile.write(head.read())
+        srcfile.write(code + ' #declare rotation=seed(%d);\n' % rotation)
+        srcfile.write(tail.read())
+    system('povray +I%s.pov +O%s.png +w%d +h%d +p' % (filename, filename, resolution, resolution))
+    sleep(0.1)
+    remove(filename + '.pov')
+    remove(filename + '.png')
+#"""
 for (name, code, angles) in data_reduced:
     solidname = name.replace(' ', '_')
     try: mkdir('images/' + solidname)
@@ -196,7 +198,6 @@ for (name, code, angles) in data_reduced:
             srcfile.write(tail.read())
         system('povray +I%s +O%s +w%d +h%d -D' % (srcfilename, imgfilename, resolution, resolution))
         sleep(0.1)
-        #system('rm ' + renderfilename)
+        #remove(filename + '.pov')
 #"""
 print('done')
-
