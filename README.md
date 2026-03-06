@@ -6,7 +6,7 @@ In the Python file, there is a list (`data`) of 3-tuples.  In each tuple, the 0<
 
 In the original POV-Ray code, the orientation of each polyhedron is determined by seeding a specific [PRNG](https://en.wikipedia.org/wiki/Pseudorandom_number_generator).  In the Python file, the 0<sup>th</sup> element of each of those tuples of integers is the orientation seed from the original POV-Ray code; the remaining integers are orientation seeds chosen by me.
 
-Usage:
+# Usage:
 
 ```bash
 ./render.py [target="X"] [res=N]
@@ -21,3 +21,7 @@ To render a specific polyhedron, use the `target=` argument.  For example,
 renders the augmented sphenocorona all recorded orientations.
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
+
+# TODO
+
+- [ ] Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
