@@ -25,6 +25,9 @@ By default, the image files will be 1024 × 1024 pixels.  To render at N × N pi
 # TODO
 
 - [ ] Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
+- [ ] https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif
+- [ ] https://commons.wikimedia.org/wiki/File:CompoundOfFiveTetrahedra.gif
+- [ ] https://commons.wikimedia.org/wiki/Category:Kepler-Poinsot_solids;_green
 
 # Credits
 
