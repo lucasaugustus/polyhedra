@@ -1,6 +1,6 @@
 # polyhedra
 
-This repository contains Python and POV-Ray code to render "[the green set](https://commons.wikimedia.org/wiki/Category:Set_of_polyhedra;_green)" of polyhedra from the Wikimedia Commons.  The POV-Ray code was largely written by Wikipedia users Cyp (https://en.wikipedia.org/wiki/User:Cyp/Poly.pov) and AndrewKepert (https://en.wikipedia.org/wiki/User:AndrewKepert/poly.pov); my modifications to that are fairly trivial.  The POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is the Python code, which automates that modification.
+This repository contains Python and POV-Ray code to render "[the green set](https://commons.wikimedia.org/wiki/Category:Set_of_polyhedra;_green)" of polyhedra from the Wikimedia Commons.
 
 In the Python file, there is a list (`data`) of 3-tuples.  In each tuple, the 0<sup>th</sup> element is the English name of the polyhedron, the 1<sup>st</sup> element is a POV-Ray code snippet, and the 2<sup>nd</sup> element is a tuple of integers.  
 
@@ -25,3 +25,9 @@ By default, the image files will be 1024 × 1024 pixels.  To render at N × N pi
 # TODO
 
 - [ ] Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
+
+# Credits
+
+https://github.com/timhutton/povray-polyhedra
+
+The POV-Ray code was largely written by Wikipedia users Cyp (https://en.wikipedia.org/wiki/User:Cyp/Poly.pov) and AndrewKepert (https://en.wikipedia.org/wiki/User:AndrewKepert/poly.pov).  The POV-Ray code for the Herschel enneahedron and triakis trucated tetrahedron comes from [https://github.com/timhutton/povray-polyhedra].  My modifications to that are fairly trivial.  The POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is the Python code, which automates that modification.
