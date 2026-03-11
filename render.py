@@ -166,16 +166,21 @@ data = [
 ('triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'          , (855,5,6,8,10,13,14,15,16,17,18,20,22,23,29)), # J92
 ('herschel enneahedron'                        , 'herschel_enneahedron()'                  , (0,3,8,31,52,53,99,103,110,112,113)),
 ('triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,11,12,16,17,18,23,32,39)),
+('small stellated dodecahedron'                , 'small_stellated_dodecahedron()'          , (11404,)),
 ]
 
 resolution = 1024
 solids = {x[0] for x in data}
+animate = False
+frames = 120
 
 for arg in argv:
     if '=' in arg:
         arg1, arg2 = arg.split('=')
         if arg1 == 'res': resolution = int(arg2)
         if arg1 == 'target': solids = {arg2}
+        if arg1 == 'animate': animate = (arg2 == 'yes')
+        if arg1 == 'frames': frames = int(arg2)
 
 data_reduced = [x for x in data if x[0] in solids]
 
@@ -201,14 +206,24 @@ for (name, code, angles) in data_reduced:
     try: mkdir('images/' + solidname)
     except: pass
     for rotation in angles:
-        srcfilename = 'images/' + solidname + '/' + str(rotation) + '.pov'
-        imgfilename = 'images/' + solidname + '/' + str(rotation) + '.png'
+        fileprefix = 'images/' + solidname + '/' + str(rotation)
+        srcfilename = fileprefix + '.pov'
+        imgfilename = fileprefix + '.png'
         with open(srcfilename, 'w') as srcfile, open('head.pov', 'r') as head, open('tail.pov', 'r') as tail:
             srcfile.write(head.read())
             srcfile.write(code + ' #declare rotation=seed(%d);\n' % rotation)
             srcfile.write(tail.read())
-        system('povray +I%s +O%s +w%d +h%d -D' % (srcfilename, imgfilename, resolution, resolution))
+        system('povray +I%s +O%s +w%d +h%d +A -D' % (srcfilename, imgfilename, resolution, resolution))
         sleep(0.1)
+        if animate:
+            system('povray +I%s +O%s +w%d +h%d +kc +kff%d +A -D' % (srcfilename, fileprefix + '_.png', resolution, resolution, frames))
+            sleep(0.1)
+            system('ffmpeg -framerate 30 -i %s_%%0%dd.png -c:v libx264 -crf 0 -preset veryslow %s.mp4' % (fileprefix, len(str(frames)), fileprefix))
+            for i in range(1, frames + 1): remove((fileprefix + '_%%0%dd.png' % len(str(frames))) % i)
         #remove(filename + '.pov')
 #"""
 print('done')
+# povray +Icompound_of_five_tetrahedra.pov +Oout.png +kc +kff120 +w2048 +h2048 +A -D
+# ffmpeg -framerate 30 -i out%03d.png -c:v libx264 -crf 0 -preset veryslow output120.mp4
+
+
