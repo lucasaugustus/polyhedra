@@ -168,7 +168,6 @@ data = [
 ('triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'          , (855,5,6,8,10,13,14,15,16,17,18,20,22,23,29)), # J92
 ('herschel enneahedron'                        , 'herschel_enneahedron()'                  , (0,3,8,31,52,53,99,103,110,112,113)),
 ('triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,11,12,16,17,18,23,32,39)),
-('small stellated dodecahedron'                , 'small_stellated_dodecahedron()'          , (11404,)),
 ]
 
 resolution = 1024
@@ -220,7 +219,7 @@ for (name, code, angles) in data_reduced:
         if animate:
             system('povray +I%s +O%s +w%d +h%d +kc +kff%d +A -D' % (srcfilename, fileprefix + '_.png', resolution, resolution, frames))
             sleep(0.1)
-            system('ffmpeg -framerate 30 -i %s_%%0%dd.png -c:v libx264 -crf 0 -preset veryslow %s.mp4' % (fileprefix, len(str(frames)), fileprefix))
+            system('ffmpeg -y -framerate 30 -i %s_%%0%dd.png -c:v libx264 -crf 0 -preset veryslow %s.mp4' % (fileprefix, len(str(frames)), fileprefix))
             for i in range(1, frames + 1): remove((fileprefix + '_%%0%dd.png' % len(str(frames))) % i)
         #remove(filename + '.pov')
 #"""
