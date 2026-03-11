@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 
+# For usage instructions, credits, and further details, see https://github.com/lucasaugustus/polyhedra/blob/main/README.md.
+
 from os import system, mkdir, remove
 from itertools import count
 from time import sleep
@@ -223,7 +225,4 @@ for (name, code, angles) in data_reduced:
         #remove(filename + '.pov')
 #"""
 print('done')
-# povray +Icompound_of_five_tetrahedra.pov +Oout.png +kc +kff120 +w2048 +h2048 +A -D
-# ffmpeg -framerate 30 -i out%03d.png -c:v libx264 -crf 0 -preset veryslow output120.mp4
-
 
