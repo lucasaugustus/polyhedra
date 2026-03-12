@@ -24,15 +24,15 @@ By default, the image files will be 1024 × 1024 pixels.  To render at N × N pi
 
 To produce animations, use the `animate=yes` argument.  By default, this will have 120 frames.  To change this, use the `frames=` argument.
 
-The Kepler-Poinsot solids and the compound of five tetrahedra are not currently integrated into the scheme used by `render.py`.  The user must handle these separately.
+The Kepler-Poinsot solids, the compound of five tetrahedra, and the toroidal octahedron chain are not currently integrated into the scheme used by `render.py`.  The user must handle these separately.
 
 # TODO
 
 - [ ] Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
-- [ ] https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif
+- [x] https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif
 - [x] https://commons.wikimedia.org/wiki/File:CompoundOfFiveTetrahedra.gif
 - [x] https://commons.wikimedia.org/wiki/Category:Kepler-Poinsot_solids;_green
-- [ ] Integrate the Kepler-Poinsot solids and the compound of five tetrahedra into the `render.py` scheme.
+- [ ] Integrate the Kepler-Poinsot solids, the toroidal octahedron chain, and the compound of five tetrahedra into the `render.py` scheme.
 
 # Credits
 
