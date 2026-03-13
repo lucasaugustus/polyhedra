@@ -18,7 +18,7 @@ To render a specific polyhedron, use the `target=` argument.  For example,
 ```bash
 ./render.py target="augmented sphenocorona"
 ```
-renders the augmented sphenocorona all recorded orientations.
+renders the augmented sphenocorona using all orientations recorded in the `data` list.
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
 
