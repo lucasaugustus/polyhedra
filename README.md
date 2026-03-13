@@ -31,6 +31,7 @@ The Kepler-Poinsot solids, the compound of five tetrahedra, and the toroidal oct
 * Ensure that this works across platforms.
 * Figure out how to prevent animations from zooming in and out.
 * Make SVGs.
+* When animating, suppress flashiness.
 
 # Credits
 
