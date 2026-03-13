@@ -30,6 +30,7 @@ The Kepler-Poinsot solids, the compound of five tetrahedra, and the toroidal oct
 * Integrate the Kepler-Poinsot solids, the toroidal octahedron chain, and the compound of five tetrahedra into the `render.py` scheme.
 * Ensure that this works across platforms.
 * Figure out how to prevent animations from zooming in and out.
+* Make SVGs.
 
 # Credits
 
