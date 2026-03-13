@@ -220,7 +220,7 @@ for (name, code, angles) in data_reduced:
         if animate:
             system('povray +I%s +O%s +w%d +h%d +kc +kff%d +A -D' % (srcfilename, fileprefix + '_.png', resolution, resolution, frames))
             sleep(0.1)
-            if which('ffmpegsldgbm') is not None:
+            if which('ffmpeg') is not None:
                 system('ffmpeg -y -framerate 30 -i %s_%%0%dd.png -c:v libx264 -crf 0 -preset veryslow %s.mp4' % (fileprefix, len(str(frames)), fileprefix))
                 for i in range(1, frames + 1): remove((fileprefix + '_%%0%dd.png' % len(str(frames))) % i)
             else:
