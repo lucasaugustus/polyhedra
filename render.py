@@ -2,8 +2,9 @@
 
 # For usage instructions, credits, and further details, see https://github.com/lucasaugustus/polyhedra/blob/main/README.md.
 
-from os import system, mkdir, remove
+from os import mkdir, remove
 from itertools import count
+from subprocess import run
 from shutil import which
 from time import sleep
 from sys import argv
@@ -171,18 +172,18 @@ data = [
 ('triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,11,12,16,17,18,23,32,39)),
 ]
 
-resolution = 1024
+resolution = '1024'
 solids = {x[0] for x in data}
 animate = False
-frames = 120
+frames = '120'
 
 for arg in argv:
     if '=' in arg:
         arg1, arg2 = arg.split('=')
-        if arg1 == 'res': resolution = int(arg2)
+        if arg1 == 'res': resolution = arg2
         if arg1 == 'target': solids = {arg2}
         if arg1 == 'animate': animate = (arg2 == 'yes')
-        if arg1 == 'frames': frames = int(arg2)
+        if arg1 == 'frames': frames = arg2
 
 data_reduced = [x for x in data if x[0] in solids]
 
@@ -198,7 +199,7 @@ for rotation in count(0):
         srcfile.write(head.read())
         srcfile.write(code + ' #declare rotation=seed(%d);\n' % rotation)
         srcfile.write(tail.read())
-    system('povray +I%s.pov +O%s.png +w%d +h%d +p' % (filename, filename, resolution, resolution))
+    system('povray +I%s.pov +O%s.png +w%s +h%s +p' % (filename, filename, resolution, resolution))
     sleep(0.1)
     remove(filename + '.pov')
     remove(filename + '.png')
@@ -215,14 +216,38 @@ for (name, code, angles) in data_reduced:
             srcfile.write(head.read())
             srcfile.write(code + ' #declare rotation=seed(%d);\n' % rotation)
             srcfile.write(tail.read())
-        system('povray +I%s +O%s +w%d +h%d +A -D' % (srcfilename, imgfilename, resolution, resolution))
+        run(['povray',
+             '+I' + srcfilename,
+             '+O' + imgfilename,
+             '+w' + resolution,
+             '+h' + resolution,
+             '+A',
+             '-D'
+             ])
         sleep(0.1)
         if animate:
-            system('povray +I%s +O%s +w%d +h%d +kc +kff%d +A -D' % (srcfilename, fileprefix + '_.png', resolution, resolution, frames))
+            run(['povray',
+                 '+I' + srcfilename,
+                 '+O' + fileprefix + '_.png',
+                 '+w' + resolution,
+                 '+h' + resolution,
+                 '+kc',
+                 '+kff' + frames,
+                 '+A',
+                 '-D'
+                 ])
             sleep(0.1)
             if which('ffmpeg') is not None:
-                system('ffmpeg -y -framerate 30 -i %s_%%0%dd.png -c:v libx264 -crf 0 -preset veryslow %s.mp4' % (fileprefix, len(str(frames)), fileprefix))
-                for i in range(1, frames + 1): remove((fileprefix + '_%%0%dd.png' % len(str(frames))) % i)
+                run(['ffmpeg',
+                     '-y',
+                     '-framerate', '30',
+                     '-i', '%s_%%0%dd.png' % (fileprefix, len(frames)),
+                     '-c:v', 'libx264',
+                     '-crf', '0',
+                     '-preset', 'veryslow',
+                     fileprefix + '.mp4'
+                     ])
+                for i in range(1, int(frames) + 1): remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
             else:
                 print('We could not find ffmpeg, so the animation was left as a bunch of individual frames.')
         #remove(filename + '.pov')
