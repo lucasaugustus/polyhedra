@@ -20,7 +20,7 @@ renders the augmented sphenocorona using all orientations recorded in the `data`
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
 
-To produce animations, use the `animate=yes` argument.  This will be a 360° rotation of the solid.  By default, this will have 120 frames.  To change this, use the `frames=` argument.  This works by generating a bunch of PNG files, calling ``ffmpeg`` to compile them into an MP4 file, and then deleting the PNGs.  If ``ffmpeg`` is not available, then the PNGs will still be created, but no MP4 will be created, and the PNGs will not be deleted afterwards.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
+To produce animations, use the `animate=yes` argument.  This will be a 360° rotation of the solid.  This works by generating a bunch of PNG files, calling ``ffmpeg`` to compile them into an MP4 file, and then deleting the PNGs.  If ``ffmpeg`` is not available, then the PNGs will still be created, but no MP4 will be created, and the PNGs will not be deleted afterwards.  By default, this will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
 
 The Kepler-Poinsot solids, the compound of five tetrahedra, and the toroidal octahedron chain are not currently integrated into the scheme used by `render.py`.  The user must handle these separately.
 
