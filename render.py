@@ -159,17 +159,17 @@ data = [
 (     'metabidiminished rhombicosidodecahedron', 'mogrified_rhombicosidodecahedron("DD..")', (19,)),                                # J81
 (  'gyrate bidiminished rhombicosidodecahedron', 'mogrified_rhombicosidodecahedron("GDD.")', (19,)),                                # J82
 (        'tridiminished rhombicosidodecahedron', 'mogrified_rhombicosidodecahedron("DDD.")', (19,)),                                # J83
-('snub disphenoid'                             , 'snub_disphenoid()'                       , (142,2,4,28,39,58,60,62,63,66,75)),    # J84
-('snub square antiprism'                       , 'snub_square_antiprism()'                 , (418,0,1,6,11,16,18,22,23,26,29,35)),  # J85
+('snub disphenoid'                             , 'snub_disphenoid()'                       , (142,4,63,66,75)),                     # J84
+('snub square antiprism'                       , 'snub_square_antiprism()'                 , (418,6,11,18,35)),                     # J85
 (               'sphenocorona'                 , 'sphenocorona()'                          , (11,15,66,70,72,74)),                  # J86
 (     'augmented sphenocorona'                 , 'augmented_sphenocorona()'                , (11,8,15,24,35,70,72,74)),             # J87
-(               'sphenomegacorona'             , 'sphenomegacorona()'                      , (11,4,14,46,50,52,56,57,58)),          # J88
-(           'hebesphenomegacorona'             , 'hebesphenomegacorona()'                  , (11,2,7,28,34,37,51,58,65,75,77,82)),  # J89
+(               'sphenomegacorona'             , 'sphenomegacorona()'                      , (11,4,14,57,58)),                      # J88
+(           'hebesphenomegacorona'             , 'hebesphenomegacorona()'                  , (11,2,7,37,51,65,75,82)),              # J89
 ('disphenocingulum'                            , 'disphenocingulum()'                      , (11,0,3,6,10,15,18,24)),               # J90
 ('bilunabirotunda'                             , 'bilunabirotunda()'                       , (10,2,3,4,8,21,24,32,33)),             # J91
 ('triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'          , (855,5,10,13,14,22,29)),               # J92
-('herschel enneahedron'                        , 'herschel_enneahedron()'                  , (0,3,8,31,52,53,99,103,110,112,113)),
-('triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,11,12,16,17,18,23,32,39)),
+('herschel enneahedron'                        , 'herschel_enneahedron()'                  , (0,3,31,103,112)),
+('triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,18,32)),
 ]
 
 for (i,(name,code,seeds)) in enumerate(data):
