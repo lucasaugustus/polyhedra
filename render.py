@@ -3,11 +3,13 @@
 # For usage instructions, credits, and further details, see https://github.com/lucasaugustus/polyhedra/blob/main/README.md.
 
 from os import mkdir, remove
+from time import time, sleep
 from itertools import count
 from subprocess import run
 from shutil import which
-from time import sleep
 from sys import argv
+
+starttime = time()
 
 data = [
 [           'tetrahedron'                      , 'tetrahedron()'                           , (1889,)],      # Platonic
@@ -225,9 +227,7 @@ for (name, code, angles, file) in data_reduced:
                  '+O' + imgfilename,
                  '+w' + resolution,
                  '+h' + resolution,
-                 '+A',
-                 '-D'
-                 ])
+                 '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
             sleep(0.1)
         else:
             run(['povray',
@@ -235,25 +235,22 @@ for (name, code, angles, file) in data_reduced:
                  '+O' + fileprefix + '_.png',
                  '+w' + resolution,
                  '+h' + resolution,
-                 '+kc',
-                 '+kff' + frames,
-                 '+A',
-                 '-D'
-                 ])
+                 '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
+                 '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
             sleep(0.1)
-            if which('ffmpeg') is not None:
+            if which('ffmpeg') is None:
+                print('FFmpeg was not available, so the animation was left as a bunch of individual frames.')
+            else:
                 run(['ffmpeg',
-                     '-y',
+                     '-y',                                              # Overwrite
                      '-framerate', '30',
-                     '-i', fileprefix + '_%%0%dd.png' % len(frames),
-                     '-c:v', 'libx264',
-                     '-crf', '0',
-                     '-preset', 'veryslow',
-                     fileprefix + '.mp4'
+                     '-i', fileprefix + '_%%0%dd.png' % len(frames),    # Input filenames
+                     '-c:v', 'libx264',                                 # Codec
+                     '-crf', '10', '-preset', 'veryslow',               # Quality settings
+                     fileprefix + '.mp4'                                # Output filename
                      ])
                 for i in range(1, int(frames) + 1): remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
-            else:
-                print('We could not find ffmpeg, so the animation was left as a bunch of individual frames.')
         #remove(srcfilename)
 
 print('\nDone.')
+print('Wall time: %d seconds.' % int(time() - starttime))
