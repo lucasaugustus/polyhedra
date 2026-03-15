@@ -14,89 +14,66 @@
 #declare c0 = sqrt(0.5 + sqrt(0.05));   // 0.850651
 #declare c1 = sqrt(0.5 - sqrt(0.05));   // 0.525731
 
-#declare pt00 = <  0,-c0,-c1>;
-#declare pt01 = <-c0,-c1,  0>;
-#declare pt02 = <-c1,  0,-c0>;
-#declare pt03 = <  0, c0,-c1>;
-#declare pt04 = < c0,-c1,  0>;
-#declare pt05 = <-c1,  0, c0>;
-#declare pt06 = <  0,-c0, c1>;
-#declare pt07 = <-c0, c1,  0>;
-#declare pt08 = < c1,  0,-c0>;
-#declare pt09 = <  0, c0, c1>;
-#declare pt10 = < c0, c1,  0>;
-#declare pt11 = < c1,  0, c0>;
+#declare pt00 = <  0,-c0,-c1>; // 09
+#declare pt01 = <-c0,-c1,  0>; // 10
+#declare pt02 = <-c1,  0,-c0>; // 11
+#declare pt03 = <  0, c0,-c1>; // 06
+#declare pt04 = < c0,-c1,  0>; // 07
+#declare pt05 = <-c1,  0, c0>; // 08
+#declare pt06 = <  0,-c0, c1>; // 03
+#declare pt07 = <-c0, c1,  0>; // 04
+#declare pt08 = < c1,  0,-c0>; // 05
+#declare pt09 = <  0, c0, c1>; // 00
+#declare pt10 = < c0, c1,  0>; // 01
+#declare pt11 = < c1,  0, c0>; // 02
 
+// This solid has point symmetry through the origin, so we build half the structures and mirror them.
 
-union {
-  sphere { pt00, .01 }
-  sphere { pt01, .01 }
-  sphere { pt02, .01 }
-  sphere { pt03, .01 }
-  sphere { pt04, .01 }
-  sphere { pt05, .01 }
-  sphere { pt06, .01 }
-  sphere { pt07, .01 }
-  sphere { pt08, .01 }
-  sphere { pt09, .01 }
-  sphere { pt10, .01 }
-  sphere { pt11, .01 }
-  cylinder { pt00, pt03, .01 }
-  cylinder { pt00, pt05, .01 }
-  cylinder { pt00, pt07, .01 }
-  cylinder { pt00, pt10, .01 }
-  cylinder { pt00, pt11, .01 }
-  cylinder { pt01, pt03, .01 }
-  cylinder { pt01, pt04, .01 }
-  cylinder { pt01, pt08, .01 }
-  cylinder { pt01, pt09, .01 }
-  cylinder { pt01, pt11, .01 }
-  cylinder { pt02, pt04, .01 }
-  cylinder { pt02, pt05, .01 }
-  cylinder { pt02, pt06, .01 }
-  cylinder { pt02, pt09, .01 }
-  cylinder { pt02, pt10, .01 }
-  cylinder { pt03, pt04, .01 }
-  cylinder { pt03, pt05, .01 }
-  cylinder { pt03, pt11, .01 }
-  cylinder { pt04, pt05, .01 }
-  cylinder { pt04, pt09, .01 }
-  cylinder { pt05, pt10, .01 }
-  cylinder { pt06, pt07, .01 }
-  cylinder { pt06, pt08, .01 }
-  cylinder { pt06, pt09, .01 }
-  cylinder { pt06, pt10, .01 }
-  cylinder { pt07, pt08, .01 }
-  cylinder { pt07, pt10, .01 }
-  cylinder { pt07, pt11, .01 }
-  cylinder { pt08, pt09, .01 }
-  cylinder { pt08, pt11, .01 }
-  dorot()
-  pigment { colour <.3,.3,.3> } finish { ambient 0 diffuse 1 phong 1 }
-}
-
-union {
-  polygon { 6, pt01, pt08, pt06, pt02, pt04, pt01 }
-  polygon { 6, pt00, pt07, pt06, pt02, pt05, pt00 }
-  polygon { 6, pt00, pt07, pt08, pt01, pt03, pt00 }
-  polygon { 6, pt02, pt09, pt08, pt07, pt10, pt02 }
-  polygon { 6, pt00, pt11, pt08, pt06, pt10, pt00 }
-  polygon { 6, pt01, pt11, pt07, pt06, pt09, pt01 }
-  polygon { 6, pt00, pt05, pt04, pt01, pt11, pt00 }
-  polygon { 6, pt01, pt03, pt05, pt02, pt09, pt01 }
-  polygon { 6, pt00, pt03, pt04, pt02, pt10, pt00 }
-  polygon { 6, pt03, pt05, pt10, pt07, pt11, pt03 }
-  polygon { 6, pt03, pt11, pt08, pt09, pt04, pt03 }
-  polygon { 6, pt04, pt05, pt10, pt06, pt09, pt04 }
-  dorot()
-  pigment { colour rgbt <.8,.8,.8,.2> } finish { ambient 0 diffuse 1 phong flashiness #if(withreflection) reflection { .2 } #end }
-  photons {
-    target on
-    refraction on
-    reflection on
-    collect on
+#for (s, -1, 1, 2)
+  union {
+    sphere { pt00, .01 }
+    sphere { pt01, .01 }
+    sphere { pt02, .01 }
+    sphere { pt03, .01 }
+    sphere { pt04, .01 }
+    sphere { pt05, .01 }
+    cylinder { pt00, pt03, .01 }
+    cylinder { pt00, pt05, .01 }
+    cylinder { pt00, pt07, .01 }
+    cylinder { pt00, pt10, .01 }
+    cylinder { pt00, pt11, .01 }
+    cylinder { pt01, pt03, .01 }
+    cylinder { pt01, pt04, .01 }
+    cylinder { pt01, pt08, .01 }
+    cylinder { pt01, pt11, .01 }
+    cylinder { pt02, pt04, .01 }
+    cylinder { pt02, pt05, .01 }
+    cylinder { pt02, pt06, .01 }
+    cylinder { pt03, pt04, .01 }
+    cylinder { pt03, pt05, .01 }
+    cylinder { pt04, pt05, .01 }
+    dorot()
+    pigment { colour <.3,.3,.3> } finish { ambient 0 diffuse 1 phong 1 }
+    scale <s,s,s>
   }
-}
+  union {
+    polygon { 6, pt01, pt08, pt06, pt02, pt04, pt01 }
+    polygon { 6, pt00, pt07, pt06, pt02, pt05, pt00 }
+    polygon { 6, pt00, pt07, pt08, pt01, pt03, pt00 }
+    polygon { 6, pt02, pt09, pt08, pt07, pt10, pt02 }
+    polygon { 6, pt00, pt11, pt08, pt06, pt10, pt00 }
+    polygon { 6, pt01, pt11, pt07, pt06, pt09, pt01 }
+    dorot()
+    pigment { colour rgbt <.8,.8,.8,.2> } finish { ambient 0 diffuse 1 phong flashiness #if(withreflection) reflection { .2 } #end }
+    photons {
+      target on
+      refraction on
+      reflection on
+      collect on
+    }
+    scale <s,s,s>
+  }
+#end
 
 #local a=0;
 #while(a<11.0001)
