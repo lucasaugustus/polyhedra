@@ -51,8 +51,8 @@ data = [
 [     'octagonal     prism'                    , 'rprism(8)'                               , (6620,)],      # Infinite family
 [     'nonagonal     prism'                    , 'rprism(9)'                               , (6620,)],      # Infinite family
 [     'decagonal     prism'                    , 'rprism(10)'                              , (6620,)],      # Infinite family
-[       'digonal antiprism'                    , 'antiprism(2)'                            , (6620,)],      # Infinite family
-[    'triangular antiprism'                    , 'antiprism(3)'                            , (6620,)],      # Infinite family
+[       'digonal antiprism'                    , 'antiprism(2)'                            , (6620,)],      # Infinite family.  Also tetrahedron.
+[    'triangular antiprism'                    , 'antiprism(3)'                            , (6620,)],      # Infinite family.  Also octahedron.
 [        'square antiprism'                    , 'antiprism(4)'                            , (6620,)],      # Infinite family
 [    'pentagonal antiprism'                    , 'antiprism(5)'                            , (6620,)],      # Infinite family
 [     'hexagonal antiprism'                    , 'antiprism(6)'                            , (6620,)],      # Infinite family
@@ -61,16 +61,16 @@ data = [
 [     'nonagonal antiprism'                    , 'antiprism(9)'                            , (6620,)],      # Infinite family
 [     'decagonal antiprism'                    , 'antiprism(10)'                           , (6620,)],      # Infinite family
 ['heptadecagonal antiprism'                    , 'antiprism(17)'                           , (6620,)],      # Infinite family
-[    'triangular bipyramid'                    , 'bipyramid(3)'                            , (6620,)],      # Infinite family
-[        'square bipyramid'                    , 'bipyramid(4)'                            , (6620,)],      # Infinite family
-[    'pentagonal bipyramid'                    , 'bipyramid(5)'                            , (6620,)],      # Infinite family
+[    'triangular bipyramid'                    , 'bipyramid(3)'                            , (6620,)],      # Infinite family.  Also J12.
+[        'square bipyramid'                    , 'bipyramid(4)'                            , (6620,)],      # Infinite family.  Also octahedron.
+[    'pentagonal bipyramid'                    , 'bipyramid(5)'                            , (6620,)],      # Infinite family.  Also J13.
 [     'hexagonal bipyramid'                    , 'bipyramid(6)'                            , (6620,)],      # Infinite family
 [    'heptagonal bipyramid'                    , 'bipyramid(7)'                            , (6620,)],      # Infinite family
 [     'octagonal bipyramid'                    , 'bipyramid(8)'                            , (6620,)],      # Infinite family
 [     'nonagonal bipyramid'                    , 'bipyramid(9)'                            , (6620,)],      # Infinite family
 [     'decagonal bipyramid'                    , 'bipyramid(10)'                           , (6620,)],      # Infinite family
-[   'digonal trapezohedron'                    , 'trapezohedron(2)'                        , (6620,)],      # Infinite family
-['triangular trapezohedron'                    , 'trapezohedron(3)'                        , (6620,)],      # Infinite family
+[   'digonal trapezohedron'                    , 'trapezohedron(2)'                        , (6620,)],      # Infinite family.  Also tetrahedron.
+['triangular trapezohedron'                    , 'trapezohedron(3)'                        , (6620,)],      # Infinite family.  Also cube.
 [    'square trapezohedron'                    , 'trapezohedron(4)'                        , (6620,)],      # Infinite family
 ['pentagonal trapezohedron'                    , 'trapezohedron(5)'                        , (6620,)],      # Infinite family
 [ 'hexagonal trapezohedron'                    , 'trapezohedron(6)'                        , (6620,)],      # Infinite family
@@ -176,8 +176,8 @@ data = [
 
 atad = [
 ["compound of five tetrahedra" , "5_tets.pov"            , (22113,)],
-["great           dodecahedron", "great_dod.pov"         , (11404,)],
 ["great            icosahedron", "great_ico.pov"         , (31234,)],
+["great           dodecahedron", "great_dod.pov"         , (11404,)],
 ["great stellated dodecahedron", "great_stel_dod.pov"    , (7409,)],
 ["small stellated dodecahedron", "small_stel_dod.pov"    , (11404,)],
 ["toroidal octahedron chain"   , "toroidal_octachain.pov", (1,)],
@@ -196,14 +196,16 @@ resolution = '1024'
 solids = {x[0] for x in data}
 animate = False
 frames = '120'
+keepframes = False
 
 for arg in argv:
     if '=' in arg:
         arg1, arg2 = arg.split('=')
         if arg1 == 'res': resolution = arg2
-        if arg1 == 'target': solids = set(arg2.split(','))
+        if arg1 == 'target': solids = set(' '.join(x.split()) for x in arg2.split(','))
         if arg1 == 'animate': animate = (arg2 == 'yes')
         if arg1 == 'frames': frames = arg2
+        if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
 
 data_reduced = [x for x in data if x[0] in solids]
 
@@ -221,20 +223,15 @@ for (name, code, angles, file) in data_reduced:
         with open(srcfilename, 'w') as srcfile, open('povcode/' + file, 'r') as tail:
             srcfile.write(code + '#declare rotation=seed(%d);\n' % rotation)
             srcfile.write(tail.read())
-        if not animate:
+        run(['povray',
+             '+I' + srcfilename, '+O' + imgfilename,
+             '+w' + resolution, '+h' + resolution,
+             '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
+        sleep(0.1)
+        if animate:
             run(['povray',
-                 '+I' + srcfilename,
-                 '+O' + imgfilename,
-                 '+w' + resolution,
-                 '+h' + resolution,
-                 '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
-            sleep(0.1)
-        else:
-            run(['povray',
-                 '+I' + srcfilename,
-                 '+O' + fileprefix + '_.png',
-                 '+w' + resolution,
-                 '+h' + resolution,
+                 '+I' + srcfilename, '+O' + fileprefix + '_.png',
+                 '+w' + resolution, '+h' + resolution,
                  '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
                  '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
             sleep(0.1)
@@ -249,7 +246,9 @@ for (name, code, angles, file) in data_reduced:
                      '-crf', '10', '-preset', 'veryslow',               # Quality settings
                      fileprefix + '.mp4'                                # Output filename
                      ])
-                for i in range(1, int(frames) + 1): remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
+                if not keepframes:
+                    for i in range(1, int(frames) + 1):
+                        remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
         #remove(srcfilename)
 
 print('\nDone.')
