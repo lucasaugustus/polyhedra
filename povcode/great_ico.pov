@@ -14,90 +14,64 @@
 #declare c0 = sqrt(0.5 + sqrt(0.05));   // 0.850651
 #declare c1 = sqrt(0.5 - sqrt(0.05));   // 0.525731
 
-#declare pt00 = <-c0, c1,  0>;
-#declare pt01 = <  0, c0,-c1>;
-#declare pt02 = < c1,  0, c0>;
-#declare pt03 = <-c1,  0, c0>;
-#declare pt04 = < c0, c1,  0>;
-#declare pt05 = < c0,-c1,  0>;
-#declare pt06 = < c1,  0,-c0>;
-#declare pt07 = <  0, c0, c1>;
-#declare pt08 = <  0,-c0, c1>;
-#declare pt09 = <-c0,-c1,  0>;
-#declare pt10 = <  0,-c0,-c1>;
-#declare pt11 = <-c1,  0,-c0>;
+#declare pt00 = <-c0, c1,  0>; // 05
+#declare pt01 = <  0, c0,-c1>; // 08
+#declare pt02 = < c1,  0, c0>; // 11
+#declare pt03 = <-c1,  0, c0>; // 06
+#declare pt04 = < c0, c1,  0>; // 09
+#declare pt05 = < c0,-c1,  0>; // 00
+#declare pt06 = < c1,  0,-c0>; // 03
+#declare pt07 = <  0, c0, c1>; // 10
+#declare pt08 = <  0,-c0, c1>; // 01
+#declare pt09 = <-c0,-c1,  0>; // 04
+#declare pt10 = <  0,-c0,-c1>; // 07
+#declare pt11 = <-c1,  0,-c0>; // 02
+
+// This solid has point symmetry through the origin, so we build half the structures and mirror them.
 
 union {
-  sphere { pt00, .01 }
-  sphere { pt01, .01 }
-  sphere { pt02, .01 }
-  sphere { pt03, .01 }
-  sphere { pt04, .01 }
-  sphere { pt05, .01 }
-  sphere { pt06, .01 }
-  sphere { pt07, .01 }
-  sphere { pt08, .01 }
-  sphere { pt09, .01 }
-  sphere { pt10, .01 }
-  sphere { pt11, .01 }
-  cylinder { pt00, pt02, .01 }
-  cylinder { pt00, pt04, .01 }
-  cylinder { pt00, pt06, .01 }
-  cylinder { pt00, pt08, .01 }
-  cylinder { pt00, pt10, .01 }
-  cylinder { pt01, pt02, .01 }
-  cylinder { pt01, pt03, .01 }
-  cylinder { pt01, pt05, .01 }
-  cylinder { pt01, pt09, .01 }
-  cylinder { pt01, pt10, .01 }
-  cylinder { pt02, pt06, .01 }
-  cylinder { pt02, pt09, .01 }
-  cylinder { pt02, pt10, .01 }
-  cylinder { pt03, pt04, .01 }
-  cylinder { pt03, pt05, .01 }
-  cylinder { pt03, pt10, .01 }
-  cylinder { pt03, pt11, .01 }
-  cylinder { pt04, pt08, .01 }
-  cylinder { pt04, pt10, .01 }
-  cylinder { pt04, pt11, .01 }
-  cylinder { pt05, pt07, .01 }
-  cylinder { pt05, pt09, .01 }
-  cylinder { pt05, pt11, .01 }
-  cylinder { pt06, pt07, .01 }
-  cylinder { pt06, pt08, .01 }
-  cylinder { pt06, pt09, .01 }
-  cylinder { pt07, pt08, .01 }
-  cylinder { pt07, pt09, .01 }
-  cylinder { pt07, pt11, .01 }
-  cylinder { pt08, pt11, .01 }
+  #for (s, -1, 1, 2)
+    sphere { pt00, .01 scale <s,s,s> }
+    sphere { pt01, .01 scale <s,s,s> }
+    sphere { pt02, .01 scale <s,s,s> }
+    sphere { pt03, .01 scale <s,s,s> }
+    sphere { pt04, .01 scale <s,s,s> }
+    sphere { pt07, .01 scale <s,s,s> }
+    cylinder { pt00, pt02, .01 scale <s,s,s> }
+    cylinder { pt00, pt04, .01 scale <s,s,s> }
+    cylinder { pt01, pt02, .01 scale <s,s,s> }
+    cylinder { pt01, pt03, .01 scale <s,s,s> }
+    cylinder { pt03, pt04, .01 scale <s,s,s> }
+    cylinder { pt00, pt06, .01 scale <s,s,s> }
+    cylinder { pt00, pt08, .01 scale <s,s,s> }
+    cylinder { pt00, pt10, .01 scale <s,s,s> }
+    cylinder { pt01, pt09, .01 scale <s,s,s> }
+    cylinder { pt01, pt10, .01 scale <s,s,s> }
+    cylinder { pt02, pt06, .01 scale <s,s,s> }
+    cylinder { pt02, pt09, .01 scale <s,s,s> }
+    cylinder { pt02, pt10, .01 scale <s,s,s> }
+    cylinder { pt03, pt10, .01 scale <s,s,s> }
+    cylinder { pt04, pt10, .01 scale <s,s,s> }
+  #end
   dorot()
   pigment { colour <.3,.3,.3> } finish { ambient 0 diffuse 1 phong 1 }
 }
 
-object {
-  mesh {
-    triangle { pt00, pt02, pt06 }
-    triangle { pt00, pt02, pt10 }
-    triangle { pt00, pt04, pt08 }
-    triangle { pt00, pt04, pt10 }
-    triangle { pt00, pt06, pt08 }
-    triangle { pt01, pt02, pt09 }
-    triangle { pt01, pt02, pt10 }
-    triangle { pt01, pt03, pt05 }
-    triangle { pt01, pt03, pt10 }
-    triangle { pt01, pt05, pt09 }
-    triangle { pt02, pt06, pt09 }
-    triangle { pt03, pt04, pt10 }
-    triangle { pt03, pt04, pt11 }
-    triangle { pt03, pt05, pt11 }
-    triangle { pt04, pt08, pt11 }
-    triangle { pt05, pt07, pt09 }
-    triangle { pt05, pt07, pt11 }
-    triangle { pt06, pt07, pt08 }
-    triangle { pt06, pt07, pt09 }
-    triangle { pt07, pt08, pt11 }
-    dorot()
-  } pigment { colour rgbt <.8,.8,.8,.4> } finish { ambient 0 diffuse 1 phong flashiness #if(withreflection) reflection { .2 } #end }
+union {
+  #for (s, -1, 1, 2)
+    triangle { pt00, pt02, pt06 scale <s,s,s> }
+    triangle { pt00, pt02, pt10 scale <s,s,s> }
+    triangle { pt00, pt04, pt08 scale <s,s,s> }
+    triangle { pt00, pt04, pt10 scale <s,s,s> }
+    triangle { pt00, pt06, pt08 scale <s,s,s> }
+    triangle { pt01, pt02, pt09 scale <s,s,s> }
+    triangle { pt01, pt02, pt10 scale <s,s,s> }
+    triangle { pt01, pt03, pt10 scale <s,s,s> }
+    triangle { pt02, pt06, pt09 scale <s,s,s> }
+    triangle { pt03, pt04, pt10 scale <s,s,s> }
+  #end
+  dorot()
+  pigment { colour rgbt <.8,.8,.8,.4> } finish { ambient 0 diffuse 1 phong flashiness #if(withreflection) reflection { .2 } #end }
   photons {
     target on
     refraction on
