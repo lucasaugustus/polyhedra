@@ -17,8 +17,6 @@
 
 #declare nudge = <4/3, 0, 4/3>; // This puts the center of the solid at the origin.
 
-// This solid has point symmetry through the origin, so we build half the structures and mirror them.
-
 #declare pt00 = nudge + z;
 #declare pt01 = nudge + x;
 #declare pt02 = nudge - y;
@@ -43,6 +41,10 @@
 #declare pt21 = ReflectPointThroughPlane(pt09, pt08, pt10, pt11);
 #declare pt22 = ReflectPointThroughPlane(pt10, pt18, pt19, pt21);
 #declare pt23 = ReflectPointThroughPlane(pt11, pt18, pt19, pt21);
+
+// This solid has point symmetry through the origin.
+// Some elements are coplanar with the origin.  They get built normally.
+// For the remaining elements, we build half and mirror them.
 
 union {
   sphere {pt00, 0.01}
