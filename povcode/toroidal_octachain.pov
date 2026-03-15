@@ -17,12 +17,13 @@
 
 #declare nudge = <4/3, 0, 4/3>; // This puts the center of the solid at the origin.
 
-// The points of the first octahedron
-#declare pt00 = nudge   z;
-#declare pt01 = nudge   x;
+// This solid has point symmetry through the origin, so we build half the structures and mirror them.
+
+#declare pt00 = nudge + z;
+#declare pt01 = nudge + x;
 #declare pt02 = nudge - y;
 #declare pt03 = nudge - x;
-#declare pt04 = nudge   y;
+#declare pt04 = nudge + y;
 #declare pt05 = nudge - z;
 #declare pt06 = ReflectPointThroughPlane(pt00, pt02, pt03, pt05);
 #declare pt07 = ReflectPointThroughPlane(pt01, pt02, pt03, pt05);
@@ -63,7 +64,7 @@ union {
   dorot()
   pigment { colour <.3,.3,.3> } finish { ambient 0 diffuse 1 phong 1 }
 }
-#for (sy, -1, 1, 2)
+#for (s, -1, 1, 2)
   union {
     sphere {pt04, 0.01}
     sphere {pt12, 0.01}
@@ -107,6 +108,7 @@ union {
     cylinder {pt20, pt23, 0.01}
     dorot()
     pigment { colour <.3,.3,.3> } finish { ambient 0 diffuse 1 phong 1 }
+    scale <s,s,s>
   }
   union {
     triangle {pt00, pt03, pt04}
@@ -141,6 +143,7 @@ union {
       reflection on
       collect on
     }
+    scale <s,s,s>
   }
 #end
 
