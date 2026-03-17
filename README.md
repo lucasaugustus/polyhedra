@@ -14,7 +14,7 @@ In the Python file, there is are two lists (`data` and `atad`) of lists.
 # Usage:
 
 ```bash
-./render.py [target="X[,Y[,Z...]]"] [res=N] [animate=yes] [frames=120] [keepframes=yes]
+./render.py [target="X[,Y[,Z...]]"] [res=N] [filetype=PNG,MP4] [frames=120] [keepframes=yes]
 ```
 
 When run with no arguments, this will render all polyhedra at all orientations.  This creates a folder `images/`, containing subfolders such as `images/augmented_sphenocorona/`; that is, the names of the subfolders are the English names of the polyhedra, as recorded in the `data` and `atad` lists from the Python file.  Within each subfolder, there will be files with names of the form `11.pov` and `11.png`; that is, for every orientation seed listed in the Python file for a given polyhedron, its subfolder will contain a POV-Ray source file and the resulting PNG file, and their names will be the orientation seeds, with the appropriate filename extensions.
@@ -31,7 +31,7 @@ has the same effect as the previous command.
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
 
-To produce animations, use the `animate=yes` argument.  These will be a 360° rotation of the solids.  This works by generating a bunch of PNG files, calling `ffmpeg` to compile them into an MP4 file, and then deleting the PNGs.  If `ffmpeg` is not available, then the PNGs will still be created, but no MP4 will be created, and the PNGs will not be deleted afterwards.  By default, this will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
+The program will produce PNG or MP4 files.  To specify which, use the `filetype=` argument.  It is not case-sensitive.  If making MP4s, they will be 360° rotations of the solids.  This works by generating a bunch of PNG files, calling `ffmpeg` to compile them into an MP4 file, and then deleting the PNGs.  If FFmpeg is not available, then the PNGs will still be created, but no MP4 will be created, and the PNGs will not be deleted afterwards.  By default, this will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
 
 When animating, the default behavior is to delete all the frames after compiling them into the MP4.  If FFmpeg is not available, or if the `keepframes=yes` argument is used, then the frames will not be deleted.
 
