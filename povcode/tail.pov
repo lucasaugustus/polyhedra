@@ -1,6 +1,7 @@
+#declare rotation=seed(0);
 #declare notwireframe=1;
 #declare withreflection=0;
-#declare flashiness=1; //Still pictures use 1, animated should probably be about 0.25.
+#declare flashiness=1;
 
 #declare tau=(1+sqrt(5))/2;
 #declare sq2=sqrt(2);
@@ -19,6 +20,10 @@
 #macro hexahedron()
   addpointssgn(<1,1,1>,<1,1,1>)
   autoface()
+#end
+
+#macro cube()
+  hexahedron()
 #end
 
 #macro octahedron()
@@ -72,6 +77,18 @@
     #case(1) augment(8,points[16],points[0],points[1])
   #end
   autoface()
+#end
+
+#macro truncated_cube()
+  truncatedhexahedron(0)
+#end
+
+#macro augmented_truncated_cube()
+  truncatedhexahedron(1)
+#end
+
+#macro biaugmented_truncated_cube()
+  truncatedhexahedron(2)
 #end
 
 #macro truncatedoctahedron()
@@ -133,6 +150,10 @@
 #macro snubhexahedron(s)
   addpermsaltsgn(<1,1/xi,xi>*s)
   autoface()
+#end
+
+#macro snub_cube(s)
+  snubhexahedron(s)
 #end
 
 #macro snubdodecahedron(s)
@@ -466,6 +487,18 @@
     autobalance()  autoface()
 #end
 
+#macro elongated_triangular_pyramid()
+    elongated_pyramid(3)
+#end
+
+#macro elongated_square_pyramid()
+    elongated_pyramid(4)
+#end
+
+#macro elongated_pentagonal_pyramid()
+    elongated_pyramid(5)
+#end
+
 #macro dipyramid(n)    // J12 (n=3) and J13 (n=5)
     polygon_vtx(n)
     augment(n,points[0],points[1],points[2])
@@ -479,8 +512,8 @@
     autobalance()  autoface()
 #end
 #macro elongated_triangular_dipyramid() elongated_dipyramid(3) #end    // J7
-#macro elongated_square_dipyramid() elongated_dipyramid(3) #end    // J8
-#macro elongated_pentagonal_dipyramid() elongated_dipyramid(3) #end    // J9
+#macro elongated_square_dipyramid() elongated_dipyramid(4) #end    // J8
+#macro elongated_pentagonal_dipyramid() elongated_dipyramid(5) #end    // J9
 
 // ----------------- rhombicuboctahedron modifications J - 4, 19, 23, 28, 29, 37, 45
 #macro rhombicuboctahedron_mod(j_number)
@@ -679,8 +712,11 @@
 #macro elongated_pentagonal_rotunda() icosidodecahedron_mod(21)    #end // J21. Half an icosidodecahedron on a prism
 #macro gyroelongated_pentagonal_rotunda() icosidodecahedron_mod(25)    #end // J25. Half an icosidodecahedron on an antiprism
 #macro pentagonal_orthobirotunda() icosidodecahedron_mod(34)  #end // J34. Twisted icosidodecahedron
+#macro elongated_pentagonal_orthocupolarotunda() icosidodecahedron_mod(40) #end // J40.
+#macro elongated_pentagonal_gyrocupolarotunda() icosidodecahedron_mod(41) #end // J41.
 #macro elongated_pentagonal_gyrobirotunda() icosidodecahedron_mod(43)  #end // J43. Elongated icosidodecahedron
 #macro elongated_pentagonal_orthobirotunda() icosidodecahedron_mod(42)  #end // J42. Elongated twisted icosidodecahedron
+#macro gyroelongated_pentagonal_cupolarotunda() icosidodecahedron_mod(47) #end // J47.
 #macro gyroelongated_pentagonal_birotunda() icosidodecahedron_mod(48)  #end // J48. Elongated semitwisted icosidodecahedron
 
 #macro pentagonal_orthocupolarotunda()  icosidodecahedron_mod(32)  #end    //J32
@@ -1439,4 +1475,3 @@ global_settings {
     autostop 0
   }
 }
-
