@@ -1,7 +1,3 @@
-#declare notwireframe=1;
-#declare withreflection=0;
-#declare flashiness=1;
-
 #declare rot1=rand(rotation)*pi*2;
 #declare rot2=acos(1-2*rand(rotation));
 #declare rot3=(rand(rotation)+clock)*pi*2;
