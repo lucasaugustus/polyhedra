@@ -84,16 +84,16 @@ data = [
 [    'square cupola'                           , 'square_cupola()'                         , (19,143,202)],             # J4
 ['pentagonal cupola'                           , 'pentagonal_cupola()'                     , (19,)],                    # J5
 ['pentagonal rotunda'                          , 'pentagonal_rotunda()'                    , (4,31,131)],               # J6
-[    'elongated triangular   pyramid'          , 'elongated_pyramid(3)'                    , (444,4,8,13,19,55,63,84)], # J7
-[    'elongated     square   pyramid'          , 'elongated_pyramid(4)'                    , (444,4,8,13,19,55,63,84)], # J8
-[    'elongated pentagonal   pyramid'          , 'elongated_pyramid(5)'                    , (444,4,8,13,19,55,63,84)], # J9
+[    'elongated triangular   pyramid'          , 'elongated_pyramid(3)'                    , (444,4,13)],               # J7
+[    'elongated     square   pyramid'          , 'elongated_pyramid(4)'                    , (444,4,13)],               # J8
+[    'elongated pentagonal   pyramid'          , 'elongated_pyramid(5)'                    , (444,4,13)],               # J9
 ['gyroelongated     square   pyramid'          , 'gyroelongated_square_pyramid()'          , (6621,0,7,38,95)],         # J10
 ['gyroelongated pentagonal   pyramid'          , 'gyroelongated_pentagonal_pyramid()'      , (6621,4,30,36,63)],        # J11
-[              'triangular bipyramid'          , 'dipyramid(3)'                            , (654,6,19,20,23,25,26,27)],# J12
-[              'pentagonal bipyramid'          , 'dipyramid(5)'                            , (654,6,19,20,23,25,26,27)],# J13
-[    'elongated triangular bipyramid'          , 'elongated_dipyramid(3)'                  , (654,13,17,27,62)],        # J14
-[    'elongated     square bipyramid'          , 'elongated_dipyramid(4)'                  , (654,13,17,27,62)],        # J15
-[    'elongated pentagonal bipyramid'          , 'elongated_dipyramid(5)'                  , (654,13,17,27,62)],        # J16
+[              'triangular bipyramid'          , 'dipyramid(3)'                            , (654,6,23)],               # J12
+[              'pentagonal bipyramid'          , 'dipyramid(5)'                            , (654,6,23)],               # J13
+[    'elongated triangular bipyramid'          , 'elongated_dipyramid(3)'                  , (654,13,27)],              # J14
+[    'elongated     square bipyramid'          , 'elongated_dipyramid(4)'                  , (654,13,27)],              # J15
+[    'elongated pentagonal bipyramid'          , 'elongated_dipyramid(5)'                  , (654,13,27)],              # J16
 ['gyroelongated     square bipyramid'          , 'gyroelongated_square_dipyramid()'        , (6621,13,38,46,50)],       # J17
 [    'elongated triangular cupola'             , 'elongated_triangular_cupola()'           , (112358,0,88,102,114)],    # J18
 [    'elongated     square cupola'             , 'elongated_square_cupola()'               , (333,1,3,10)],             # J19
@@ -194,17 +194,17 @@ for (name, file, angles) in atad:
 
 resolution = '1024'
 solids = {x[0] for x in data}
-animate = False
 frames = '120'
 keepframes = False
+filetype = 'png'
 
 for arg in argv:
     if '=' in arg:
         arg1, arg2 = arg.split('=')
         if arg1 == 'res': resolution = arg2
         if arg1 == 'target': solids = set(' '.join(x.split()) for x in arg2.split(','))
-        if arg1 == 'animate': animate = (arg2 == 'yes')
         if arg1 == 'frames': frames = arg2
+        if arg1 == 'filetype': filetype = arg2.lower()
         if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
 
 data_reduced = [x for x in data if x[0] in solids]
@@ -222,13 +222,16 @@ for (name, code, angles, file) in data_reduced:
         imgfilename = fileprefix + '.png'
         with open(srcfilename, 'w') as srcfile, open('povcode/' + file, 'r') as tail:
             srcfile.write(code + '#declare rotation=seed(%d);\n' % rotation)
+            srcfile.write('#declare notwireframe=1;\n')
+            srcfile.write('#declare withreflection=0;\n')
+            srcfile.write('#declare flashiness=%s;\n' % {'png':'1', 'svg':'0', 'mp4':'0.25'}[filetype])
             srcfile.write(tail.read())
         run(['povray',
              '+I' + srcfilename, '+O' + imgfilename,
              '+w' + resolution, '+h' + resolution,
              '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
         sleep(0.1)
-        if animate:
+        if filetype == 'mp4':
             run(['povray',
                  '+I' + srcfilename, '+O' + fileprefix + '_.png',
                  '+w' + resolution, '+h' + resolution,
