@@ -42,6 +42,7 @@ When animating, the default behavior is to delete all the frames after compiling
 # TODO
 
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
+* Add an option to override the built-in angles with a user-supplied angle.
 * Figure out how to prevent animations from zooming in and out.
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
 * Ensure that this works across platforms.
