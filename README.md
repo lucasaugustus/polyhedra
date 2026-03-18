@@ -14,7 +14,7 @@ In the Python file, there is are two lists (`data` and `atad`) of lists.
 # Usage:
 
 ```bash
-./render.py [target="X[,Y[,Z...]]"] [res=N] [filetype=PNG,MP4] [frames=120] [keepframes=yes]
+./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=PNG,MP4,STL] [frames=120] [keepframes=yes]
 ```
 
 When run with no arguments, this will render all polyhedra at all orientations.  This creates a folder `images/`, containing subfolders such as `images/augmented_sphenocorona/`; that is, the names of the subfolders are the English names of the polyhedra, as recorded in the `data` and `atad` lists from the Python file.  Within each subfolder, there will be files with names of the form `11.pov` and `11.png`; that is, for every orientation seed listed in the Python file for a given polyhedron, its subfolder will contain a POV-Ray source file and the resulting PNG file, and their names will be the orientation seeds, with the appropriate filename extensions.
@@ -31,7 +31,11 @@ has the same effect as the previous command.
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
 
-The program will produce PNG or MP4 files.  To specify which, use the `filetype=` argument.  It is not case-sensitive.  If making MP4s, they will be 360° rotations of the solids.  This works by generating a bunch of PNG files, calling `ffmpeg` to compile them into an MP4 file, and then deleting the PNGs.  If FFmpeg is not available, then the PNGs will still be created, but no MP4 will be created, and the PNGs will not be deleted afterwards.  By default, this will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
+The program will produce PNG, MP4, or STL files.  To specify which, use the `filetypes=` argument.  It is not case-sensitive.  For example, to produce only PNGs and STLs, one could use
+```bash
+./render.py filetypes=PnG,stL
+```
+If making MP4s, they will be 360° rotations of the solids.  This works by generating a bunch of PNG files, calling `ffmpeg` to compile them into an MP4 file, and then deleting the PNGs.  By default, animations will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
 
 When animating, the default behavior is to delete all the frames after compiling them into the MP4.  If FFmpeg is not available, or if the `keepframes=yes` argument is used, then the frames will not be deleted.
 
@@ -42,7 +46,6 @@ When animating, the default behavior is to delete all the frames after compiling
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
 * Ensure that this works across platforms.
 * When animating, suppress flashiness.
-* Make STL files.
 * Make SVGs.
 
 # Credits
@@ -50,5 +53,6 @@ When animating, the default behavior is to delete all the frames after compiling
 * The POV-Ray code was largely written by Wikipedia users Cyp (https://en.wikipedia.org/wiki/User:Cyp/Poly.pov) and AndrewKepert (https://en.wikipedia.org/wiki/User:AndrewKepert/poly.pov).
 * The POV-Ray code for the Herschel enneahedron and triakis truncated tetrahedron comes from https://github.com/timhutton/povray-polyhedra.
 * The POV-Ray code for the Kepler-Poinsot solids and compound of five tetrahedra is derived from https://commons.wikimedia.org/wiki/File:GreatStellatedDodecahedron.jpg.  
-* My modifications to the above are fairly trivial.  The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is the Python code, which automates that modification.
+* My modifications to the above are fairly trivial.  The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is `render.py`, which automates that modification.
 * The toroidal octahedron chain was put on the Wikimedia Commons in 2007 by Quilbert (https://commons.wikimedia.org/wiki/User:Quilbert).  I could not find the code used to generate that image, so the re-creation of it here is largely my own work.
+* The files `pov_to_stl.py` and `pov_faces_to_stl.py`, which are what produce the STL files, were vibe-coded by me through ChatGPT 5.4, because I could not find any existing programs that would do that in an automatable manner, and because writing them myself seemed beyond my skill level.  I have personally vetted them on all solids currently in this project, and will ensure that they continue to operate correctly on any further solids that get added.
