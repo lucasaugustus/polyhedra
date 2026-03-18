@@ -117,8 +117,8 @@ data = [
 ['elongated     square  gyrobicupola'          , 'elongated_square_gyrobicupola()'         , (333,3,4,5,10)],           # J37
 ['elongated pentagonal orthobicupola'          , 'elongated_pentagonal_orthobicupola()'    , (333,6,38,45,81)],         # J38
 ['elongated pentagonal  gyrobicupola'          , 'elongated_pentagonal_gyrobicupola()'     , (333,6,38,45,81)],         # J39
-['elongated pentagonal orthocupolarotunda'     , 'icosidodecahedron_mod(40)'               , (4,2,9,34,36,41,46,48)],   # J40
-['elongated pentagonal  gyrocupolarotunda'     , 'icosidodecahedron_mod(41)'               , (4,2,9,34,36,41,46,48)],   # J41
+['elongated pentagonal orthocupolarotunda'     , 'icosidodecahedron_mod(41)'               , (4,2,9,34,36,41,46,48)],   # J40
+['elongated pentagonal  gyrocupolarotunda'     , 'icosidodecahedron_mod(40)'               , (4,2,9,34,36,41,46,48)],   # J41
 ['elongated pentagonal orthobirotunda'         , 'elongated_pentagonal_orthobirotunda()'   , (4,2,9,34,36,41,46,48)],   # J42
 ['elongated pentagonal  gyrobirotunda'         , 'elongated_pentagonal_gyrobirotunda()'    , (4,2,9,34,36,41,46,48)],   # J43
 ['gyroelongated triangular  bicupola'          , 'gyroelongated_triangular_bicupola()'     , (112358,0,6,38,45,46,333)],# J44
@@ -196,7 +196,7 @@ resolution = '1024'
 solids = {x[0] for x in data}
 frames = '120'
 keepframes = False
-filetype = 'png'
+filetypes = ['png']
 
 for arg in argv:
     if '=' in arg:
@@ -204,7 +204,7 @@ for arg in argv:
         if arg1 == 'res': resolution = arg2
         if arg1 == 'target': solids = set(' '.join(x.split()) for x in arg2.split(','))
         if arg1 == 'frames': frames = arg2
-        if arg1 == 'filetype': filetype = arg2.lower()
+        if arg1 == 'filetypes': filetypes = [x.lower() for x in arg2.split(',')]
         if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
 
 data_reduced = [x for x in data if x[0] in solids]
@@ -224,20 +224,19 @@ for (name, code, angles, file) in data_reduced:
             srcfile.write(code + '#declare rotation=seed(%d);\n' % rotation)
             srcfile.write('#declare notwireframe=1;\n')
             srcfile.write('#declare withreflection=0;\n')
-            srcfile.write('#declare flashiness=%s;\n' % {'png':'1', 'svg':'0', 'mp4':'0.25'}[filetype])
+            srcfile.write('#declare flashiness=1;\n')
             srcfile.write(tail.read())
-        run(['povray',
-             '+I' + srcfilename, '+O' + imgfilename,
-             '+w' + resolution, '+h' + resolution,
-             '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
-        sleep(0.1)
-        if filetype == 'mp4':
+        if 'png' in filetypes:
+            run(['povray',
+                 '+I' + srcfilename, '+O' + imgfilename,
+                 '+w' + resolution, '+h' + resolution,
+                 '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
+        if 'mp4' in filetypes:
             run(['povray',
                  '+I' + srcfilename, '+O' + fileprefix + '_.png',
                  '+w' + resolution, '+h' + resolution,
                  '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
                  '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
-            sleep(0.1)
             if which('ffmpeg') is None:
                 print('FFmpeg was not available, so the animation was left as a bunch of individual frames.')
             else:
@@ -252,6 +251,19 @@ for (name, code, angles, file) in data_reduced:
                 if not keepframes:
                     for i in range(1, int(frames) + 1):
                         remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
+        sleep(0.1)
+    if 'stl' in filetypes:
+        if file == 'tail.pov':
+            run(['python3', 'pov_to_stl.py',
+                 'povcode/tail.pov',
+                 '--call', code.split('\n')[1],
+                 '--output', 'images/' + solidname + '/' + solidname + '.stl'
+                 ])
+        else:
+            run(['python3', 'pov_faces_to_stl.py',
+                 'povcode/' + file,
+                 '-o', 'images/' + solidname + '/' + solidname + '.stl'
+                 ])
         #remove(srcfilename)
 
 print('\nDone.')
