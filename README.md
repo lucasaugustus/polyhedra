@@ -14,7 +14,7 @@ In the Python file, there is are two lists (`data` and `atad`) of lists.
 # Usage:
 
 ```bash
-./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=PNG,MP4,STL] [frames=120] [keepframes=yes]
+./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=PNG,MP4,STL] [frames=120] [keepframes=yes] [angles=0[,1[,2[,3...]]]]
 ```
 
 When run with no arguments, this will render all polyhedra at all orientations.  This creates a folder `images/`, containing subfolders such as `images/augmented_sphenocorona/`; that is, the names of the subfolders are the English names of the polyhedra, as recorded in the `data` and `atad` lists from the Python file.  Within each subfolder, there will be files with names of the form `11.pov` and `11.png`; that is, for every orientation seed listed in the Python file for a given polyhedron, its subfolder will contain a POV-Ray source file and the resulting PNG file, and their names will be the orientation seeds, with the appropriate filename extensions.
@@ -38,6 +38,8 @@ The program will produce PNG, MP4, or STL files.  To specify which, use the `fil
 If making MP4s, they will be 360° rotations of the solids.  This works by generating a bunch of PNG files, calling `ffmpeg` to compile them into an MP4 file, and then deleting the PNGs.  By default, animations will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
 
 When animating, the default behavior is to delete all the frames after compiling them into the MP4.  If FFmpeg is not available, or if the `keepframes=yes` argument is used, then the frames will not be deleted.
+
+To override the built-in angles, use the `angles=` option.
 
 # TODO
 
