@@ -181,6 +181,7 @@ atad = [
 ["great stellated dodecahedron", "great_stel_dod.pov"    , (7409,)],
 ["small stellated dodecahedron", "small_stel_dod.pov"    , (11404,)],
 ["toroidal octahedron chain"   , "toroidal_octachain.pov", (1,)],
+["schoenhardt"                 , "schoenhardt.pov"       , (0,1,6,7,13)],
 ]
 
 for i in range(len(data)):
@@ -197,6 +198,7 @@ solids = {x[0] for x in data}
 frames = '120'
 keepframes = False
 filetypes = ['png']
+angle_override = []
 
 for arg in argv:
     if '=' in arg:
@@ -206,6 +208,7 @@ for arg in argv:
         if arg1 == 'frames': frames = arg2
         if arg1 == 'filetypes': filetypes = [x.lower() for x in arg2.split(',')]
         if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
+        if arg1 == 'angles': angle_override = list(map(int, arg2.split(',')))
 
 data_reduced = [x for x in data if x[0] in solids]
 
@@ -216,6 +219,7 @@ for (name, code, angles, file) in data_reduced:
     solidname = name.replace(' ', '_')
     try: mkdir('images/' + solidname)
     except: pass
+    if angle_override: angles = angle_override
     for rotation in angles:
         fileprefix = 'images/' + solidname + '/' + str(rotation)
         srcfilename = fileprefix + '.pov'
