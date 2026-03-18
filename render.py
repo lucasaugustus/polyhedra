@@ -166,10 +166,10 @@ data = [
 [               'sphenocorona'                 , 'sphenocorona()'                          , (11,35,70,72)],            # J86
 [     'augmented sphenocorona'                 , 'augmented_sphenocorona()'                , (11,35,70,72)],            # J87
 [               'sphenomegacorona'             , 'sphenomegacorona()'                      , (11,4,14,57,58)],          # J88
-[           'hebesphenomegacorona'             , 'hebesphenomegacorona()'                  , (11,2,7,37,51,65,75,82)],  # J89
-['disphenocingulum'                            , 'disphenocingulum()'                      , (11,0,3,6,10,15,18,24)],   # J90
-['bilunabirotunda'                             , 'bilunabirotunda()'                       , (10,2,3,4,8,21,24,32,33)], # J91
-['triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'          , (855,5,10,13,14,22,29)],   # J92
+[           'hebesphenomegacorona'             , 'hebesphenomegacorona()'                  , (11,2,37,51,82)],          # J89
+['disphenocingulum'                            , 'disphenocingulum()'                      , (11,0,6,15)],              # J90
+['bilunabirotunda'                             , 'bilunabirotunda()'                       , (10,2,4)],                 # J91
+['triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'          , (855,13,14,22,29)],        # J92
 ['herschel enneahedron'                        , 'herschel_enneahedron()'                  , (0,3,31,103,112)],
 ['triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,18,32)],
 ]
