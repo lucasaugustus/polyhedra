@@ -39,6 +39,7 @@ When animating, the default behavior is to delete all the frames after compiling
 
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
 * Figure out how to prevent animations from zooming in and out.
+* https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
 * Ensure that this works across platforms.
 * When animating, suppress flashiness.
 * Make STL files.
