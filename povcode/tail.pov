@@ -1,4 +1,3 @@
-#declare rotation=seed(0);
 #declare notwireframe=1;
 #declare withreflection=0;
 #declare flashiness=1;
@@ -20,10 +19,6 @@
 #macro hexahedron()
   addpointssgn(<1,1,1>,<1,1,1>)
   autoface()
-#end
-
-#macro cube()
-  hexahedron()
 #end
 
 #macro octahedron()
@@ -374,10 +369,10 @@
     #declare edgelen[b][a]=len;
 #end
 #macro make_triangle(a,b,c)
-    addedge(a,b,el)    addedge(a,c,el) addedge(b,c,el)
+    addedge(a,b,1)    addedge(a,c,1) addedge(b,c,1)
 #end
 #macro make_square(a,b,c,d)
-    addedge(a,b,el) addedge(b,c,el) addedge(c,d,el) addedge(d,a,el) addedge(a,c,sq2*el) addedge(b,d,sq2*el)
+    addedge(a,b,1) addedge(b,c,1) addedge(c,d,1) addedge(d,a,1) addedge(a,c,sq2*1) addedge(b,d,sq2*1)
 #end
 #macro make_lune(a,b,c,d,e,f)  // a and d are points of lune
     make_triangle(a,b,f) make_square(b,c,e,f) make_triangle(c,d,e)
@@ -518,7 +513,7 @@
 // ----------------- rhombicuboctahedron modifications J - 4, 19, 23, 28, 29, 37, 45
 #macro rhombicuboctahedron_mod(j_number)
     addevenpermssgn(<1+sq2,1,1>,<1,1,1>)
-    #local raxis=x;
+    #local raxis=<1,0,0>;
     #local edgelen=2;
     #local oct_radius=sqrt(2*sq2+4);
     // drop hemisphere for 6, 21, 25 (have single rotunda)
@@ -712,8 +707,8 @@
 #macro elongated_pentagonal_rotunda() icosidodecahedron_mod(21)    #end // J21. Half an icosidodecahedron on a prism
 #macro gyroelongated_pentagonal_rotunda() icosidodecahedron_mod(25)    #end // J25. Half an icosidodecahedron on an antiprism
 #macro pentagonal_orthobirotunda() icosidodecahedron_mod(34)  #end // J34. Twisted icosidodecahedron
-#macro elongated_pentagonal_orthocupolarotunda() icosidodecahedron_mod(40) #end // J40.
-#macro elongated_pentagonal_gyrocupolarotunda() icosidodecahedron_mod(41) #end // J41.
+#macro elongated_pentagonal_gyrocupolarotunda() icosidodecahedron_mod(40) #end // J40.
+#macro elongated_pentagonal_orthocupolarotunda() icosidodecahedron_mod(41) #end // J41.
 #macro elongated_pentagonal_gyrobirotunda() icosidodecahedron_mod(43)  #end // J43. Elongated icosidodecahedron
 #macro elongated_pentagonal_orthobirotunda() icosidodecahedron_mod(42)  #end // J42. Elongated twisted icosidodecahedron
 #macro gyroelongated_pentagonal_cupolarotunda() icosidodecahedron_mod(47) #end // J47.
