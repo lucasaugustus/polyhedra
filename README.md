@@ -62,7 +62,6 @@ To override the built-in angles, use the `angles=` option.
 # TODO
 
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
-* Add an option to override the built-in angles with a user-supplied angle.
 * Figure out how to prevent animations from zooming in and out.
 * https://en.wikipedia.org/wiki/Truncated_hexagonal_trapezohedron
 * https://en.wikipedia.org/wiki/Boerdijk%E2%80%93Coxeter_helix
