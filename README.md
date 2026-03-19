@@ -46,7 +46,36 @@ To override the built-in angles, use the `angles=` option.
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
 * Add an option to override the built-in angles with a user-supplied angle.
 * Figure out how to prevent animations from zooming in and out.
+* https://en.wikipedia.org/wiki/Truncated_hexagonal_trapezohedron
+* https://en.wikipedia.org/wiki/Boerdijk%E2%80%93Coxeter_helix
+* https://en.wikipedia.org/wiki/Gyroelongated_square_bipyramid
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
+* https://en.wikipedia.org/wiki/Truncated_triakis_tetrahedron
+* https://en.wikipedia.org/wiki/Prismatic_uniform_polyhedron
+* https://en.wikipedia.org/wiki/Cs%C3%A1sz%C3%A1r_polyhedron
+* https://en.wikipedia.org/wiki/Cubitruncated_cuboctahedron
+* https://en.wikipedia.org/wiki/Compound_of_ten_tetrahedra
+* https://en.wikipedia.org/wiki/Compound_of_five_octahedra
+* https://en.wikipedia.org/wiki/Rhombic_enneacontahedron
+* https://en.wikipedia.org/wiki/Near-miss_Johnson_solid
+* https://en.wikipedia.org/wiki/Uniform_star_polyhedron
+* https://en.wikipedia.org/wiki/Elongated_dodecahedron
+* https://en.wikipedia.org/wiki/Compound_of_five_cubes
+* https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
+* https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
+* https://en.wikipedia.org/wiki/Tetrated_dodecahedron
+* https://en.wikipedia.org/wiki/Tridyakis_icosahedron
+* https://en.wikipedia.org/wiki/Stellated_octahedron
+* https://en.wikipedia.org/wiki/Toroidal_polyhedron
+* https://en.wikipedia.org/wiki/Waterman_polyhedron
+* https://en.wikipedia.org/wiki/Szilassi_polyhedron
+* https://en.wikipedia.org/wiki/Hexagonal_bifrustum
+* https://en.wikipedia.org/wiki/Rhombic_icosahedron
+* https://en.wikipedia.org/wiki/Regular_polyhedron
+* https://en.wikipedia.org/wiki/Hill_tetrahedron
+* https://en.wikipedia.org/wiki/Polytetrahedron
+* https://en.wikipedia.org/wiki/Tetradecahedron
+* https://en.wikipedia.org/wiki/Holyhedron
 * Ensure that this works across platforms.
 * When animating, suppress flashiness.
 * Make SVGs.
@@ -58,5 +87,5 @@ To override the built-in angles, use the `angles=` option.
 * The POV-Ray code for the Kepler-Poinsot solids and compound of five tetrahedra is derived from https://commons.wikimedia.org/wiki/File:GreatStellatedDodecahedron.jpg.  
 * My modifications to the above are fairly trivial.  The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is `render.py`, which automates everything.
 * The toroidal octahedron chain was put on the Wikimedia Commons in 2007 by Quilbert (https://commons.wikimedia.org/wiki/User:Quilbert).  I could not find the code used to generate that image, so the re-creation of it here is largely my own work.
-* The files `pov_to_stl.py` and `pov_faces_to_stl.py`, which are what produce the STL files, were vibe-coded by me through ChatGPT 5.4, because I could not find any existing programs that would do that in an automatable manner, and because writing them myself seemed beyond my skill level.  I have personally vetted them on all solids currently in this project, and will ensure that they continue to operate correctly on any further solids that get added.
-* The file `schoenhardt.pov` is mostly my own work.
+* The code for generating the STL files is found in `pov_to_stl.py` and `pov_faces_to_stl.py`. I vibe-coded them through ChatGPT 5.4, because I could not find any existing programs that would do that in an automatable manner, and because writing them myself seemed beyond my skill level.  I have personally vetted them on all solids currently in this project, and will ensure that they continue to operate correctly on any further solids that get added.
+* The file `schoenhardt.pov` is my own work.
