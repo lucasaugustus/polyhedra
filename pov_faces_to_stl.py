@@ -9,12 +9,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 Vec = Tuple[float, float, float]
-Mat = List[List[float]]  # 4x4
+Mat = List[List[float]]
 
-
-# -----------------------------
-# Linear algebra helpers
-# -----------------------------
 
 def vadd(a: Vec, b: Vec) -> Vec:
     return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
@@ -22,10 +18,6 @@ def vadd(a: Vec, b: Vec) -> Vec:
 
 def vsub(a: Vec, b: Vec) -> Vec:
     return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
-
-
-def vmul(a: Vec, s: float) -> Vec:
-    return (a[0] * s, a[1] * s, a[2] * s)
 
 
 def vdot(a: Vec, b: Vec) -> float:
@@ -70,12 +62,11 @@ def matmul(a: Mat, b: Mat) -> Mat:
 
 def apply_mat(m: Mat, v: Vec) -> Vec:
     x, y, z = v
-    w = 1.0
     out = [
-        m[0][0] * x + m[0][1] * y + m[0][2] * z + m[0][3] * w,
-        m[1][0] * x + m[1][1] * y + m[1][2] * z + m[1][3] * w,
-        m[2][0] * x + m[2][1] * y + m[2][2] * z + m[2][3] * w,
-        m[3][0] * x + m[3][1] * y + m[3][2] * z + m[3][3] * w,
+        m[0][0] * x + m[0][1] * y + m[0][2] * z + m[0][3],
+        m[1][0] * x + m[1][1] * y + m[1][2] * z + m[1][3],
+        m[2][0] * x + m[2][1] * y + m[2][2] * z + m[2][3],
+        m[3][0] * x + m[3][1] * y + m[3][2] * z + m[3][3],
     ]
     if out[3] and out[3] != 1.0:
         return (out[0] / out[3], out[1] / out[3], out[2] / out[3])
@@ -98,8 +89,7 @@ def translate_mat(t: Vec) -> Mat:
 
 
 def rotate_axis_angle_mat(axis: Vec, degrees: float) -> Mat:
-    ax = vnorm(axis)
-    x, y, z = ax
+    x, y, z = vnorm(axis)
     a = math.radians(degrees)
     c = math.cos(a)
     s = math.sin(a)
@@ -111,10 +101,6 @@ def rotate_axis_angle_mat(axis: Vec, degrees: float) -> Mat:
         [0.0, 0.0, 0.0, 1.0],
     ]
 
-
-# -----------------------------
-# Tokenizer
-# -----------------------------
 
 TOKEN_RE = re.compile(
     r'''(
@@ -158,10 +144,6 @@ class TokenStream:
         return None
 
 
-# -----------------------------
-# AST nodes
-# -----------------------------
-
 @dataclass
 class Expr:
     kind: str
@@ -174,10 +156,6 @@ class Node:
     kind: str
     data: Any = None
 
-
-# -----------------------------
-# Parser
-# -----------------------------
 
 class Parser:
     def __init__(self, text: str):
@@ -192,7 +170,7 @@ class Parser:
     def parse_stmt(self) -> Node:
         tok = self.ts.peek()
         if tok in ('#declare', '#local'):
-            kind = self.ts.pop()
+            self.ts.pop()
             name = self.ts.pop()
             self.ts.pop('=')
             expr = self.parse_expr()
@@ -215,7 +193,6 @@ class Parser:
             expr = self.parse_expr()
             return Node('transform', (op, expr))
         if re.match(r'[A-Za-z_]', tok or ''):
-            # Macro call or bare modifier-like statement.
             name = self.ts.pop()
             if self.ts.match('('):
                 args: List[Expr] = []
@@ -226,7 +203,6 @@ class Parser:
                             break
                 self.ts.pop(')')
                 return Node('call', (name, args))
-            # Unrecognized bare identifier statement; try to skip one block/expression.
             return Node('noop', name)
         raise ValueError(f'Cannot parse statement starting with {tok!r}')
 
@@ -241,7 +217,6 @@ class Parser:
                 if not self.ts.match(','):
                     break
         self.ts.pop(')')
-        # POV macros can be expression-bodied or statement-bodied.
         statement_starters = {
             '#declare', '#local', '#macro', '#end', '#for', '#while', '#if',
             'union', 'triangle', 'polygon', 'sphere', 'cylinder', 'pigment',
@@ -267,8 +242,9 @@ class Parser:
         start = self.parse_expr()
         self.ts.pop(',')
         end = self.parse_expr()
-        self.ts.pop(',')
-        step = self.parse_expr()
+        step = Expr('num', 1.0)
+        if self.ts.match(','):
+            step = self.parse_expr()
         self.ts.pop(')')
         body: List[Node] = []
         while self.ts.peek() != '#end':
@@ -282,26 +258,9 @@ class Parser:
         cond = self.parse_expr()
         self.ts.pop(')')
         body: List[Node] = []
-        depth = 1
-        # parse nested statements conservatively until matching #end
-        while depth > 0:
-            if self.ts.peek() is None:
-                raise ValueError('Unterminated #while')
-            if self.ts.peek() == '#while':
-                body.append(self.parse_while())
-            elif self.ts.peek() == '#if':
-                body.append(self.parse_if())
-            elif self.ts.peek() == '#for':
-                body.append(self.parse_for())
-            elif self.ts.peek() == '#macro':
-                body.append(self.parse_macro())
-            elif self.ts.peek() == '#end':
-                self.ts.pop('#end')
-                depth -= 1
-                if depth == 0:
-                    break
-            else:
-                body.append(self.parse_stmt())
+        while self.ts.peek() != '#end':
+            body.append(self.parse_stmt())
+        self.ts.pop('#end')
         return Node('while', (cond, body))
 
     def parse_if(self) -> Node:
@@ -350,7 +309,6 @@ class Parser:
             while self.ts.peek() != '}':
                 if self.ts.match(','):
                     continue
-                # If we hit known modifiers, switch to extras parsing
                 if self.ts.peek() in ('rotate', 'scale', 'translate', 'pigment', 'finish', 'photons'):
                     break
                 pts.append(self.parse_expr())
@@ -359,7 +317,6 @@ class Parser:
         if name in ('sphere', 'cylinder', 'pigment', 'finish', 'background', 'camera', 'global_settings', 'light_source', 'photons'):
             self.skip_brace_content()
             return Node('ignored', name)
-        # generic block
         body: List[Node] = []
         while self.ts.peek() != '}':
             body.append(self.parse_stmt())
@@ -376,7 +333,6 @@ class Parser:
             elif tok in ('pigment', 'finish', 'photons'):
                 extras.append(self.parse_object_or_block())
             else:
-                # Consume unrecognized token conservatively.
                 self.ts.pop()
         self.ts.pop('}')
         return extras
@@ -390,7 +346,6 @@ class Parser:
             elif tok == '}':
                 depth -= 1
 
-    # Expression parser
     def parse_expr(self) -> Expr:
         return self.parse_cmp()
 
@@ -422,7 +377,16 @@ class Parser:
         if self.ts.peek() in ('+', '-'):
             op = self.ts.pop()
             return Expr('unary', op, self.parse_unary())
-        return self.parse_primary()
+        return self.parse_postfix()
+
+    def parse_postfix(self) -> Expr:
+        expr = self.parse_primary()
+        while self.ts.peek() == '[':
+            self.ts.pop('[')
+            idx = self.parse_expr()
+            self.ts.pop(']')
+            expr = Expr('index', None, (expr, idx))
+        return expr
 
     def parse_primary(self) -> Expr:
         tok = self.ts.peek()
@@ -439,11 +403,34 @@ class Parser:
             b = self.parse_add(); self.ts.pop(',')
             c = self.parse_add(); self.ts.pop('>')
             return Expr('vector', None, (a, b, c))
+        if tok == '{':
+            self.ts.pop('{')
+            items: List[Expr] = []
+            while self.ts.peek() != '}':
+                if self.ts.match(','):
+                    continue
+                items.append(self.parse_expr())
+            self.ts.pop('}')
+            return Expr('list', None, items)
         if re.fullmatch(r'(?:\d+\.\d*|\.\d+|\d+)(?:[eE][+-]?\d+)?', tok):
             self.ts.pop()
             return Expr('num', float(tok))
         if re.match(r'[A-Za-z_]', tok):
             name = self.ts.pop()
+            if name == 'array' and self.ts.peek() == '[':
+                dims: List[Expr] = []
+                while self.ts.peek() == '[':
+                    self.ts.pop('[')
+                    dims.append(self.parse_expr())
+                    self.ts.pop(']')
+                self.ts.pop('{')
+                items: List[Expr] = []
+                while self.ts.peek() != '}':
+                    if self.ts.match(','):
+                        continue
+                    items.append(self.parse_expr())
+                self.ts.pop('}')
+                return Expr('arraylit', None, (dims, items))
             if self.ts.match('('):
                 args: List[Expr] = []
                 if self.ts.peek() != ')':
@@ -456,10 +443,6 @@ class Parser:
             return Expr('name', name)
         raise ValueError(f'Bad expression token {tok!r}')
 
-
-# -----------------------------
-# Evaluator / interpreter
-# -----------------------------
 
 @dataclass
 class MacroDef:
@@ -515,12 +498,7 @@ class Interpreter:
         e.set('y', (0.0, 1.0, 0.0))
         e.set('z', (0.0, 0.0, 1.0))
         e.set('clock', self.clock)
-        e.set('rotation', 0.123456789)  # deterministic dummy seed object/value
-        # expression macros / functions used in these files
-        e.set_macro('ReflectPointThroughPlane', MacroDef(
-            params=['D', 'A', 'B', 'C'],
-            expr=Parser('D + vcross(A - B, A - C) * 2 * vdot(vcross(A - B, A - C), A-D) / vdot(vcross(A - B, A - C), vcross(A - B, A - C))').parse_expr()
-        ))
+        e.set('rotation', 0.123456789)
 
     def eval_expr(self, expr: Expr, env: Env) -> Any:
         k = expr.kind
@@ -531,6 +509,15 @@ class Interpreter:
         if k == 'vector':
             a, b, c = expr.args
             return (float(self.eval_expr(a, env)), float(self.eval_expr(b, env)), float(self.eval_expr(c, env)))
+        if k == 'list':
+            return [self.eval_expr(x, env) for x in expr.args]
+        if k == 'arraylit':
+            _dims, items = expr.args
+            return [self.eval_expr(x, env) for x in items]
+        if k == 'index':
+            base = self.eval_expr(expr.args[0], env)
+            idx = int(round(float(self.eval_expr(expr.args[1], env))))
+            return base[idx]
         if k == 'unary':
             v = self.eval_expr(expr.args, env)
             if expr.value == '+':
@@ -561,10 +548,16 @@ class Interpreter:
             if name == 'vcross':
                 return vcross(args[0], args[1])
             if name == 'rand':
-                # deterministic placeholder; enough to realize fixed rotations
                 seed = float(args[0]) if not isinstance(args[0], tuple) else sum(args[0])
                 x = math.sin(seed * 12.9898 + 78.233) * 43758.5453
                 return x - math.floor(x)
+            if name == 'dimension_size':
+                arr = args[0]
+                dim = int(round(float(args[1])))
+                cur = arr
+                for _ in range(dim - 1):
+                    cur = cur[0]
+                return float(len(cur))
             macro = env.get_macro(name)
             if macro.expr is not None:
                 child = Env(env)
@@ -576,7 +569,12 @@ class Interpreter:
 
     def apply_binop(self, op: str, a: Any, b: Any) -> Any:
         if op in ('<', '>', '<=', '>=', '==', '!='):
-            return float(eval(f'a {op} b'))
+            if op == '<': return float(a < b)
+            if op == '>': return float(a > b)
+            if op == '<=': return float(a <= b)
+            if op == '>=': return float(a >= b)
+            if op == '==': return float(a == b)
+            if op == '!=': return float(a != b)
         if op == '+':
             if isinstance(a, tuple) and isinstance(b, tuple):
                 return vadd(a, b)
@@ -635,9 +633,9 @@ class Interpreter:
             return
         if kind == 'for':
             var, start_e, end_e, step_e, body = node.data
-            start = self.eval_expr(start_e, env)
-            end = self.eval_expr(end_e, env)
-            step = self.eval_expr(step_e, env)
+            start = float(self.eval_expr(start_e, env))
+            end = float(self.eval_expr(end_e, env))
+            step = float(self.eval_expr(step_e, env))
             child = Env(env)
             i = start
             eps = 1e-9
@@ -659,8 +657,7 @@ class Interpreter:
             return
         if kind == 'if':
             cond, then_body, else_body = node.data
-            body = then_body if self.eval_expr(cond, env) else else_body
-            self.exec_nodes(body, Env(env), current_mat)
+            self.exec_nodes(then_body if self.eval_expr(cond, env) else else_body, Env(env), current_mat)
             return
         if kind == 'call':
             name, args = node.data
@@ -684,7 +681,7 @@ class Interpreter:
             return
         if kind == 'polygon':
             count_expr, pts_expr, extras = node.data
-            _count = int(round(self.eval_expr(count_expr, env)))
+            _count = int(round(float(self.eval_expr(count_expr, env))))
             pts = [self.eval_expr(p, env) for p in pts_expr]
             if len(pts) >= 2 and self.close_enough(pts[0], pts[-1]):
                 pts = pts[:-1]
@@ -693,7 +690,6 @@ class Interpreter:
             for tri in triangulate_polygon_3d(pts):
                 self.faces.append(Face(list(tri)))
             return
-        # ignore all else
 
     def _flatten_block_items(self, items: List[Node], env: Env) -> List[Node]:
         out: List[Node] = []
@@ -719,9 +715,7 @@ class Interpreter:
         for node in flat_body:
             if node.kind == 'transform':
                 block_transforms.append(node.data)
-            elif node.kind in ('triangle', 'polygon', 'block'):
-                deferred_faces.append(node)
-            elif node.kind == 'call':
+            elif node.kind in ('triangle', 'polygon', 'block', 'call'):
                 deferred_faces.append(node)
             else:
                 self.exec_node(node, env, current_mat)
@@ -733,20 +727,16 @@ class Interpreter:
 
     def transform_matrix(self, op: str, value: Any) -> Mat:
         if op == 'scale':
-            if isinstance(value, tuple):
-                return scale_mat(value)
-            return scale_mat((value, value, value))
+            return scale_mat(value if isinstance(value, tuple) else (value, value, value))
         if op == 'translate':
-            if isinstance(value, tuple):
-                return translate_mat(value)
-            return translate_mat((value, value, value))
+            return translate_mat(value if isinstance(value, tuple) else (value, value, value))
         if op == 'rotate':
-            if isinstance(value, tuple):
-                rx = rotate_axis_angle_mat((1.0, 0.0, 0.0), value[0])
-                ry = rotate_axis_angle_mat((0.0, 1.0, 0.0), value[1])
-                rz = rotate_axis_angle_mat((0.0, 0.0, 1.0), value[2])
-                return matmul(rz, matmul(ry, rx))
-            raise ValueError('rotate expects vector in this converter')
+            if not isinstance(value, tuple):
+                raise ValueError('rotate expects vector in this converter')
+            rx = rotate_axis_angle_mat((1.0, 0.0, 0.0), value[0])
+            ry = rotate_axis_angle_mat((0.0, 1.0, 0.0), value[1])
+            rz = rotate_axis_angle_mat((0.0, 0.0, 1.0), value[2])
+            return matmul(rz, matmul(ry, rx))
         raise ValueError(op)
 
     def combine_transforms(self, current_mat: Mat, extras: List[Node], env: Env) -> Mat:
@@ -760,71 +750,6 @@ class Interpreter:
     @staticmethod
     def close_enough(a: Vec, b: Vec, eps: float = 1e-9) -> bool:
         return abs(a[0]-b[0]) < eps and abs(a[1]-b[1]) < eps and abs(a[2]-b[2]) < eps
-
-
-# -----------------------------
-# Polygon triangulation
-# -----------------------------
-
-def triangulate_polygon_3d(pts: Sequence[Vec]) -> List[Tuple[Vec, Vec, Vec]]:
-    pts = list(pts)
-    if len(pts) >= 2 and close2_3d(pts[0], pts[-1]):
-        pts = pts[:-1]
-    if len(pts) < 3:
-        return []
-    if len(pts) == 3:
-        return [(pts[0], pts[1], pts[2])]
-
-    origin, u, v = best_fit_plane_basis(pts)
-    poly2 = [project_to_plane(p, origin, u, v) for p in pts]
-
-    if polygon_has_self_intersections(poly2):
-        tris2 = triangulate_self_intersecting_polygon_2d(poly2)
-        return [(
-            lift_from_plane(a, origin, u, v),
-            lift_from_plane(b, origin, u, v),
-            lift_from_plane(c, origin, u, v),
-        ) for (a, b, c) in tris2]
-
-    tris_idx = ear_clip(poly2)
-    if not tris_idx:
-        tris_idx = [(0, i, i + 1) for i in range(1, len(pts) - 1)]
-    return [(pts[i], pts[j], pts[k]) for (i, j, k) in tris_idx]
-
-
-def close2_3d(a: Vec, b: Vec, eps: float = 1e-9) -> bool:
-    return abs(a[0]-b[0]) <= eps and abs(a[1]-b[1]) <= eps and abs(a[2]-b[2]) <= eps
-
-
-def close2(a: Tuple[float, float], b: Tuple[float, float], eps: float = 1e-9) -> bool:
-    return abs(a[0]-b[0]) <= eps and abs(a[1]-b[1]) <= eps
-
-
-def best_fit_plane_basis(pts: Sequence[Vec]) -> Tuple[Vec, Vec, Vec]:
-    origin = pts[0]
-    n = polygon_normal(pts)
-    if vlen(n) < 1e-12:
-        a = vsub(pts[1], pts[0])
-        b = vsub(pts[2], pts[0])
-        n = vnorm(vcross(a, b))
-    if vlen(n) < 1e-12:
-        n = (0.0, 0.0, 1.0)
-    ref = (1.0, 0.0, 0.0) if abs(n[0]) < 0.9 else (0.0, 1.0, 0.0)
-    u = vnorm(vcross(ref, n))
-    if vlen(u) < 1e-12:
-        ref = (0.0, 0.0, 1.0)
-        u = vnorm(vcross(ref, n))
-    v = vnorm(vcross(n, u))
-    return origin, u, v
-
-
-def project_to_plane(p: Vec, origin: Vec, u: Vec, v: Vec) -> Tuple[float, float]:
-    d = vsub(p, origin)
-    return (vdot(d, u), vdot(d, v))
-
-
-def lift_from_plane(p: Tuple[float, float], origin: Vec, u: Vec, v: Vec) -> Vec:
-    return vadd(origin, vadd(vmul(u, p[0]), vmul(v, p[1])))
 
 
 def polygon_normal(pts: Sequence[Vec]) -> Vec:
@@ -853,8 +778,8 @@ def point_in_tri(p, a, b, c) -> bool:
     d1 = s(p, a, b)
     d2 = s(p, b, c)
     d3 = s(p, c, a)
-    has_neg = (d1 < -1e-12) or (d2 < -1e-12) or (d3 < -1e-12)
-    has_pos = (d1 > 1e-12) or (d2 > 1e-12) or (d3 > 1e-12)
+    has_neg = (d1 < 0) or (d2 < 0) or (d3 < 0)
+    has_pos = (d1 > 0) or (d2 > 0) or (d3 > 0)
     return not (has_neg and has_pos)
 
 
@@ -891,206 +816,250 @@ def ear_clip(poly: Sequence[Tuple[float, float]]) -> List[Tuple[int, int, int]]:
     return tris
 
 
-def orient2(a, b, c) -> float:
-    return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
 
 
-def on_segment(a, b, p, eps: float = 1e-9) -> bool:
-    return (min(a[0], b[0]) - eps <= p[0] <= max(a[0], b[0]) + eps and
-            min(a[1], b[1]) - eps <= p[1] <= max(a[1], b[1]) + eps and
-            abs(orient2(a, b, p)) <= eps)
+def seg_intersection_2d(a: Tuple[float, float], b: Tuple[float, float],
+                        c: Tuple[float, float], d: Tuple[float, float],
+                        eps: float = 1e-12) -> Optional[Tuple[float, float, Tuple[float, float]]]:
+    x1, y1 = a; x2, y2 = b; x3, y3 = c; x4, y4 = d
+    den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    if abs(den) < eps:
+        return None
+    t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den
+    u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / den
+    if eps < t < 1.0 - eps and eps < u < 1.0 - eps:
+        return (t, u, (x1 + t * (x2 - x1), y1 + t * (y2 - y1)))
+    return None
 
 
-def segment_intersection_params(a, b, c, d, eps: float = 1e-9):
-    bax = b[0] - a[0]
-    bay = b[1] - a[1]
-    dcx = d[0] - c[0]
-    dcy = d[1] - c[1]
-    den = bax * dcy - bay * dcx
-    cax = c[0] - a[0]
-    cay = c[1] - a[1]
-    if abs(den) <= eps:
-        for pt, t in ((a, 0.0), (b, 1.0)):
-            if on_segment(c, d, pt, eps):
-                u = param_on_segment(c, d, pt)
-                return [(t, u, pt)]
-        for pt, u in ((c, 0.0), (d, 1.0)):
-            if on_segment(a, b, pt, eps):
-                t = param_on_segment(a, b, pt)
-                return [(t, u, pt)]
-        return []
-    t = (cax * dcy - cay * dcx) / den
-    u = (cax * bay - cay * bax) / den
-    if -eps <= t <= 1 + eps and -eps <= u <= 1 + eps:
-        p = (a[0] + t * bax, a[1] + t * bay)
-        return [(t, u, p)]
-    return []
-
-
-def param_on_segment(a, b, p) -> float:
-    dx = b[0] - a[0]
-    dy = b[1] - a[1]
-    if abs(dx) >= abs(dy):
-        return 0.0 if abs(dx) < 1e-12 else (p[0] - a[0]) / dx
-    return 0.0 if abs(dy) < 1e-12 else (p[1] - a[1]) / dy
-
-
-def polygon_has_self_intersections(poly: Sequence[Tuple[float, float]]) -> bool:
+def polygon_has_self_intersection(poly: Sequence[Tuple[float, float]]) -> bool:
     n = len(poly)
-    if n < 4:
-        return False
     for i in range(n):
-        a = poly[i]
-        b = poly[(i + 1) % n]
+        a, b = poly[i], poly[(i + 1) % n]
         for j in range(i + 1, n):
-            if j == i or (j + 1) % n == i or (i + 1) % n == j:
+            if j == i or j == (i + 1) % n or i == (j + 1) % n:
                 continue
-            if i == 0 and j == n - 1:
-                continue
-            c = poly[j]
-            d = poly[(j + 1) % n]
-            hits = segment_intersection_params(a, b, c, d)
-            for t, u, p in hits:
-                if 1e-9 < t < 1 - 1e-9 and 1e-9 < u < 1 - 1e-9:
-                    return True
-        
+            c, d = poly[j], poly[(j + 1) % n]
+            if seg_intersection_2d(a, b, c, d) is not None:
+                return True
     return False
 
 
-def canonical_cycle(cyc: Sequence[int]) -> Tuple[int, ...]:
-    cyc = list(cyc)
-    if cyc and cyc[0] == cyc[-1]:
-        cyc = cyc[:-1]
-    if not cyc:
-        return tuple()
-    rots = []
-    n = len(cyc)
-    for base in (cyc, list(reversed(cyc))):
-        m = min(range(n), key=lambda i: base[i])
-        rots.append(tuple(base[m:] + base[:m]))
-    return min(rots)
-
-
-def winding_number(poly: Sequence[Tuple[float, float]], p: Tuple[float, float]) -> int:
+def winding_number_2d(poly: Sequence[Tuple[float, float]], p: Tuple[float, float]) -> int:
+    x, y = p
     wn = 0
-    n = len(poly)
-    for i in range(n):
-        a = poly[i]
-        b = poly[(i + 1) % n]
-        if on_segment(a, b, p, 1e-9):
-            return 1
-        if a[1] <= p[1]:
-            if b[1] > p[1] and orient2(a, b, p) > 1e-12:
+    for i in range(len(poly)):
+        x1, y1 = poly[i]
+        x2, y2 = poly[(i + 1) % len(poly)]
+        cross = (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1)
+        if y1 <= y:
+            if y2 > y and cross > 1e-12:
                 wn += 1
         else:
-            if b[1] <= p[1] and orient2(a, b, p) < -1e-12:
+            if y2 <= y and cross < -1e-12:
                 wn -= 1
     return wn
 
 
-def triangulate_self_intersecting_polygon_2d(poly: Sequence[Tuple[float, float]]) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
+def decompose_self_intersecting_polygon_2d(poly: Sequence[Tuple[float, float]]) -> List[List[Tuple[float, float]]]:
     n = len(poly)
-    splits: List[List[Tuple[float, Tuple[float, float]]]] = [[(0.0, poly[i]), (1.0, poly[(i + 1) % n])] for i in range(n)]
+    segs = [(poly[i], poly[(i + 1) % n]) for i in range(n)]
+    params: List[List[float]] = [[0.0, 1.0] for _ in range(n)]
     for i in range(n):
-        a = poly[i]
-        b = poly[(i + 1) % n]
         for j in range(i + 1, n):
-            if j == i or (j + 1) % n == i or (i + 1) % n == j:
+            if j == i or j == (i + 1) % n or i == (j + 1) % n:
                 continue
-            if i == 0 and j == n - 1:
+            hit = seg_intersection_2d(segs[i][0], segs[i][1], segs[j][0], segs[j][1])
+            if hit is None:
                 continue
-            c = poly[j]
-            d = poly[(j + 1) % n]
-            for t, u, p in segment_intersection_params(a, b, c, d):
-                if -1e-9 <= t <= 1 + 1e-9 and -1e-9 <= u <= 1 + 1e-9:
-                    splits[i].append((max(0.0, min(1.0, t)), p))
-                    splits[j].append((max(0.0, min(1.0, u)), p))
+            t, u, _p = hit
+            params[i].append(t)
+            params[j].append(u)
 
-    nodes: List[Tuple[float, float]] = []
-    def get_node(pt):
-        for idx, q in enumerate(nodes):
-            if close2(pt, q, 1e-8):
-                return idx
-        nodes.append(pt)
-        return len(nodes)-1
+    def pkey(p: Tuple[float, float]) -> Tuple[int, int]:
+        return (round(p[0] * 10**12), round(p[1] * 10**12))
 
-    undirected = set()
-    adj: Dict[int, List[int]] = {}
-    for lst in splits:
-        lst.sort(key=lambda x: x[0])
-        clean = []
-        for t, p in lst:
-            if not clean or not close2(clean[-1][1], p, 1e-8):
-                clean.append((t, p))
-        for k in range(len(clean)-1):
-            p = clean[k][1]
-            q = clean[k+1][1]
-            if close2(p, q, 1e-8):
+    coords: List[Tuple[float, float]] = []
+    vid: Dict[Tuple[int, int], int] = {}
+
+    def get_vid(pt: Tuple[float, float]) -> int:
+        k = pkey(pt)
+        if k not in vid:
+            vid[k] = len(coords)
+            coords.append(pt)
+        return vid[k]
+
+    graph: Dict[int, set[int]] = {}
+    for i, (a, b) in enumerate(segs):
+        ts = sorted(set(round(t, 12) for t in params[i]))
+        pts = [(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t) for t in ts]
+        for p, q in zip(pts, pts[1:]):
+            u, v = get_vid(p), get_vid(q)
+            if u == v:
                 continue
-            i = get_node(p)
-            j = get_node(q)
-            if i == j:
+            graph.setdefault(u, set()).add(v)
+            graph.setdefault(v, set()).add(u)
+
+    ordered: Dict[int, List[int]] = {}
+    for u, nbrs in graph.items():
+        ordered[u] = sorted(
+            nbrs,
+            key=lambda v: math.atan2(coords[v][1] - coords[u][1], coords[v][0] - coords[u][0])
+        )
+
+    visited: set[Tuple[int, int]] = set()
+    faces: List[List[Tuple[float, float]]] = []
+
+    for u in list(graph.keys()):
+        for v in ordered[u]:
+            if (u, v) in visited:
                 continue
-            e = (min(i, j), max(i, j))
-            if e not in undirected:
-                undirected.add(e)
-                adj.setdefault(i, []).append(j)
-                adj.setdefault(j, []).append(i)
+            start = (u, v)
+            cur = start
+            face_vids: List[int] = []
+            guard = 0
+            while True:
+                visited.add(cur)
+                a, b = cur
+                face_vids.append(a)
+                nbrs = ordered[b]
+                idx = nbrs.index(a)
+                c = nbrs[(idx - 1) % len(nbrs)]
+                cur = (b, c)
+                if cur == start:
+                    break
+                guard += 1
+                if guard > 10000:
+                    raise RuntimeError('face traversal guard triggered')
 
-    angle_order: Dict[int, List[int]] = {}
-    for i, nbrs in adj.items():
-        pi = nodes[i]
-        angle_order[i] = sorted(nbrs, key=lambda j: math.atan2(nodes[j][1]-pi[1], nodes[j][0]-pi[0]))
+            poly_face = [coords[i] for i in face_vids]
+            area = signed_area(poly_face)
+            if area <= 1e-12:
+                continue
+            cx = sum(x for x, _ in poly_face) / len(poly_face)
+            cy = sum(y for _, y in poly_face) / len(poly_face)
+            if winding_number_2d(poly, (cx, cy)) == 0:
+                continue
 
-    directed = {(i, j) for i, nbrs in adj.items() for j in nbrs}
-    used = set()
-    cycles = []
-    for start in list(directed):
-        if start in used:
-            continue
-        face = []
-        e = start
-        guard = 0
-        while e not in used and guard < 10000:
-            used.add(e)
-            a, b = e
-            face.append(a)
-            nbrs = angle_order[b]
-            pos = nbrs.index(a)
-            c = nbrs[(pos - 1) % len(nbrs)]
-            e = (b, c)
-            guard += 1
-            if e == start:
-                break
-        if e == start and len(face) >= 3:
-            area = signed_area([nodes[i] for i in face])
-            if abs(area) > 1e-9:
-                cycles.append(face)
+            dedup: List[Tuple[float, float]] = []
+            for pt in poly_face:
+                if not dedup or abs(pt[0] - dedup[-1][0]) > 1e-12 or abs(pt[1] - dedup[-1][1]) > 1e-12:
+                    dedup.append(pt)
+            if len(dedup) >= 3 and (
+                abs(dedup[0][0] - dedup[-1][0]) < 1e-12 and
+                abs(dedup[0][1] - dedup[-1][1]) < 1e-12
+            ):
+                dedup = dedup[:-1]
+            if len(dedup) >= 3:
+                faces.append(dedup)
 
-    out = []
+    unique: List[List[Tuple[float, float]]] = []
     seen = set()
-    for cyc in cycles:
-        canon = canonical_cycle(cyc)
-        if canon in seen:
-            continue
-        seen.add(canon)
-        ring = [nodes[i] for i in cyc]
-        area = signed_area(ring)
-        if area <= 1e-9:
-            continue
-        cx = sum(p[0] for p in ring) / len(ring)
-        cy = sum(p[1] for p in ring) / len(ring)
-        if winding_number(poly, (cx, cy)) == 0:
-            continue
-        idx_tris = ear_clip(ring)
-        if not idx_tris:
-            idx_tris = [(0, i, i+1) for i in range(1, len(ring)-1)]
-        for i, j, k in idx_tris:
-            out.append((ring[i], ring[j], ring[k]))
-    return out
-# -----------------------------
-# STL writer
-# -----------------------------
+    for f in faces:
+        k = tuple((round(x, 12), round(y, 12)) for x, y in f)
+        if k not in seen:
+            seen.add(k)
+            unique.append(f)
+    return unique
+
+
+
+
+def segment_intersection_point(a: Tuple[float, float], b: Tuple[float, float], c: Tuple[float, float], d: Tuple[float, float]) -> Optional[Tuple[float, float]]:
+    ax, ay = a
+    bx, by = b
+    cx, cy = c
+    dx, dy = d
+    den = (bx - ax) * (dy - cy) - (by - ay) * (dx - cx)
+    if abs(den) < 1e-12:
+        return None
+    t = ((cx - ax) * (dy - cy) - (cy - ay) * (dx - cx)) / den
+    s = ((cx - ax) * (by - ay) - (cy - ay) * (bx - ax)) / den
+    if 1e-12 < t < 1.0 - 1e-12 and 1e-12 < s < 1.0 - 1e-12:
+        return (ax + t * (bx - ax), ay + t * (by - ay))
+    return None
+
+
+def triangulate_pentagram_2d(poly: Sequence[Tuple[float, float]]) -> Optional[List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]]:
+    if len(poly) != 5:
+        return None
+    # Require the canonical 5-point star crossing pattern.
+    inters: List[Tuple[float, float]] = []
+    for i in range(5):
+        a = poly[i]
+        b = poly[(i + 1) % 5]
+        c = poly[(i + 2) % 5]
+        d = poly[(i + 3) % 5]
+        inter = segment_intersection_point(a, b, c, d)
+        if inter is None:
+            return None
+        inters.append(inter)
+    # Outer tip triangles.
+    tris = []
+    for i in range(5):
+        tris.append((poly[i], inters[i], inters[(i - 1) % 5]))
+    # Central pentagon.
+    center = (
+        sum(x for x, _ in inters) / 5.0,
+        sum(y for _, y in inters) / 5.0,
+    )
+    inters_sorted = sorted(inters, key=lambda p: math.atan2(p[1] - center[1], p[0] - center[0]))
+    if signed_area(inters_sorted) < 0:
+        inters_sorted.reverse()
+    for i in range(1, 4):
+        tris.append((inters_sorted[0], inters_sorted[i], inters_sorted[i + 1]))
+    return tris
+
+def triangulate_polygon_3d(pts: Sequence[Vec]) -> List[Tuple[Vec, Vec, Vec]]:
+    if len(pts) < 3:
+        return []
+    if len(pts) == 3:
+        return [(pts[0], pts[1], pts[2])]
+
+    origin = pts[0]
+    n = polygon_normal(pts)
+    e1 = vnorm(vsub(pts[1], origin))
+    if vlen(e1) < 1e-12:
+        for p in pts[2:]:
+            e1 = vnorm(vsub(p, origin))
+            if vlen(e1) >= 1e-12:
+                break
+    e2 = vnorm(vcross(n, e1))
+    if vlen(e2) < 1e-12:
+        return []
+
+    def project(p: Vec) -> Tuple[float, float]:
+        d = vsub(p, origin)
+        return (vdot(d, e1), vdot(d, e2))
+
+    def lift(u: float, v: float) -> Vec:
+        return (
+            origin[0] + e1[0] * u + e2[0] * v,
+            origin[1] + e1[1] * u + e2[1] * v,
+            origin[2] + e1[2] * u + e2[2] * v,
+        )
+
+    poly2 = [project(p) for p in pts]
+
+    if polygon_has_self_intersection(poly2):
+        pentagram_tris = triangulate_pentagram_2d(poly2)
+        if pentagram_tris is not None:
+            return [(lift(a[0], a[1]), lift(b[0], b[1]), lift(c[0], c[1])) for (a, b, c) in pentagram_tris]
+        regions2 = decompose_self_intersecting_polygon_2d(poly2)
+        tris3: List[Tuple[Vec, Vec, Vec]] = []
+        for reg in regions2:
+            tris_idx = ear_clip(reg)
+            if not tris_idx:
+                tris_idx = [(0, i, i + 1) for i in range(1, len(reg) - 1)]
+            verts3 = [lift(u, v) for (u, v) in reg]
+            for i, j, k in tris_idx:
+                tris3.append((verts3[i], verts3[j], verts3[k]))
+        return tris3
+
+    tris_idx = ear_clip(poly2)
+    if not tris_idx:
+        tris_idx = [(0, i, i + 1) for i in range(1, len(pts) - 1)]
+    return [(pts[i], pts[j], pts[k]) for (i, j, k) in tris_idx]
 
 def triangle_normal(a: Vec, b: Vec, c: Vec) -> Vec:
     return vnorm(vcross(vsub(b, a), vsub(c, a)))
@@ -1113,24 +1082,18 @@ def write_ascii_stl(path: Path, faces: Sequence[Face], solid_name: str) -> None:
         f.write(f'endsolid {solid_name}\n')
 
 
-# -----------------------------
-# Front-end
-# -----------------------------
-
 def convert_pov_to_stl(src: Path, dst: Path, clock: float = 0.0) -> Tuple[int, int]:
     text = src.read_text(encoding='utf-8')
     ast = Parser(text).parse()
     interp = Interpreter(ast, clock=clock)
     faces = interp.run()
-    # discard degenerate triangles
     good: List[Face] = []
     deg = 0
     for face in faces:
         if len(face.verts) != 3:
             continue
         a, b, c = face.verts
-        n = vcross(vsub(b, a), vsub(c, a))
-        if vlen(n) < 1e-12:
+        if vlen(vcross(vsub(b, a), vsub(c, a))) < 1e-12:
             deg += 1
             continue
         good.append(face)
@@ -1140,11 +1103,10 @@ def convert_pov_to_stl(src: Path, dst: Path, clock: float = 0.0) -> Tuple[int, i
 
 def main() -> None:
     ap = argparse.ArgumentParser(description='Extract POV-Ray triangle/polygon faces and write ASCII STL.')
-    ap.add_argument('input', type=Path, help='Input .pov file')
-    ap.add_argument('-o', '--output', type=Path, help='Output .stl file; defaults to input stem + .stl')
-    ap.add_argument('--clock', type=float, default=0.0, help='POV-Ray clock value to use during evaluation (default: 0.0)')
+    ap.add_argument('input', type=Path)
+    ap.add_argument('-o', '--output', type=Path)
+    ap.add_argument('--clock', type=float, default=0.0)
     args = ap.parse_args()
-
     out = args.output if args.output else args.input.with_suffix('.stl')
     ntri, ndegen = convert_pov_to_stl(args.input, out, clock=args.clock)
     print(f'Wrote {out} with {ntri} triangles ({ndegen} degenerate discarded).')
