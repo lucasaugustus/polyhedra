@@ -49,10 +49,8 @@ tetrahedron(  <-c2,-c2, c2>  ,  <  0,-c0,-c1>  ,  <-c0, c1,  0>  ,  < c1,  0, c0
 tetrahedron(  <-c1,  0,-c0>  ,  < c2,-c2,-c2>  ,  <  0,-c0, c1>  ,  < c0, c1,  0>  )
 tetrahedron(  < c2,-c2, c2>  ,  <-c2,-c2,-c2>  ,  <-c2, c2, c2>  ,  < c2, c2,-c2>  )
 
-#local a=0;
-#while(a<11.0001)
+#for (a, 0, 11)
   light_source { <4*sin(a*pi*2/11), 5*cos(a*pi*6/11), -4*cos(a*pi*2/11)> colour (1+<sin(a*pi*2/11),sin(a*pi*2/11+pi*2/3),sin(a*pi*2/11+pi*4/3)>)*2/11 }
-  #local a=a+1;
 #end
 
 background { color <1,1,1> }
