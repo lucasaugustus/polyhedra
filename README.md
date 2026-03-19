@@ -49,7 +49,6 @@ To override the built-in angles, use the `angles=` option.
 * https://en.wikipedia.org/wiki/Truncated_hexagonal_trapezohedron
 * https://en.wikipedia.org/wiki/Boerdijk%E2%80%93Coxeter_helix
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
-* https://en.wikipedia.org/wiki/Truncated_triakis_tetrahedron
 * https://en.wikipedia.org/wiki/Prismatic_uniform_polyhedron
 * https://en.wikipedia.org/wiki/Cs%C3%A1sz%C3%A1r_polyhedron
 * https://en.wikipedia.org/wiki/Cubitruncated_cuboctahedron
