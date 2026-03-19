@@ -48,7 +48,6 @@ To override the built-in angles, use the `angles=` option.
 * Figure out how to prevent animations from zooming in and out.
 * https://en.wikipedia.org/wiki/Truncated_hexagonal_trapezohedron
 * https://en.wikipedia.org/wiki/Boerdijk%E2%80%93Coxeter_helix
-* https://en.wikipedia.org/wiki/Gyroelongated_square_bipyramid
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
 * https://en.wikipedia.org/wiki/Truncated_triakis_tetrahedron
 * https://en.wikipedia.org/wiki/Prismatic_uniform_polyhedron
