@@ -229,7 +229,7 @@ for (name, code, angles, file) in data_reduced:
             srcfile.write(code + '#declare rotation=seed(%d);\n' % rotation)
             srcfile.write('#declare notwireframe=1;\n')
             srcfile.write('#declare withreflection=0;\n')
-            srcfile.write('#declare flashiness=1;\n')
+            srcfile.write('#ifndef (flashiness)\n  #declare flashiness=1;\n#end\n')
             srcfile.write(tail.read())
         if 'png' in filetypes:
             run(['povray',
@@ -241,6 +241,7 @@ for (name, code, angles, file) in data_reduced:
                  '+I' + srcfilename, '+O' + fileprefix + '_.png',
                  '+w' + resolution, '+h' + resolution,
                  '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
+                 'Declare=flashiness=0.25',
                  '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
             if which('ffmpeg') is None:
                 print('FFmpeg was not available, so the animation was left as a bunch of individual frames.')
