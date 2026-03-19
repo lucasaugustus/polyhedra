@@ -93,7 +93,6 @@ To override the built-in angles, use the `angles=` option.
 * https://en.wikipedia.org/wiki/Tetradecahedron
 * https://en.wikipedia.org/wiki/Holyhedron
 * Ensure that this works across platforms.
-* When animating, suppress flashiness.
 * Make SVGs.
 
 # Credits
