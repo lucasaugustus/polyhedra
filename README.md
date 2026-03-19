@@ -41,6 +41,24 @@ When animating, the default behavior is to delete all the frames after compiling
 
 To override the built-in angles, use the `angles=` option.
 
+# Included solids
+
+* All Platonic solids
+* All Archimedian solids
+* All Catalan solids
+* All Johnson solids
+* All Kepler-Poinsot solids
+* The *n*-biprisms for *n* = 3, ..., 10
+* The *n*-antiprisms for *n* = 2, ..., 10 and 17
+* The *n*-bipyramids for *n* = 3, ..., 10
+* The *n*-trapezohedra for *n* = 2, ..., 10
+* The compound of five tetrahedra
+* [This toroidal complex of eight octahedra](https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif)
+* The Schoenhardt polyhedron
+* The truncated triakis tetrahedron
+* The triakis truncated tetrahedron
+* The Herschel enneahedron
+
 # TODO
 
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
