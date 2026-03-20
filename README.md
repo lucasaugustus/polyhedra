@@ -60,6 +60,9 @@ A number of files will be created and deleted in the relevant subdirectories of 
 * The truncated triakis tetrahedron
 * The triakis truncated tetrahedron
 * The Herschel enneahedron
+* The stellated octahedron
+* The Csaszar polyhedron
+* The rhombic icosahedron
 
 # TODO
 
