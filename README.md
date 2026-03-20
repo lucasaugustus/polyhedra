@@ -90,9 +90,7 @@ A number of files will be created and deleted in the relevant subdirectories of 
 * https://en.wikipedia.org/wiki/Rhombic_icosahedron
 * https://en.wikipedia.org/wiki/Regular_polyhedron
 * https://en.wikipedia.org/wiki/Hill_tetrahedron
-* https://en.wikipedia.org/wiki/Polytetrahedron
 * https://en.wikipedia.org/wiki/Tetradecahedron
-* https://en.wikipedia.org/wiki/Holyhedron
 * Ensure that this works across platforms.
 * Make SVGs.
 
