@@ -180,6 +180,7 @@ atad = [
 ['great           dodecahedron' , 'great_dod.pov'          , (11404,)],
 ['great stellated dodecahedron' , 'great_stel_dod.pov'     , (7409,)],
 ['small stellated dodecahedron' , 'small_stel_dod.pov'     , (11404,)],
+[      'stellated   octahedron' , 'stel_octa.pov'          , (1,2,4,11,17)],
 ['toroidal octahedron chain'    , 'toroidal_octachain.pov' , (1,)],
 ['schoenhardt'                  , 'schoenhardt.pov'        , (0,1,6,7,13)],
 ['truncated triakis tetrahedron', 'trunc_triakis_tet.pov'  , (0,)],
