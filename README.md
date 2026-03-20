@@ -14,10 +14,10 @@ In the Python file, there is are two lists (`data` and `atad`) of lists.
 # Usage:
 
 ```bash
-./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=PNG,MP4,STL] [frames=120] [keepframes=yes] [angles=0[,1[,2[,3...]]]]
+./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=png,mp4,stl,pov] [frames=120] [keepframes=yes] [angles=0[,1[,2[,3...]]]]
 ```
 
-When run with no arguments, this will render all polyhedra at all orientations.  This creates a folder `images/`, containing subfolders such as `images/augmented_sphenocorona/`; that is, the names of the subfolders are the English names of the polyhedra, as recorded in the `data` and `atad` lists from the Python file.  Within each subfolder, there will be files with names of the form `11.pov` and `11.png`; that is, for every orientation seed listed in the Python file for a given polyhedron, its subfolder will contain a POV-Ray source file and the resulting PNG file, and their names will be the orientation seeds, with the appropriate filename extensions.
+When run with no arguments, this will render all polyhedra at all recorded orientations.  This creates a folder `images/`, containing subfolders such as `images/augmented_sphenocorona/`; that is, the names of the subfolders are the English names of the polyhedra, as recorded in the `data` and `atad` lists from the Python file.  Within each subfolder, there will be files with names of the form `11.png`; that is, for every orientation seed listed in the Python file for a given polyhedron, its subfolder will contain a PNG file, and their names will be their orientation seeds.
 
 To render a specific set of polyhedra, use the `target=` argument.  For example,
 ```bash
@@ -25,13 +25,13 @@ To render a specific set of polyhedra, use the `target=` argument.  For example,
 ```
 renders the cube, augmented sphenocorona, and great dodecahedron using all orientations recorded in the `data` and `atad` lists.  Extra spaces can be added between the quotation marks as long as the spaces do not split a word.  For example, 
 ```bash
-./render.py target="  cube ,        augmented       sphenocorona,great dodecahedron"
+./render.py target="  cube ,     augmented     sphenocorona,great dodecahedron"
 ```
 has the same effect as the previous command.
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
 
-The program will produce PNG, MP4, or STL files.  To specify which, use the `filetypes=` argument.  It is not case-sensitive.  For example, to produce only PNGs and STLs, one could use
+The program will produce PNG, MP4, STL, or POV files.  To specify which, use the `filetypes=` argument.  It is not case-sensitive.  For example, to produce only PNGs and STLs, one could use
 ```bash
 ./render.py filetypes=PnG,stL
 ```
@@ -40,6 +40,8 @@ If making MP4s, they will be 360° rotations of the solids.  This works by gener
 When animating, the default behavior is to delete all the frames after compiling them into the MP4.  If FFmpeg is not available, or if the `keepframes=yes` argument is used, then the frames will not be deleted.
 
 To override the built-in angles, use the `angles=` option.
+
+A number of files will be created and deleted in the relevant subdirectories of `images/`.  Any pre-existing files with conflicting filenames will be overwritten.
 
 # Included solids
 
