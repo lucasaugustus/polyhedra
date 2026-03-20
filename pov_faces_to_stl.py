@@ -171,11 +171,11 @@ class Parser:
         tok = self.ts.peek()
         if tok in ('#declare', '#local'):
             self.ts.pop()
-            name = self.ts.pop()
+            target = self.parse_lvalue()
             self.ts.pop('=')
             expr = self.parse_expr()
             self.ts.match(';')
-            return Node('assign', (name, expr))
+            return Node('assign', (target, expr))
         if tok == '#macro':
             return self.parse_macro()
         if tok == '#for':
@@ -293,6 +293,16 @@ class Parser:
             body.append(self.parse_stmt())
         self.ts.pop('}')
         return Node('block', (name, body))
+
+
+    def parse_lvalue(self) -> Any:
+        name = self.ts.pop()
+        idxs: List[Expr] = []
+        while self.ts.peek() == '[':
+            self.ts.pop('[')
+            idxs.append(self.parse_expr())
+            self.ts.pop(']')
+        return (name, idxs)
 
     def parse_object_or_block(self) -> Node:
         name = self.ts.pop()
@@ -547,6 +557,8 @@ class Interpreter:
                 return vdot(args[0], args[1])
             if name == 'vcross':
                 return vcross(args[0], args[1])
+            if name == 'vlength':
+                return vlen(args[0])
             if name == 'rand':
                 seed = float(args[0]) if not isinstance(args[0], tuple) else sum(args[0])
                 x = math.sin(seed * 12.9898 + 78.233) * 43758.5453
@@ -620,8 +632,8 @@ class Interpreter:
     def exec_node(self, node: Node, env: Env, current_mat: Mat) -> None:
         kind = node.kind
         if kind == 'assign':
-            name, expr = node.data
-            env.set(name, self.eval_expr(expr, env))
+            target, expr = node.data
+            self.assign_target(target, self.eval_expr(expr, env), env)
             return
         if kind == 'macro':
             name, params, body = node.data
@@ -636,28 +648,26 @@ class Interpreter:
             start = float(self.eval_expr(start_e, env))
             end = float(self.eval_expr(end_e, env))
             step = float(self.eval_expr(step_e, env))
-            child = Env(env)
             i = start
             eps = 1e-9
             cmp = (lambda a, b: a <= b + eps) if step >= 0 else (lambda a, b: a >= b - eps)
             while cmp(i, end):
-                child.set(var, i)
-                self.exec_nodes(body, child, current_mat)
+                env.set(var, i)
+                self.exec_nodes(body, env, current_mat)
                 i += step
             return
         if kind == 'while':
             cond, body = node.data
-            child = Env(env)
             guard = 0
-            while self.eval_expr(cond, child):
-                self.exec_nodes(body, child, current_mat)
+            while self.eval_expr(cond, env):
+                self.exec_nodes(body, env, current_mat)
                 guard += 1
                 if guard > 100000:
                     raise RuntimeError('while loop guard triggered')
             return
         if kind == 'if':
             cond, then_body, else_body = node.data
-            self.exec_nodes(then_body if self.eval_expr(cond, env) else else_body, Env(env), current_mat)
+            self.exec_nodes(then_body if self.eval_expr(cond, env) else else_body, env, current_mat)
             return
         if kind == 'call':
             name, args = node.data
@@ -724,6 +734,19 @@ class Interpreter:
             m = matmul(self.transform_matrix(op, self.eval_expr(expr, env)), m)
         for node in deferred_faces:
             self.exec_node(node, env, m)
+
+
+    def assign_target(self, target: Any, value: Any, env: Env) -> None:
+        name, idx_exprs = target
+        if not idx_exprs:
+            env.set(name, value)
+            return
+        arr = env.get(name)
+        cur = arr
+        idxs = [int(round(float(self.eval_expr(e, env)))) for e in idx_exprs]
+        for idx in idxs[:-1]:
+            cur = cur[idx]
+        cur[idxs[-1]] = value
 
     def transform_matrix(self, op: str, value: Any) -> Mat:
         if op == 'scale':
