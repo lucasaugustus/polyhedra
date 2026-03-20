@@ -19,36 +19,29 @@
   <  0,  0,  c>,
 };
 
-#macro autobalance()   // moves the centre of gravity (cog) of the vertices to the origin
-    #local cog = <0,0,0>;
-    #local N = dimension_size(Points,1);
-    #for (i, 0, N-1)
-        #local cog = cog + Points[i];
-    #end
-    #local cog = cog / N;
-    #local i=0;
-    #for (i, 0, N-1)
-        #declare Points[i] = Points[i] - cog;
-    #end
+// Moves the centre of gravity of the vertices to the origin
+#local cog = <0,0,0>;
+#local N = dimension_size(Points,1);
+#for (i, 0, N-1)
+  #local cog = cog + Points[i];
+#end
+#local cog = cog / N;
+#local i=0;
+#for (i, 0, N-1)
+  #declare Points[i] = Points[i] - cog;
 #end
 
-autobalance()
-
-#macro scale_to_unit_sphere()
-    #local b=0;
-    #local N = dimension_size(Points,1);
-    #for (a, 0, N-1)
-        #local c = vlength(Points[a]);
-        #if (c>b) #local b = c; #end
-    #end
-    #for (a, 0, N-1)
-        #declare Points[a] = Points[a]/b;
-    #end
+// Scale to the unit sphere
+#local b=0;
+#local N = dimension_size(Points,1);
+#for (a, 0, N-1)
+  #local c = vlength(Points[a]);
+  #if (c>b) #local b = c; #end
+#end
+#for (a, 0, N-1)
+  #declare Points[a] = Points[a]/b;
+#end
     
-#end
-
-scale_to_unit_sphere()
-
 #declare Edges = array[21][2] {
   {0, 1},
   {0, 2},
@@ -72,10 +65,6 @@ scale_to_unit_sphere()
   {4, 6},
   {5, 6},
 };
-
-// Due to the limited precision of the points above, the vertices of these faces are not close enough to coplanar for
-// POV-Ray to be willing to draw the faces as single polygons, so we will instead triangulate them.
-// The faces are all convex, so fan-triangulation is good enough.
 
 #declare Faces = array[14] {
   array[3] {0, 1, 2},
@@ -106,6 +95,8 @@ union {
 }
 
 union {
+  // In case limited precision causes points to be sufficiently noncoplanar that polygon{} fails,
+  // we fan-triangulate each polygon and render those triangles.
   #for (I, 0, dimension_size(Faces,1) - 1)
     #for (J, 1, dimension_size(Faces[I],1) - 2)
       triangle {Points[Faces[I][0]], Points[Faces[I][J]], Points[Faces[I][J+1]]}
