@@ -12,15 +12,15 @@ from sys import argv
 starttime = time()
 
 data = [
-[           'tetrahedron'                      , 'tetrahedron()'                           , (1889,)],      # Platonic
 [                  'cube'                      , 'hexahedron()'                            , (7122,)],      # Platonic
 [            'octahedron'                      , 'octahedron()'                            , (4193,)],      # Platonic
-[          'dodecahedron'                      , 'dodecahedron()'                          , (4412,)],      # Platonic
+[           'tetrahedron'                      , 'tetrahedron()'                           , (1889,)],      # Platonic
 [           'icosahedron'                      , 'icosahedron()'                           , (7719,)],      # Platonic
+[          'dodecahedron'                      , 'dodecahedron()'                          , (4412,)],      # Platonic
 [         'cuboctahedron'                      , 'cuboctahedron()'                         , (1941,)],      # Archimedian
 [     'icosidodecahedron'                      , 'icosidodecahedron()'                     , (2241,)],      # Archimedian
-['rhombicosidodecahedron'                      , 'rhombicosidodecahedron()'                , (8266,)],      # Archimedian
 [   'rhombicuboctahedron'                      , 'rhombicuboctahedron()'                   , (6124,)],      # Archimedian
+['rhombicosidodecahedron'                      , 'rhombicosidodecahedron()'                , (8266,)],      # Archimedian
 ['snub cube'                                   , 'snubhexahedron(-1)'                      , (7152,)],      # Archimedian
 ['snub dodecahedron'                           , 'snubdodecahedron(1)'                     , (8154,)],      # Archimedian
 ['truncated              cube'                 , 'truncatedhexahedron(0)'                  , (1345,)],      # Archimedian
@@ -257,6 +257,7 @@ for (name, code, angles, file) in data_reduced:
                 if not keepframes:
                     for i in range(1, int(frames) + 1):
                         remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
+        if 'pov' not in filetypes: remove(srcfilename)
         sleep(0.1)
     if 'stl' in filetypes:
         if file == 'tail.pov':
@@ -270,7 +271,6 @@ for (name, code, angles, file) in data_reduced:
                  'povcode/' + file,
                  '-o', 'images/' + solidname + '/' + solidname + '.stl'
                  ])
-        #remove(srcfilename)
 
 print('\nDone.')
 print('Wall time: %d seconds.' % int(time() - starttime))
