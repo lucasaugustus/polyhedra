@@ -183,7 +183,7 @@ atad = [
 ['toroidal octahedron chain'    , 'toroidal_octachain.pov', (1,)],
 ['schoenhardt'                  , 'schoenhardt.pov'       , (0,1,6,7,13)],
 ['truncated triakis tetrahedron', 'trunc_triakis_tet.pov' , (0,)],
-['csaszar'                      , 'csaszar.pov'           , (0,)],
+['csaszar'                      , 'csaszar.pov'           , (13,)],
 ]
 
 for i in range(len(data)):
