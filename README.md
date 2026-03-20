@@ -82,7 +82,6 @@ A number of files will be created and deleted in the relevant subdirectories of 
 * https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
 * https://en.wikipedia.org/wiki/Tetrated_dodecahedron
 * https://en.wikipedia.org/wiki/Tridyakis_icosahedron
-* https://en.wikipedia.org/wiki/Stellated_octahedron
 * https://en.wikipedia.org/wiki/Toroidal_polyhedron
 * https://en.wikipedia.org/wiki/Waterman_polyhedron
 * https://en.wikipedia.org/wiki/Szilassi_polyhedron
@@ -101,4 +100,4 @@ A number of files will be created and deleted in the relevant subdirectories of 
 * My modifications to the above are fairly trivial.  The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is `render.py`, which automates everything.
 * The toroidal octahedron chain was put on the Wikimedia Commons in 2007 by Quilbert (https://commons.wikimedia.org/wiki/User:Quilbert).  I could not find the code used to generate that image, so the re-creation of it here is largely my own work.
 * The code for generating the STL files is found in `pov_to_stl.py` and `pov_faces_to_stl.py`. I vibe-coded them through ChatGPT 5.4, because I could not find any existing programs that would do that in an automatable manner, and because writing them myself seemed beyond my skill level.  I have personally vetted them on all solids currently in this project, and will ensure that they continue to operate correctly on any further solids that get added.
-* The files `csaszar.pov`, `rhombic_icosahedron.pov`, `schoenhardt.pov`, and `trunc_triakis_tet.pov` are my own work.
+* The files `csaszar.pov`, `rhombic_icosahedron.pov`, `schoenhardt.pov`, `stel_octa.pov`, and `trunc_triakis_tet.pov` are my own work.
