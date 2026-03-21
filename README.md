@@ -41,7 +41,7 @@ When animating, the default behavior is to delete all the frames after compiling
 
 To override the built-in angles, use the `angles=` option.
 
-A number of files will be created and deleted in the relevant subdirectories of `images/`.  Any pre-existing files with conflicting filenames will be overwritten.
+A number of files will be created in the relevant subdirectories of `images/`.  Any pre-existing files with conflicting filenames will be overwritten.  Some of the created files will be deleted, depending on the `filetypes=` argument.
 
 # Included solids
 
@@ -50,10 +50,10 @@ A number of files will be created and deleted in the relevant subdirectories of 
 * All Catalan solids
 * All Johnson solids
 * All Kepler-Poinsot solids
-* The *n*-biprisms for *n* = 3, ..., 10
-* The *n*-antiprisms for *n* = 2, ..., 10 and 17
-* The *n*-bipyramids for *n* = 3, ..., 10
-* The *n*-trapezohedra for *n* = 2, ..., 10
+* The *n*-biprisms for *n* = 3&ndash;10
+* The *n*-antiprisms for *n* = 2&ndash;10 and 17
+* The *n*-bipyramids for *n* = 3&ndash;10
+* The *n*-trapezohedra for *n* = 2&ndash;10
 * The compound of five tetrahedra
 * [This toroidal complex of eight octahedra](https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif)
 * The Schoenhardt polyhedron
@@ -79,9 +79,10 @@ A number of files will be created and deleted in the relevant subdirectories of 
 * https://en.wikipedia.org/wiki/Rhombic_enneacontahedron
 * https://en.wikipedia.org/wiki/Near-miss_Johnson_solid
 * https://en.wikipedia.org/wiki/Uniform_star_polyhedron
+* https://en.wikipedia.org/wiki/Compound_of_three_cubes
 * https://en.wikipedia.org/wiki/Elongated_dodecahedron
 * https://en.wikipedia.org/wiki/Compound_of_five_cubes
-* https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
+* https://en.wikipedia.org/wiki/Compound_of_four_cubes
 * https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
 * https://en.wikipedia.org/wiki/Tetrated_dodecahedron
 * https://en.wikipedia.org/wiki/Tridyakis_icosahedron
