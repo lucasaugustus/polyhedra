@@ -14,7 +14,8 @@ In the Python file, there is are two lists (`data` and `atad`) of lists.
 # Usage:
 
 ```bash
-./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=png,mp4,stl,pov] [frames=120] [keepframes=yes] [angles=0[,1[,2[,3...]]]]
+./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=png,mp4,stl,pov]
+            [frames=120] [keepframes=yes] [angles=0[,1[,2[,3...]]]]
 ```
 
 When run with no arguments, this will render all polyhedra at all recorded orientations.  This creates a folder `images/`, containing subfolders such as `images/augmented_sphenocorona/`; that is, the names of the subfolders are the English names of the polyhedra, as recorded in the `data` and `atad` lists from the Python file.  Within each subfolder, there will be files with names of the form `11.png`; that is, for every orientation seed listed in the Python file for a given polyhedron, its subfolder will contain a PNG file, and their names will be their orientation seeds.
