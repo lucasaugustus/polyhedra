@@ -67,6 +67,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 
 # TODO
 
+* Implement aliases.  For example, the cube is also the hexahedron, the compound of two tetrahedra is also the stellated octahedron is also the stella octangula, etc.
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
 * Figure out how to prevent animations from zooming in and out.
 * https://en.wikipedia.org/wiki/Truncated_hexagonal_trapezohedron
