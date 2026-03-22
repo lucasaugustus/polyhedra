@@ -72,7 +72,6 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Boerdijk%E2%80%93Coxeter_helix
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
 * https://en.wikipedia.org/wiki/Prismatic_uniform_polyhedron
-* https://en.wikipedia.org/wiki/Cs%C3%A1sz%C3%A1r_polyhedron
 * https://en.wikipedia.org/wiki/Cubitruncated_cuboctahedron
 * https://en.wikipedia.org/wiki/Compound_of_ten_tetrahedra
 * https://en.wikipedia.org/wiki/Compound_of_five_octahedra
