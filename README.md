@@ -1,6 +1,6 @@
 # polyhedra
 
-This repository contains Python and POV-Ray code to render "[the green set](https://commons.wikimedia.org/wiki/Category:Set_of_polyhedra;_green)" of polyhedra from the Wikimedia Commons.
+This repository contains Python and POV-Ray code to render "[the green set](https://commons.wikimedia.org/wiki/Category:Set_of_polyhedra;_green)" of polyhedra from the Wikimedia Commons, plus some other solids.  It also allows the creation of STL files for 3D modelling and printing, and the creation of animations of these solids rotating about a vertical axis.
 
 In the Python file, there is are two lists (`data` and `atad`) of lists.
 * The sublists in the `data` list have 3 elements each:
