@@ -93,6 +93,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Regular_polyhedron
 * https://en.wikipedia.org/wiki/Hill_tetrahedron
 * https://en.wikipedia.org/wiki/Tetradecahedron
+* Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
 * Handle chirality when relevant.
 * Make SVGs.
