@@ -67,7 +67,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 
 # TODO
 
-* Implement aliases.  For example, the cube is also the hexahedron, the compound of two tetrahedra is also the stellated octahedron is also the stella octangula, etc.
+* Implement aliases.  For example, the cube is also the hexahedron, and the compound of two tetrahedra is also the stellated octahedron is also the stella octangula.
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
 * Figure out how to prevent animations from zooming in and out.
 * https://polytope.miraheze.org/wiki/File:Trefoil_knot_toroid_36P6.png
