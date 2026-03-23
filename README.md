@@ -70,6 +70,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * Implement aliases.  For example, the cube is also the hexahedron, the compound of two tetrahedra is also the stellated octahedron is also the stella octangula, etc.
 * Redo the angle stuff to replace the seeded PRNG with the actual angles being used.
 * Figure out how to prevent animations from zooming in and out.
+* https://polytope.miraheze.org/wiki/File:Trefoil_knot_toroid_36P6.png
 * https://en.wikipedia.org/wiki/Truncated_hexagonal_trapezohedron
 * https://en.wikipedia.org/wiki/Boerdijk%E2%80%93Coxeter_helix
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
@@ -87,6 +88,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
 * https://en.wikipedia.org/wiki/Tetrated_dodecahedron
 * https://en.wikipedia.org/wiki/Tridyakis_icosahedron
+* https://polytope.miraheze.org/wiki/File:P_star.png
 * https://en.wikipedia.org/wiki/Toroidal_polyhedron
 * https://en.wikipedia.org/wiki/Waterman_polyhedron
 * https://en.wikipedia.org/wiki/Szilassi_polyhedron
