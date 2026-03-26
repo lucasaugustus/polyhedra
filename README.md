@@ -14,7 +14,7 @@ In the Python file `render.py`, there are two lists (`data` and `atad`) of lists
 # Usage:
 
 ```bash
-./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=png,mp4,stl,pov]
+./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=mp4,png,pov,stl,svg]
             [frames=120] [keepframes=yes] [angles=0[,1[,2[,3...]]]]
 ```
 
@@ -32,7 +32,7 @@ has the same effect as the previous command.
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
 
-The program will produce PNG, MP4, STL, or POV files.  To specify which, use the `filetypes=` argument.  It is not case-sensitive.  For example, to produce only PNGs and STLs, one could use
+The program will produce MP4, PNG, POV, STL, or SVG files (at the moment, only solids in `data` can be rendered as SVGs).  To specify which, use the `filetypes=` argument.  It is not case-sensitive.  For example, to produce only PNGs and STLs, one could use
 ```bash
 ./render.py filetypes=PnG,stL
 ```
@@ -100,7 +100,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
 * Handle chirality when relevant.
-* Make SVGs.
+* Make SVGs for non-`tail.pov` solids.
 
 # Credits
 
@@ -109,5 +109,5 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The POV-Ray code for the Kepler-Poinsot solids and compound of five tetrahedra is derived from https://commons.wikimedia.org/wiki/File:GreatStellatedDodecahedron.jpg.  
 * My modifications to the above are fairly trivial.  The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is `render.py`, which automates everything.
 * The toroidal octahedron chain was put on the Wikimedia Commons in 2007 by Quilbert (https://commons.wikimedia.org/wiki/User:Quilbert).  I could not find the code used to generate that image, so the re-creation of it here is largely my own work.
-* The code for generating the STL files is found in `pov_to_stl.py` and `pov_faces_to_stl.py`. I vibe-coded them through ChatGPT 5.4, because I could not find any existing programs that would do that in an automatable manner, and because writing them myself seemed beyond my skill level.  I have personally vetted them on all solids currently in this project, and will ensure that they continue to operate correctly on any further solids that get added.
+* The code for generating the STL and SVG files is found in `pov_to_stl.py`, `pov_faces_to_stl.py`, and `pov_to_svg.py`. I vibe-coded them through ChatGPT 5.4, because I could not find any existing programs that would do that in an automatable manner, and because writing them myself seemed beyond my skill level.  I have personally vetted them on all solids currently in this project, and will ensure that they continue to operate correctly on any further solids that get added.
 * The files `csaszar.pov`, `rhombic_icosahedron.pov`, `schoenhardt.pov`, `stel_octa.pov`, and `trunc_triakis_tet.pov` are my own work.
