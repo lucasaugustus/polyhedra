@@ -203,6 +203,7 @@ frames = '120'
 keepframes = False
 filetypes = ['png']
 angle_override = []
+threads = ''
 
 for arg in argv:
     if '=' in arg:
@@ -213,6 +214,7 @@ for arg in argv:
         if arg1 == 'filetypes': filetypes = [x.lower() for x in arg2.split(',')]
         if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
         if arg1 == 'angles': angle_override = list(map(int, arg2.split(',')))
+        if arg1 == 'threads': threads = arg2
 
 data_reduced = [x for x in data if x[0] in solids]
 
@@ -234,46 +236,78 @@ for (name, code, angles, file) in data_reduced:
             srcfile.write('#declare withreflection=0;\n')
             srcfile.write('#ifndef (flashiness)\n  #declare flashiness=1;\n#end\n')
             srcfile.write(tail.read())
+        
         if 'png' in filetypes:
-            run(['povray',
-                 '+I' + srcfilename, '+O' + imgfilename,
-                 '+w' + resolution, '+h' + resolution,
-                 '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
+            command = ['povray',
+                       '+I' + srcfilename, '+O' + imgfilename,
+                       '+w' + resolution, '+h' + resolution,
+                       '+A', '-D'       # +A turns on antialiasing; -D suppresses the preview window.
+                       ]
+            if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
+            run(command, check=True)
+        
+        if 'svg' in filetypes:
+            if file == 'tail.pov':
+                command = ['python3', 'pov_to_svg.py',
+                           'povcode/tail.pov',
+                           fileprefix + '.svg',
+                           '--shape', code.split('\n')[1],
+                           '--seed', str(rotation),
+                           '--tint-strength', '1.5',
+                           '--shade-strength', '1.8',
+                           '--brightness', '1.5',
+                           '--face-alpha-scale', '1.3',
+                           '--vertex-scale', '0.0',
+                           '--edge-scale', '0.6',
+                           ]
+                print("\n\n\n")
+                print(command)
+                run(command, check=True)
+            else:
+                raise NotImplementedError   # TODO: SVGs for non-tail.pov solids
+        
         if 'mp4' in filetypes:
-            run(['povray',
-                 '+I' + srcfilename, '+O' + fileprefix + '_.png',
-                 '+w' + resolution, '+h' + resolution,
-                 '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
-                 'Declare=flashiness=0.25',
-                 '+A', '-D'])     # +A turns on antialiasing; -D suppresses the preview window.
+            command = ['povray',
+                       '+I' + srcfilename, '+O' + fileprefix + '_.png',
+                       '+w' + resolution, '+h' + resolution,
+                       '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
+                       'Declare=flashiness=0.25',
+                       '+A', '-D'                 # +A turns on antialiasing; -D suppresses the preview window.
+                       ]
+            if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
+            run(command, check=True)
             if which('ffmpeg') is None:
                 print('FFmpeg was not available, so the animation was left as a bunch of individual frames.')
             else:
-                run(['ffmpeg',
-                     '-y',                                              # Overwrite
-                     '-framerate', '30',
-                     '-i', fileprefix + '_%%0%dd.png' % len(frames),    # Input filenames
-                     '-c:v', 'libx264',                                 # Codec
-                     '-crf', '10', '-preset', 'veryslow',               # Quality settings
-                     fileprefix + '.mp4'                                # Output filename
-                     ])
+                command = ['ffmpeg',
+                           '-y',                                              # Overwrite
+                           '-framerate', '30',
+                           '-i', fileprefix + '_%%0%dd.png' % len(frames),    # Input filenames
+                           '-c:v', 'libx264',                                 # Codec
+                           '-crf', '10', '-preset', 'veryslow',               # Quality settings
+                           fileprefix + '.mp4'                                # Output filename
+                           ]
+                run(command, check=True)
                 if not keepframes:
                     for i in range(1, int(frames) + 1):
                         remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
+        
         if 'pov' not in filetypes: remove(srcfilename)
-        sleep(0.1)
+        #sleep(0.1)
+    
     if 'stl' in filetypes:
         if file == 'tail.pov':
-            run(['python3', 'pov_to_stl.py',
-                 'povcode/tail.pov',
-                 '--call', code.split('\n')[1],
-                 '--output', 'images/' + solidname + '/' + solidname + '.stl'
-                 ])
+            command = ['python3', 'pov_to_stl.py',
+                       'povcode/tail.pov',
+                       '--call', code.split('\n')[1],
+                       '--output', 'images/' + solidname + '/' + solidname + '.stl'
+                       ]
         else:
-            run(['python3', 'pov_faces_to_stl.py',
-                 'povcode/' + file,
-                 '-o', 'images/' + solidname + '/' + solidname + '.stl'
-                 ])
+            command = ['python3', 'pov_faces_to_stl.py',
+                       'povcode/' + file,
+                       '-o', 'images/' + solidname + '/' + solidname + '.stl'
+                       ]
+        run(command, check=True)
 
 print('\nDone.')
 print('Wall time: %d seconds.' % int(time() - starttime))
