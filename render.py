@@ -17,19 +17,19 @@ data = [
 [           'tetrahedron'                      , 'tetrahedron()'                           , (1889,)],      # Platonic
 [           'icosahedron'                      , 'icosahedron()'                           , (7719,)],      # Platonic
 [          'dodecahedron'                      , 'dodecahedron()'                          , (4412,)],      # Platonic
-[         'cuboctahedron'                      , 'cuboctahedron()'                         , (1941,)],      # Archimedian
-[     'icosidodecahedron'                      , 'icosidodecahedron()'                     , (2241,)],      # Archimedian
-[   'rhombicuboctahedron'                      , 'rhombicuboctahedron()'                   , (6124,)],      # Archimedian
-['rhombicosidodecahedron'                      , 'rhombicosidodecahedron()'                , (8266,)],      # Archimedian
-['snub cube'                                   , 'snubhexahedron(-1)'                      , (7152,)],      # Archimedian
-['snub dodecahedron'                           , 'snubdodecahedron(1)'                     , (8154,)],      # Archimedian
-['truncated              cube'                 , 'truncatedhexahedron(0)'                  , (1345,)],      # Archimedian
-['truncated     cuboctahedron'                 , 'truncatedcuboctahedron()'                , (1156,)],      # Archimedian
-['truncated      dodecahedron'                 , 'truncateddodecahedron(0)'                , (9374,)],      # Archimedian
-['truncated       icosahedron'                 , 'truncatedicosahedron()'                  , (1666,)],      # Archimedian
-['truncated icosidodecahedron'                 , 'truncatedicosidodecahedron()'            , (1422,)],      # Archimedian
-['truncated        octahedron'                 , 'truncatedoctahedron()'                   , (7235,)],      # Archimedian
-['truncated       tetrahedron'                 , 'truncatedtetrahedron(0)'                 , (8717,)],      # Archimedian
+[         'cuboctahedron'                      , 'cuboctahedron()'                         , (1941,)],      # Archimedean
+[     'icosidodecahedron'                      , 'icosidodecahedron()'                     , (2241,)],      # Archimedean
+[   'rhombicuboctahedron'                      , 'rhombicuboctahedron()'                   , (6124,)],      # Archimedean
+['rhombicosidodecahedron'                      , 'rhombicosidodecahedron()'                , (8266,)],      # Archimedean
+['snub cube'                                   , 'snubhexahedron(-1)'                      , (7152,)],      # Archimedean
+['snub dodecahedron'                           , 'snubdodecahedron(1)'                     , (8154,)],      # Archimedean
+['truncated              cube'                 , 'truncatedhexahedron(0)'                  , (1345,)],      # Archimedean
+['truncated     cuboctahedron'                 , 'truncatedcuboctahedron()'                , (1156,)],      # Archimedean
+['truncated      dodecahedron'                 , 'truncateddodecahedron(0)'                , (9374,)],      # Archimedean
+['truncated       icosahedron'                 , 'truncatedicosahedron()'                  , (1666,)],      # Archimedean
+['truncated icosidodecahedron'                 , 'truncatedicosidodecahedron()'            , (1422,)],      # Archimedean
+['truncated        octahedron'                 , 'truncatedoctahedron()'                   , (7235,)],      # Archimedean
+['truncated       tetrahedron'                 , 'truncatedtetrahedron(0)'                 , (8717,)],      # Archimedean
 [    'rhombic    dodecahedron'                 , 'rhombicdodecahedron()'                   , (7154,)],      # Catalan
 [    'rhombic triacontahedron'                 , 'rhombictriacontahedron()'                , (1237,)],      # Catalan
 [  'triakis       tetrahedron'                 , 'triakistetrahedron()'                    , (7735,)],      # Catalan
