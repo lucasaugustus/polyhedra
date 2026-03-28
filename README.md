@@ -5,7 +5,7 @@ This repository contains Python and POV-Ray code to render "[the green set](http
 In the Python file `render.py`, there are two lists (`data` and `atad`) of lists.
 * The sublists in the `data` list have 3 elements each:
   * The 0<sup>th</sup> element is the English name of a polyhedron.
-  * The 1<sup>st</sup> element is a POV-Ray code snippet.  This snippet controls which parts of `tail.pov` get executed, and therefore which of the polyhedra described in that file get rendered.
+  * The 1<sup>st</sup> element is a POV-Ray code snippet.  This snippet controls which parts of `convex.pov` get executed, and therefore which of the polyhedra described in that file get rendered.
   * The 2<sup>nd</sup> element is a tuple of integers.  In the original POV-Ray code, the orientation of each polyhedron is determined by seeding a specific [PRNG](https://en.wikipedia.org/wiki/Pseudorandom_number_generator).  In the Python file, the 0<sup>th</sup> element of each of those tuples of integers is the orientation seed from the original POV-Ray code; the remaining integers are orientation seeds chosen by me.
 * The sublists in the `atad` list have 3 elements each:
   * The 0<sup>th</sup> and 2<sup>nd</sup> elements are as in the `data` list.
@@ -100,7 +100,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
 * Handle chirality when relevant.
-* Make SVGs for non-`tail.pov` solids.
+* Make SVGs for non-`convex.pov` solids.
 
 # Credits
 
