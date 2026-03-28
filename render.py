@@ -17,19 +17,19 @@ data = [
 [           'tetrahedron'                      , 'tetrahedron()'                           , (1889,)],      # Platonic
 [           'icosahedron'                      , 'icosahedron()'                           , (7719,)],      # Platonic
 [          'dodecahedron'                      , 'dodecahedron()'                          , (4412,)],      # Platonic
-[         'cuboctahedron'                      , 'cuboctahedron()'                         , (1941,)],      # Archimedean
-[     'icosidodecahedron'                      , 'icosidodecahedron()'                     , (2241,)],      # Archimedean
-[   'rhombicuboctahedron'                      , 'rhombicuboctahedron()'                   , (6124,)],      # Archimedean
-['rhombicosidodecahedron'                      , 'rhombicosidodecahedron()'                , (8266,)],      # Archimedean
-['snub cube'                                   , 'snubhexahedron(-1)'                      , (7152,)],      # Archimedean
-['snub dodecahedron'                           , 'snubdodecahedron(1)'                     , (8154,)],      # Archimedean
-['truncated              cube'                 , 'truncatedhexahedron(0)'                  , (1345,)],      # Archimedean
-['truncated     cuboctahedron'                 , 'truncatedcuboctahedron()'                , (1156,)],      # Archimedean
-['truncated      dodecahedron'                 , 'truncateddodecahedron(0)'                , (9374,)],      # Archimedean
-['truncated       icosahedron'                 , 'truncatedicosahedron()'                  , (1666,)],      # Archimedean
-['truncated icosidodecahedron'                 , 'truncatedicosidodecahedron()'            , (1422,)],      # Archimedean
-['truncated        octahedron'                 , 'truncatedoctahedron()'                   , (7235,)],      # Archimedean
-['truncated       tetrahedron'                 , 'truncatedtetrahedron(0)'                 , (8717,)],      # Archimedean
+[         'cuboctahedron'                      , 'cuboctahedron()'                         , (1941,)],      # Archimedian
+[     'icosidodecahedron'                      , 'icosidodecahedron()'                     , (2241,)],      # Archimedian
+[   'rhombicuboctahedron'                      , 'rhombicuboctahedron()'                   , (6124,)],      # Archimedian
+['rhombicosidodecahedron'                      , 'rhombicosidodecahedron()'                , (8266,)],      # Archimedian
+['snub cube'                                   , 'snubhexahedron(-1)'                      , (7152,)],      # Archimedian
+['snub dodecahedron'                           , 'snubdodecahedron(1)'                     , (8154,)],      # Archimedian
+['truncated              cube'                 , 'truncatedhexahedron(0)'                  , (1345,)],      # Archimedian
+['truncated     cuboctahedron'                 , 'truncatedcuboctahedron()'                , (1156,)],      # Archimedian
+['truncated      dodecahedron'                 , 'truncateddodecahedron(0)'                , (9374,)],      # Archimedian
+['truncated       icosahedron'                 , 'truncatedicosahedron()'                  , (1666,)],      # Archimedian
+['truncated icosidodecahedron'                 , 'truncatedicosidodecahedron()'            , (1422,)],      # Archimedian
+['truncated        octahedron'                 , 'truncatedoctahedron()'                   , (7235,)],      # Archimedian
+['truncated       tetrahedron'                 , 'truncatedtetrahedron(0)'                 , (8717,)],      # Archimedian
 [    'rhombic    dodecahedron'                 , 'rhombicdodecahedron()'                   , (7154,)],      # Catalan
 [    'rhombic triacontahedron'                 , 'rhombictriacontahedron()'                , (1237,)],      # Catalan
 [  'triakis       tetrahedron'                 , 'triakistetrahedron()'                    , (7735,)],      # Catalan
@@ -191,7 +191,7 @@ atad = [
 for i in range(len(data)):
     data[i][0] = ' '.join(data[i][0].split())   # Replace all runs of spaces with single spaces.
     data[i][1] = '#macro This_shape_will_be_drawn()\n' + data[i][1] + '\n#end\n'
-    data[i].append('tail.pov')
+    data[i].append('convex.pov')
 
 for (name, file, angles) in atad:
     name = ' '.join(name.split())               # Replace all runs of spaces with single spaces.
@@ -247,9 +247,9 @@ for (name, code, angles, file) in data_reduced:
             run(command, check=True)
         
         if 'svg' in filetypes:
-            if file == 'tail.pov':
+            if file == 'convex.pov':
                 command = ['python3', 'pov_to_svg.py',
-                           'povcode/tail.pov',
+                           'povcode/convex.pov',
                            fileprefix + '.svg',
                            '--shape', code.split('\n')[1],
                            '--seed', str(rotation),
@@ -311,9 +311,9 @@ for (name, code, angles, file) in data_reduced:
         #sleep(0.1)
     
     if 'stl' in filetypes:
-        if file == 'tail.pov':
+        if file == 'convex.pov':
             command = ['python3', 'pov_to_stl.py',
-                       'povcode/tail.pov',
+                       'povcode/convex.pov',
                        '--call', code.split('\n')[1],
                        '--output', 'images/' + solidname + '/' + solidname + '.stl'
                        ]
