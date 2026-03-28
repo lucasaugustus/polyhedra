@@ -1173,6 +1173,11 @@
   addplane(15,7,8)
 #end
 
+#macro trapezo_rhombic_dodecahedron()
+  triangular_orthobicupola()
+  dual()
+#end
+
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
 
 
