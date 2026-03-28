@@ -174,6 +174,7 @@ data = [
 ['triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,18,32)],
 ['trapezo-rhombic dodecahedron'                , 'trapezo_rhombic_dodecahedron()'          , (51,)],
 ['elongated dodecahedron'                      , 'elongated_dodecahedron()'                , (154,)],
+['rhombic icosahedron'                         , 'rhombic_icosahedron()'                   , (3,12,13,15)],
 ]
 
 atad = [
@@ -187,7 +188,6 @@ atad = [
 ['schoenhardt'                  , 'schoenhardt.pov'        , (0,1,6,7,13)],
 ['truncated triakis tetrahedron', 'trunc_triakis_tet.pov'  , (0,)],
 ['csaszar'                      , 'csaszar.pov'            , (13,)],
-['rhombic icosahedron'          , 'rhombic_icosahedron.pov', (3,12,13,14,15)],
 ]
 
 for i in range(len(data)):
