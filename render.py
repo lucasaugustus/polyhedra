@@ -172,6 +172,7 @@ data = [
 ['triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'          , (855,13,14,22,29)],        # J92
 ['herschel enneahedron'                        , 'herschel_enneahedron()'                  , (0,3,31,103,112)],
 ['triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'           , (190,8,10,18,32)],
+['trapezo-rhombic dodecahedron'                , 'trapezo_rhombic_dodecahedron()'          , (51,)],
 ]
 
 atad = [
