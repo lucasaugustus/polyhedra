@@ -1178,6 +1178,30 @@
   dual()
 #end
 
+#macro elongated_dodecahedron()
+  #local c = sqrt(3);
+  addpoint(< 1,  1, c+1>)
+  addpoint(< 1,  1,  -1>)
+  addpoint(< 1, -1, c+1>)
+  addpoint(< 1, -1,  -1>)
+  addpoint(<-1,  1, c+1>)
+  addpoint(<-1,  1,  -1>)
+  addpoint(<-1, -1, c+1>)
+  addpoint(<-1, -1,  -1>)
+  addpoint(< 2,  0,   0>)
+  addpoint(<-2,  0,   0>)
+  addpoint(< 0,  2,   0>)
+  addpoint(< 0, -2,   0>)
+  addpoint(< 0,  0, c+2>)
+  addpoint(< 0,  0,  -2>)
+  addpoint(< 2,  0, c  >)
+  addpoint(<-2,  0, c  >)
+  addpoint(< 0,  2, c  >)
+  addpoint(< 0, -2, c  >)
+  autobalance()
+  autoface()
+#end
+
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
 
 
