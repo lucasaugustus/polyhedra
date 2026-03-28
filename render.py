@@ -240,7 +240,7 @@ for (name, code, angles, file) in data_reduced:
         if 'png' in filetypes:
             command = ['povray',
                        '+I' + srcfilename, '+O' + imgfilename,
-                       '+w' + resolution, '+h' + resolution,
+                       '+w' + resolution,  '+h' + resolution,
                        '+A', '-D'       # +A turns on antialiasing; -D suppresses the preview window.
                        ]
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
@@ -253,23 +253,38 @@ for (name, code, angles, file) in data_reduced:
                            fileprefix + '.svg',
                            '--shape', code.split('\n')[1],
                            '--seed', str(rotation),
-                           '--tint-strength', '1.5',
-                           '--shade-strength', '1.8',
-                           '--brightness', '1.5',
+                           '--tint-strength',    '1.5',
+                           '--shade-strength',   '1.8',
+                           '--brightness',       '1.5',
                            '--face-alpha-scale', '1.3',
-                           '--vertex-scale', '0.0',
-                           '--edge-scale', '0.6',
+                           '--vertex-scale',     '0.0',
+                           '--edge-scale',       '0.6',
                            ]
-                print("\n\n\n")
-                print(command)
                 run(command, check=True)
             else:
-                raise NotImplementedError   # TODO: SVGs for non-tail.pov solids
+                if True:
+                    with open(fileprefix + "_error.svg", "w") as outfile:
+                        outfile.write('<svg width="600" height="42" xmlns="http://www.w3.org/2000/svg">')
+                        outfile.write('<rect width="100%" height="100%" fill="white"/>')
+                        outfile.write('<text x="0" y="30" font-family="serif" font-size="24">')
+                        outfile.write('SVGs are not available yet for this polyhedron.</text>')
+                        outfile.write('</svg>')
+                else:
+                    command = ['python3', 'pov__to__svg.py',
+                               'povcode/' + file,
+                               '-o', fileprefix + '.svg',
+                               '--rotation-seed', str(rotation),
+                               '--cylinder-steps', '5',
+                               '--sphere-steps', '2',
+                               ]
+                    print("\n\n\n")
+                    print(command)
+                    run(command, check=True)
         
         if 'mp4' in filetypes:
             command = ['povray',
                        '+I' + srcfilename, '+O' + fileprefix + '_.png',
-                       '+w' + resolution, '+h' + resolution,
+                       '+w' + resolution,  '+h' + resolution,
                        '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
                        'Declare=flashiness=0.25',
                        '+A', '-D'                 # +A turns on antialiasing; -D suppresses the preview window.
