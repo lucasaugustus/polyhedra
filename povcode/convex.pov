@@ -1202,6 +1202,43 @@
   autoface()
 #end
 
+#macro rhombic_icosahedron()
+  #local C0 = sqrt(10 * (25 - 11 * sqrt(5))) / 20;
+  #local C1 = sqrt(10 * (5 - sqrt(5))) / 20;
+  #local C2 = sqrt(10 * (5 + sqrt(5))) / 20;
+  #local C3 = sqrt(10 * (5 - sqrt(5))) / 10;
+  #local C4 = sqrt(2 * (5 - sqrt(5))) / 4;
+  #local C5 = sqrt(10 * (5 + sqrt(5))) / 10;
+  #local C6 = sqrt(2 * (5 + sqrt(5))) / 4;
+  #local C7 = sqrt(10 * (25 + 11 * sqrt(5))) / 20;
+  #local C8 = sqrt(5 * (5 + 2 * sqrt(5))) / 5;
+  addpoint(< C2, -C1,  C8>)
+  addpoint(< C2, -C1, -C8>)
+  addpoint(<-C2,  C1,  C8>)
+  addpoint(<-C2,  C1, -C8>)
+  addpoint(< C2, -C7,  C5>)
+  addpoint(< C2, -C7, -C5>)
+  addpoint(<-C2,  C7,  C5>)
+  addpoint(<-C2,  C7, -C5>)
+  addpoint(< C2,  C4,  C5>)
+  addpoint(< C2,  C4, -C5>)
+  addpoint(<-C2, -C4,  C5>)
+  addpoint(<-C2, -C4, -C5>)
+  addpoint(< C6, -C1,  C3>)
+  addpoint(< C6, -C1, -C3>)
+  addpoint(<-C6,  C1,  C3>)
+  addpoint(<-C6,  C1, -C3>)
+  addpoint(< C6, -C7,   0>)
+  addpoint(<-C6,  C7,   0>)
+  addpoint(< C6,  C4,   0>)
+  addpoint(<-C6, -C4,   0>)
+  addpoint(< C0,  C7,   0>)
+  addpoint(<-C0, -C7,   0>)
+  autobalance()
+  autoface()
+#end
+
+
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
 
 
