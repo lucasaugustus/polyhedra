@@ -263,7 +263,7 @@ for (name, code, angles, file) in data_reduced:
                 run(command, check=True)
             else:
                 if True:
-                    with open(fileprefix + "_error.svg", "w") as outfile:
+                    with open(fileprefix + '_error.svg', 'w') as outfile:
                         outfile.write('<svg width="600" height="42" xmlns="http://www.w3.org/2000/svg">')
                         outfile.write('<rect width="100%" height="100%" fill="white"/>')
                         outfile.write('<text x="0" y="30" font-family="serif" font-size="24">')
@@ -292,7 +292,7 @@ for (name, code, angles, file) in data_reduced:
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
             run(command, check=True)
             if which('ffmpeg') is None:
-                print('FFmpeg was not available, so the animation was left as a bunch of individual frames.')
+                print('FFmpeg was not available, so the animation was left as individual frames.')
             else:
                 command = ['ffmpeg',
                            '-y',                                              # Overwrite
