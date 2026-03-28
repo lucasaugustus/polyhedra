@@ -65,6 +65,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The Csaszar polyhedron
 * The rhombic icosahedron
 * The trapezo-rhombic dodecahedron
+* The elongated dodecahedron
 
 # TODO
 
@@ -85,7 +86,6 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Near-miss_Johnson_solid
 * https://en.wikipedia.org/wiki/Uniform_star_polyhedron
 * https://en.wikipedia.org/wiki/Compound_of_three_cubes
-* https://en.wikipedia.org/wiki/Elongated_dodecahedron
 * https://en.wikipedia.org/wiki/Compound_of_five_cubes
 * https://en.wikipedia.org/wiki/Compound_of_four_cubes
 * https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
