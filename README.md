@@ -47,7 +47,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 # Included solids
 
 * All Platonic solids
-* All Archimedian solids
+* All Archimedean solids
 * All Catalan solids
 * All Johnson solids
 * All Kepler-Poinsot solids
