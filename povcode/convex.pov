@@ -1238,6 +1238,67 @@
   autoface()
 #end
 
+#macro trunc_triakis_tet()
+  #local C0 =  1 / sqrt(243);
+  #local C1 =  1 / sqrt( 27);
+  #local C2 =  1 / sqrt(  3);
+  #local C3 = 11 / sqrt(243);
+  #local C4 =  5 / sqrt( 27);
+  addpoint(< C1,  C1,  C4>)
+  addpoint(< C1, -C1, -C4>)
+  addpoint(<-C1, -C1,  C4>)
+  addpoint(<-C1,  C1, -C4>)
+  addpoint(< C4,  C1,  C1>)
+  addpoint(< C4, -C1, -C1>)
+  addpoint(<-C4, -C1,  C1>)
+  addpoint(<-C4,  C1, -C1>)
+  addpoint(< C1,  C4,  C1>)
+  addpoint(< C1, -C4, -C1>)
+  addpoint(<-C1, -C4,  C1>)
+  addpoint(<-C1,  C4, -C1>)
+  addpoint(< C3, -C0,  C3>)
+  addpoint(< C3,  C0, -C3>)
+  addpoint(<-C3,  C0,  C3>)
+  addpoint(<-C3, -C0, -C3>)
+  addpoint(< C3, -C3,  C0>)
+  addpoint(< C3,  C3, -C0>)
+  addpoint(<-C3,  C3,  C0>)
+  addpoint(<-C3, -C3, -C0>)
+  addpoint(< C0, -C3,  C3>)
+  addpoint(< C0,  C3, -C3>)
+  addpoint(<-C0,  C3,  C3>)
+  addpoint(<-C0, -C3, -C3>)
+  addpoint(< C2, -C2,  C2>)
+  addpoint(< C2,  C2, -C2>)
+  addpoint(<-C2,  C2,  C2>)
+  addpoint(<-C2, -C2, -C2>)
+  autobalance()
+  addplane( 0,12, 4)
+  addplane( 1,13, 5)
+  addplane( 2,14, 6)
+  addplane( 3,15, 7)
+  addplane(24,12, 0)
+  addplane(24,20,10)
+  addplane(24,16, 5)
+  addplane(25,13, 1)
+  addplane( 0,12, 4)
+  addplane( 1,13, 5)
+  addplane( 2,14, 6)
+  addplane( 3,15, 7)
+  addplane(24,12, 0)
+  addplane(24,20,10)
+  addplane(24,16, 5)
+  addplane(25,13, 1)
+  addplane(25,21,11)
+  addplane(25,17, 4)
+  addplane(26,14, 2)
+  addplane(26,22, 8)
+  addplane(26,18, 7)
+  addplane(27,15, 3)
+  addplane(27,23, 9)
+  addplane(27,19, 6)
+#end
+
 
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
 
