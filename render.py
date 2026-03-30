@@ -176,6 +176,7 @@ data = [
 ['elongated dodecahedron'                      , 'elongated_dodecahedron()'                , (154,)],
 ['rhombic icosahedron'                         , 'rhombic_icosahedron()'                   , (3,12,13,15)],
 ['truncated triakis tetrahedron'               , 'trunc_triakis_tet()'                     , (0,)],
+['truncated hexagonal trapezohedron'           , 'trunc_hex_trapezo()'                     , (58,)],
 ]
 
 atad = [
