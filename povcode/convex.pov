@@ -1203,37 +1203,37 @@
 #end
 
 #macro rhombic_icosahedron()
-  #local C0 = sqrt(10 * (25 - 11 * sqrt(5))) / 20;
-  #local C1 = sqrt(10 * (5 - sqrt(5))) / 20;
-  #local C2 = sqrt(10 * (5 + sqrt(5))) / 20;
-  #local C3 = sqrt(10 * (5 - sqrt(5))) / 10;
-  #local C4 = sqrt(2 * (5 - sqrt(5))) / 4;
-  #local C5 = sqrt(10 * (5 + sqrt(5))) / 10;
-  #local C6 = sqrt(2 * (5 + sqrt(5))) / 4;
-  #local C7 = sqrt(10 * (25 + 11 * sqrt(5))) / 20;
-  #local C8 = sqrt(5 * (5 + 2 * sqrt(5))) / 5;
-  addpoint(< C2, -C1,  C8>)
-  addpoint(< C2, -C1, -C8>)
-  addpoint(<-C2,  C1,  C8>)
-  addpoint(<-C2,  C1, -C8>)
-  addpoint(< C2, -C7,  C5>)
-  addpoint(< C2, -C7, -C5>)
-  addpoint(<-C2,  C7,  C5>)
-  addpoint(<-C2,  C7, -C5>)
-  addpoint(< C2,  C4,  C5>)
-  addpoint(< C2,  C4, -C5>)
-  addpoint(<-C2, -C4,  C5>)
-  addpoint(<-C2, -C4, -C5>)
-  addpoint(< C6, -C1,  C3>)
-  addpoint(< C6, -C1, -C3>)
-  addpoint(<-C6,  C1,  C3>)
-  addpoint(<-C6,  C1, -C3>)
-  addpoint(< C6, -C7,   0>)
-  addpoint(<-C6,  C7,   0>)
-  addpoint(< C6,  C4,   0>)
-  addpoint(<-C6, -C4,   0>)
-  addpoint(< C0,  C7,   0>)
-  addpoint(<-C0, -C7,   0>)
+  #local A = sqrt(10 * (25 - 11 * sqrt(5))) / 20;
+  #local B = sqrt(10 * ( 5 -      sqrt(5))) / 20;
+  #local C = sqrt(10 * ( 5 +      sqrt(5))) / 20;
+  #local D = sqrt(10 * ( 5 -      sqrt(5))) / 10;
+  #local E = sqrt( 2 * ( 5 -      sqrt(5))) /  4;
+  #local F = sqrt(10 * ( 5 +      sqrt(5))) / 10;
+  #local G = sqrt( 2 * ( 5 +      sqrt(5))) /  4;
+  #local H = sqrt(10 * (25 + 11 * sqrt(5))) / 20;
+  #local I = sqrt( 5 * ( 5 +  2 * sqrt(5))) /  5;
+  addpoint(< C, -B,  I>)
+  addpoint(< C, -B, -I>)
+  addpoint(<-C,  B,  I>)
+  addpoint(<-C,  B, -I>)
+  addpoint(< C, -H,  F>)
+  addpoint(< C, -H, -F>)
+  addpoint(<-C,  H,  F>)
+  addpoint(<-C,  H, -F>)
+  addpoint(< C,  E,  F>)
+  addpoint(< C,  E, -F>)
+  addpoint(<-C, -E,  F>)
+  addpoint(<-C, -E, -F>)
+  addpoint(< G, -B,  D>)
+  addpoint(< G, -B, -D>)
+  addpoint(<-G,  B,  D>)
+  addpoint(<-G,  B, -D>)
+  addpoint(< G, -H,  0>)
+  addpoint(<-G,  H,  0>)
+  addpoint(< G,  E,  0>)
+  addpoint(<-G, -E,  0>)
+  addpoint(< A,  H,  0>)
+  addpoint(<-A, -H,  0>)
   autobalance()
   autoface()
 #end
@@ -1299,6 +1299,59 @@
   addplane(27,19, 6)
 #end
 
+#macro trunc_hex_trapezo()
+  #local c = 0.21;
+  
+  #local A = <cos( 3*pi/6), sin( 3*pi/6),  c>; addpoint(A)
+  #local B = <cos( 1*pi/6), sin( 1*pi/6),  c>; addpoint(B)
+  #local C = <cos(-1*pi/6), sin(-1*pi/6),  c>; addpoint(C)
+  #local D = <cos(-3*pi/6), sin(-3*pi/6),  c>; addpoint(D)
+  #local E = <cos(-5*pi/6), sin(-5*pi/6),  c>; addpoint(E)
+  #local F = <cos(-7*pi/6), sin(-7*pi/6),  c>; addpoint(F)
+
+  #local G = <cos( 2*pi/6), sin( 2*pi/6), -c>; addpoint(G)
+  #local H = <cos( 0*pi/6), sin( 0*pi/6), -c>; addpoint(H)
+  #local I = <cos(-2*pi/6), sin(-2*pi/6), -c>; addpoint(I)
+  #local J = <cos(-4*pi/6), sin(-4*pi/6), -c>; addpoint(J)
+  #local K = <cos(-6*pi/6), sin(-6*pi/6), -c>; addpoint(K)
+  #local L = <cos(-8*pi/6), sin(-8*pi/6), -c>; addpoint(L)
+  
+  #local X = <0, 0, -c * (7 + 4*sqrt(3))>;
+  #local Y = <0, 0,  c * (7 + 4*sqrt(3))>;
+  
+  #local q = 0.8;
+  
+  addpoint(q * A + (1-q) * Y)
+  addpoint(q * B + (1-q) * Y)
+  addpoint(q * C + (1-q) * Y)
+  addpoint(q * D + (1-q) * Y)
+  addpoint(q * E + (1-q) * Y)
+  addpoint(q * F + (1-q) * Y)
+  
+  addpoint(q * G + (1-q) * X)
+  addpoint(q * H + (1-q) * X)
+  addpoint(q * I + (1-q) * X)
+  addpoint(q * J + (1-q) * X)
+  addpoint(q * K + (1-q) * X)
+  addpoint(q * L + (1-q) * X)
+  
+  addplane(0,6,1)
+  addplane(1,7,2)
+  addplane(2,8,3)
+  addplane(3,9,4)
+  addplane(4,10,5)
+  addplane(5,11,0)
+  
+  addplane(6,1,7)
+  addplane(7,2,8)
+  addplane(8,3,9)
+  addplane(9,4,10)
+  addplane(10,5,11)
+  addplane(11,0,6)
+  
+  addplane(13,14,15)
+  addplane(19,20,21)
+#end
 
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
 
