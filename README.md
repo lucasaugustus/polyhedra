@@ -66,6 +66,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The rhombic icosahedron
 * The trapezo-rhombic dodecahedron
 * The elongated dodecahedron
+* The truncated hexagonal trapezohedron
 
 # TODO
 
