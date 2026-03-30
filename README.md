@@ -74,7 +74,6 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * Figure out how to prevent animations from zooming in and out.
 * https://polytope.miraheze.org/wiki/File:Trefoil_knot_toroid_36P6.png
 * https://en.wikipedia.org/wiki/Template:Star_polyhedron_navigator
-* https://en.wikipedia.org/wiki/Truncated_hexagonal_trapezohedron
 * https://en.wikipedia.org/wiki/Boerdijk%E2%80%93Coxeter_helix
 * https://en.wikipedia.org/wiki/Category:Polyhedral_compounds
 * https://en.wikipedia.org/wiki/Prismatic_uniform_polyhedron
@@ -100,6 +99,8 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Hill_tetrahedron
 * https://en.wikipedia.org/wiki/Tetradecahedron
 * https://dmccooey.com/polyhedra/index.html
+* Truncated trapezohedra
+* Truncated bipyramids
 * Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
 * Handle chirality when relevant.
