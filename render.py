@@ -176,22 +176,23 @@ data = [
 ['elongated dodecahedron'                      , 'elongated_dodecahedron()'                , (154,)],
 ['rhombic icosahedron'                         , 'rhombic_icosahedron()'                   , (3,12,13,15)],
 ['truncated triakis tetrahedron'               , 'trunc_triakis_tet()'                     , (0,)],
-[' truncated triangular trapezohedron'         , 'truncated_trapezohedron(3)'              , (58,)],    # Infinite family
-[' truncated     square trapezohedron'         , 'truncated_trapezohedron(4)'              , (58,)],    # Infinite family
-[' truncated pentagonal trapezohedron'         , 'truncated_trapezohedron(5)'              , (58,)],    # Infinite family
-[' truncated  hexagonal trapezohedron'         , 'truncated_trapezohedron(6)'              , (58,)],    # Infinite family
-[' truncated heptagonal trapezohedron'         , 'truncated_trapezohedron(7)'              , (58,)],    # Infinite family
-[' truncated  octagonal trapezohedron'         , 'truncated_trapezohedron(8)'              , (58,)],    # Infinite family
-[' truncated  nonagonal trapezohedron'         , 'truncated_trapezohedron(9)'              , (58,)],    # Infinite family
-[' truncated  decagonal trapezohedron'         , 'truncated_trapezohedron(10)'             , (58,)],    # Infinite family
-['diminished triangular trapezohedron'         , 'diminished_trapezohedron(3)'             , (58,)],    # Infinite family
-['diminished     square trapezohedron'         , 'diminished_trapezohedron(4)'             , (58,)],    # Infinite family
-['diminished pentagonal trapezohedron'         , 'diminished_trapezohedron(5)'             , (58,)],    # Infinite family
-['diminished  hexagonal trapezohedron'         , 'diminished_trapezohedron(6)'             , (58,)],    # Infinite family
-['diminished heptagonal trapezohedron'         , 'diminished_trapezohedron(7)'             , (58,)],    # Infinite family
-['diminished  octagonal trapezohedron'         , 'diminished_trapezohedron(8)'             , (58,)],    # Infinite family
-['diminished  nonagonal trapezohedron'         , 'diminished_trapezohedron(9)'             , (58,)],    # Infinite family
-['diminished  decagonal trapezohedron'         , 'diminished_trapezohedron(10)'            , (58,)],    # Infinite family
+[' truncated triangular trapezohedron'         , 'truncated_trapezohedron(3)'              , (58,)],        # Infinite family
+[' truncated     square trapezohedron'         , 'truncated_trapezohedron(4)'              , (58,)],        # Infinite family
+[' truncated pentagonal trapezohedron'         , 'truncated_trapezohedron(5)'              , (58,)],        # Infinite family
+[' truncated  hexagonal trapezohedron'         , 'truncated_trapezohedron(6)'              , (58,)],        # Infinite family
+[' truncated heptagonal trapezohedron'         , 'truncated_trapezohedron(7)'              , (58,)],        # Infinite family
+[' truncated  octagonal trapezohedron'         , 'truncated_trapezohedron(8)'              , (58,)],        # Infinite family
+[' truncated  nonagonal trapezohedron'         , 'truncated_trapezohedron(9)'              , (58,)],        # Infinite family
+[' truncated  decagonal trapezohedron'         , 'truncated_trapezohedron(10)'             , (58,)],        # Infinite family
+['diminished triangular trapezohedron'         , 'diminished_trapezohedron(3)'             , (58,)],        # Infinite family
+['diminished     square trapezohedron'         , 'diminished_trapezohedron(4)'             , (58,)],        # Infinite family
+['diminished pentagonal trapezohedron'         , 'diminished_trapezohedron(5)'             , (58,)],        # Infinite family
+['diminished  hexagonal trapezohedron'         , 'diminished_trapezohedron(6)'             , (58,)],        # Infinite family
+['diminished heptagonal trapezohedron'         , 'diminished_trapezohedron(7)'             , (58,)],        # Infinite family
+['diminished  octagonal trapezohedron'         , 'diminished_trapezohedron(8)'             , (58,)],        # Infinite family
+['diminished  nonagonal trapezohedron'         , 'diminished_trapezohedron(9)'             , (58,)],        # Infinite family
+['diminished  decagonal trapezohedron'         , 'diminished_trapezohedron(10)'            , (58,)],        # Infinite family
+['elongated gyrobifastigium'                   , 'elongated_gyrobifastigium()'             , (10,13,27,58,91)],
 ]
 
 atad = [
