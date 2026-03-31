@@ -176,7 +176,11 @@ data = [
 ['elongated dodecahedron'                      , 'elongated_dodecahedron()'                , (154,)],
 ['rhombic icosahedron'                         , 'rhombic_icosahedron()'                   , (3,12,13,15)],
 ['truncated triakis tetrahedron'               , 'trunc_triakis_tet()'                     , (0,)],
-['truncated hexagonal trapezohedron'           , 'trunc_hex_trapezo()'                     , (58,)],
+['truncated triangular trapezohedron'          , 'truncated_trapezohedron(3)'              , (58,)],    # Infinite family
+['truncated     square trapezohedron'          , 'truncated_trapezohedron(4)'              , (58,)],    # Infinite family
+['truncated pentagonal trapezohedron'          , 'truncated_trapezohedron(5)'              , (58,)],    # Infinite family
+['truncated  hexagonal trapezohedron'          , 'truncated_trapezohedron(6)'              , (58,)],    # Infinite family
+['truncated heptagonal trapezohedron'          , 'truncated_trapezohedron(7)'              , (58,)],    # Infinite family
 ]
 
 atad = [
@@ -244,7 +248,8 @@ for (name, code, angles, file) in data_reduced:
             command = ['povray',
                        '+I' + srcfilename, '+O' + imgfilename,
                        '+w' + resolution,  '+h' + resolution,
-                       '+A', '-D'       # +A turns on antialiasing; -D suppresses the preview window.
+                       '+A', '-D',       # +A turns on antialiasing; -D suppresses the preview window.
+                       '+GD',
                        ]
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
             run(command, check=True)
