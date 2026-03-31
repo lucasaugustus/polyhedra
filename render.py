@@ -251,7 +251,7 @@ for (name, code, angles, file) in data_reduced:
         
         if 'svg' in filetypes:
             if file == 'convex.pov':
-                command = ['python3', 'pov_to_svg.py',
+                command = ['python3', 'convex_to_svg.py',
                            'povcode/convex.pov',
                            fileprefix + '.svg',
                            '--shape', code.split('\n')[1],
