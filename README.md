@@ -68,6 +68,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The rhombic icosahedron
 * The trapezo-rhombic dodecahedron
 * The elongated dodecahedron
+* The elongated gyrobifastigium
 
 # TODO
 
@@ -82,7 +83,6 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Cubitruncated_cuboctahedron
 * https://en.wikipedia.org/wiki/Compound_of_ten_tetrahedra
 * https://en.wikipedia.org/wiki/Compound_of_five_octahedra
-* https://en.wikipedia.org/wiki/Elongated_gyrobifastigium
 * https://en.wikipedia.org/wiki/Rhombic_enneacontahedron
 * https://en.wikipedia.org/wiki/Near-miss_Johnson_solid
 * https://en.wikipedia.org/wiki/Uniform_star_polyhedron
