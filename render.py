@@ -315,7 +315,7 @@ for (name, code, angles, file) in data_reduced:
     
     if 'stl' in filetypes:
         if file == 'convex.pov':
-            command = ['python3', 'pov_to_stl.py',
+            command = ['python3', 'convex_to_stl.py',
                        'povcode/convex.pov',
                        '--call', code.split('\n')[1],
                        '--output', 'images/' + solidname + '/' + solidname + '.stl'
