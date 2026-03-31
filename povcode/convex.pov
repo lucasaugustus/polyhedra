@@ -11,6 +11,8 @@
 #declare alfa=ouch-1/ouch;
 #declare veta=(ouch+tau+1/ouch)*tau;
 
+#declare MaximumVerticesPerFace = 20;   // If a solid has a face with > 20 vertices, include a #declare to override this.
+
 #macro tetrahedron()
   addpointsevensgn(<1,1,1>)
   autoface()
@@ -1299,58 +1301,100 @@
   addplane(27,19, 6)
 #end
 
-#macro trunc_hex_trapezo()
-  #local c = 0.21;
+#macro truncated_trapezohedron(N)
+  #declare MaximumVerticesPerFace = max(5,N);
   
-  #local A = <cos( 3*pi/6), sin( 3*pi/6),  c>; addpoint(A)
-  #local B = <cos( 1*pi/6), sin( 1*pi/6),  c>; addpoint(B)
-  #local C = <cos(-1*pi/6), sin(-1*pi/6),  c>; addpoint(C)
-  #local D = <cos(-3*pi/6), sin(-3*pi/6),  c>; addpoint(D)
-  #local E = <cos(-5*pi/6), sin(-5*pi/6),  c>; addpoint(E)
-  #local F = <cos(-7*pi/6), sin(-7*pi/6),  c>; addpoint(F)
-
-  #local G = <cos( 2*pi/6), sin( 2*pi/6), -c>; addpoint(G)
-  #local H = <cos( 0*pi/6), sin( 0*pi/6), -c>; addpoint(H)
-  #local I = <cos(-2*pi/6), sin(-2*pi/6), -c>; addpoint(I)
-  #local J = <cos(-4*pi/6), sin(-4*pi/6), -c>; addpoint(J)
-  #local K = <cos(-6*pi/6), sin(-6*pi/6), -c>; addpoint(K)
-  #local L = <cos(-8*pi/6), sin(-8*pi/6), -c>; addpoint(L)
+  // A pair of nearest-neighbour points on the middle rings is
+  //    A == <     1    ,     0    ,  c >
+  // and
+  //    C == < cos(pi/N), sin(pi/N), -c >,
+  // using the labels that we will give them below.  The distance between these points is
+  // sqrt((1 - cos(pi/N))^2 + sin(pi/N)^2 + 4c^2)
+  // == sqrt( 1 - 2 * cos(pi/N) + 1 + 4c^2)
+  // == sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                       (1)
+  // The apex will be at z == c * cot(pi/(2*N))^2.
+  // The neighbour of A on the upper main ring will be
+  // A * q + (0,0,z) * (1-q)
+  // == < q , 0 , c + z - z*q >.
+  // The distance bewteen these points is
+  // sqrt( (q-1)^2 + (0-0)^2 + (c + z - z*q - c)^2 )
+  // == sqrt( (q-1)^2 + (z - z*q)^2 )
+  // == sqrt( (q-1)^2 + z^2 * (1-q)^2 )
+  // == sqrt( (1+z^2) * (q-1)^2 )
+  // == sqrt(1+z^2) * abs(q-1)
+  // == sqrt(1+z^2) * (1-q)
+  // == sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )         (2)
+  // For aesthetics, I want (1) and (2) to be equal:
+  // sqrt( 4c^2 + 2 - 2 * cos(pi/N) )    ==    sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )
+  // sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )    ==      1 - q
+  // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
   
-  #local X = <0, 0, -c * (7 + 4*sqrt(3))>;
-  #local Y = <0, 0,  c * (7 + 4*sqrt(3))>;
+  // As below, let A == <1, 0, c> be a point on the upper middle ring.
+  // Then C == <cos(pi/N), sin(pi/N), -c> (as below) and D == <cos(pi/N), -sin(pi/N), -c>
+  // are its nearest neighbours in the lower middle ring.  For aesthetics, I want angle CAD to be 90 degrees.
+  // AC  ==  <1,0,c> - <cos(pi/N),  sin(pi/N), -c>  == < 1 - cos(pi/N) , -sin(pi/N) , 2c >
+  // AD  ==  <1,0,c> - <cos(pi/N), -sin(pi/N), -c>  == < 1 - cos(pi/N) ,  sin(pi/N) , 2c >
+  // For the angle to be right, we need AC (dot) AD == 0:
+  // 0 == (1 - cos(pi/N))^2 - sin(pi/N)^2 + 4c^2
+  // 0 == 1 - 2*cos(pi/N) + cos(pi/N)^2 - sin(pi/N)^2 + 4c^2
+  // 4c^2 = 2 * cos(pi/N) - cos(2*pi/N) - 1
+  // c == sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2
   
-  #local q = 0.8;
+  #local c = sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2;
+  #local p = 1 / tan(pi/(2*N));
+  // I actually want the upper and lower rings to be a bit closer than I described above.
+  #local q = 1 - sqrt( 4*c*c + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c*c * p*p*p*p ) * 0.75;
   
-  addpoint(q * A + (1-q) * Y)
-  addpoint(q * B + (1-q) * Y)
-  addpoint(q * C + (1-q) * Y)
-  addpoint(q * D + (1-q) * Y)
-  addpoint(q * E + (1-q) * Y)
-  addpoint(q * F + (1-q) * Y)
+  // Points 0 through  N-1 are the upper middle ring.
+  #for (I, 0, 2*N-2, 2)
+    addpoint(<cos(I * pi/N), sin(I * pi/N),  c>)
+  #end
   
-  addpoint(q * G + (1-q) * X)
-  addpoint(q * H + (1-q) * X)
-  addpoint(q * I + (1-q) * X)
-  addpoint(q * J + (1-q) * X)
-  addpoint(q * K + (1-q) * X)
-  addpoint(q * L + (1-q) * X)
+  // Points N through 2N-1 are the lower middle ring.
+  #for (I, 1, 2*N-1, 2)
+    addpoint(<cos(I * pi/N), sin(I * pi/N), -c>)
+  #end
   
-  addplane(0,6,1)
-  addplane(1,7,2)
-  addplane(2,8,3)
-  addplane(3,9,4)
-  addplane(4,10,5)
-  addplane(5,11,0)
   
-  addplane(6,1,7)
-  addplane(7,2,8)
-  addplane(8,3,9)
-  addplane(9,4,10)
-  addplane(10,5,11)
-  addplane(11,0,6)
+  #local A = points[0]; // <1, 0, c>
+  #local B = points[1];
+  #local C = points[N];
+  #local AB = A - B;
+  #local AC = A - C;
+  #local ABxAC = vcross(AB, AC);
   
-  addplane(13,14,15)
-  addplane(19,20,21)
+  // The plane containing A, B, and C has equation
+  // ABxAC.x * (x - A.x)  +  ABxAC.y * (y - A.y)  +  ABxAC.z * (z - A.z)  == 0
+  // ABxAC.x * (x -  1 )  +  ABxAC.y * (y -  0 )  +  ABxAC.z * (z -  c )  == 0
+  // The +z apex of the solid is this plane's z-intercept.
+  // ABxAC.x * (0 -  1 )  +  ABxAC.y * (0 -  0 )  +  ABxAC.z * (z -  c )  == 0
+  // -ABxAC.x             +            0          +  ABxAC.z * (z -  c )  == 0
+  // ABxAC.z * (z -  c ) ==     ABxAC.x
+  //            z -  c   ==     ABxAC.x / ABxAC.z
+  //            z        == c + ABxAC.x / ABxAC.z
+  
+  #local Apex = <0, 0, c + ABxAC.x / ABxAC.z>;
+  // The upper upper ring will be the weighted average of the upper middle ring and Apex,
+  // with the ring weighted by q and Apex weighted by 1-q, and similarly for the lower lower ring.
+  
+  // Points 2N through 3N-1 are the upper upper ring.
+  #for (I, 0, N-1)
+    addpoint(points[I] * q + Apex * (1-q))
+  #end
+  
+  // Points 3N through 4N-1 are the lower lower ring.
+  #for (I, N, 2*N-1)
+    addpoint(points[I] * q - Apex * (1-q))
+  #end
+  
+  addplane(2*N, 2*N+1, 2*N+2) // The upper N-gon
+  addplane(3*N, 3*N+1, 3*N+2) // The lower N-gon
+  
+  #for (I, 0, N-1)
+    addplane(I, mod(I+1,N), I+N)
+    addplane(I+N, mod(I+1,N), mod(I+1,N)+N)
+  #end
+  
 #end
 
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
@@ -1498,7 +1542,7 @@ This_shape_will_be_drawn()
   #declare np=np+1;
 #end
 #local a=0; #while(a<nfaces-.5)
-  #declare p=array[20];
+  #declare p=array[MaximumVerticesPerFace];
   #declare np=0;
   #local b=0; #while(b<npoints-.5)
     #if(vdot(faces[a],points[b])>1-0.00001) addp(b) #end
