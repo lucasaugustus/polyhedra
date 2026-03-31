@@ -55,6 +55,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The *n*-antiprisms for *n* = 2&ndash;10 and 17
 * The *n*-bipyramids for *n* = 3&ndash;10
 * The *n*-trapezohedra for *n* = 2&ndash;10
+* The truncated *n*-trapezohedra for *n* = 3&ndash;10
 * The compound of five tetrahedra
 * [This toroidal complex of eight octahedra](https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif)
 * The Schoenhardt polyhedron
@@ -66,7 +67,6 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The rhombic icosahedron
 * The trapezo-rhombic dodecahedron
 * The elongated dodecahedron
-* The truncated hexagonal trapezohedron
 
 # TODO
 
@@ -100,7 +100,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Hill_tetrahedron
 * https://en.wikipedia.org/wiki/Tetradecahedron
 * https://dmccooey.com/polyhedra/index.html
-* Truncated trapezohedra
+* Diminished trapezohedra
 * Truncated bipyramids
 * Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
@@ -109,10 +109,10 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 
 # Credits
 
-* The POV-Ray code was largely written by Wikipedia users Cyp (https://en.wikipedia.org/wiki/User:Cyp/Poly.pov) and AndrewKepert (https://en.wikipedia.org/wiki/User:AndrewKepert/poly.pov).
+* The POV-Ray code in `convex.pov` was largely written by Wikipedia users Cyp (https://en.wikipedia.org/wiki/User:Cyp/Poly.pov) and AndrewKepert (https://en.wikipedia.org/wiki/User:AndrewKepert/poly.pov), though some of the solids in it are my contribution.
 * The POV-Ray code for the Herschel enneahedron and triakis truncated tetrahedron comes from https://github.com/timhutton/povray-polyhedra.
 * The POV-Ray code for the Kepler-Poinsot solids and compound of five tetrahedra is derived from https://commons.wikimedia.org/wiki/File:GreatStellatedDodecahedron.jpg.  
-* My modifications to the above are fairly trivial.  The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; my main contribution is `render.py`, which automates everything.
+* The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; I wrote `render.py` to automate everything.
 * The toroidal octahedron chain was put on the Wikimedia Commons in 2007 by Quilbert (https://commons.wikimedia.org/wiki/User:Quilbert).  I could not find the code used to generate that image, so the re-creation of it here is largely my own work.
 * The code for generating the STL and SVG files is found in `convex_to_stl.py`, `pov_faces_to_stl.py`, and `convex_to_svg.py`. I vibe-coded them through ChatGPT 5.4, because I could not find any existing programs that would do that in an automatable manner, and because writing them myself seemed beyond my skill level.  I have personally vetted them on all solids currently in this project, and will ensure that they continue to operate correctly on any further solids that get added.
 * The files `csaszar.pov`, `schoenhardt.pov`, and `stel_octa.pov` are my own work.
