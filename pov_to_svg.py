@@ -548,6 +548,7 @@ class Env:
         if name == 'pow': return math.pow(args[0], args[1])
         if name == 'sin': return math.sin(args[0])
         if name == 'cos': return math.cos(args[0])
+        if name == 'tan': return math.tan(args[0])
         if name == 'acos': return math.acos(args[0])
         if name == 'max': return max(args[0], args[1])
         if name == 'min': return min(args[0], args[1])
