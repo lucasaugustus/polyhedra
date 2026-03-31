@@ -193,6 +193,7 @@ data = [
 ['diminished  nonagonal trapezohedron'         , 'diminished_trapezohedron(9)'             , (58,)],        # Infinite family
 ['diminished  decagonal trapezohedron'         , 'diminished_trapezohedron(10)'            , (58,)],        # Infinite family
 ['elongated gyrobifastigium'                   , 'elongated_gyrobifastigium()'             , (10,13,27,58,91)],
+['rhombic enneacontahedron'                    , 'rhombic_enneacontahedron()'              , (0,30,88,94)],
 ]
 
 atad = [
