@@ -142,6 +142,14 @@ class WhileStmt:
     body: list
 
 @dataclass
+class ForStmt:
+    var: str
+    start: str
+    end: str
+    step: str
+    body: list
+
+@dataclass
 class SwitchCase:
     kind: str
     expr: Any
@@ -228,6 +236,7 @@ class Interpreter:
             'pow': pow,
             'sin': math.sin,
             'cos': math.cos,
+            'tan': math.tan,
             'acos': math.acos,
             'abs': abs,
             'min': min,
@@ -306,12 +315,12 @@ class Interpreter:
             depth = 1
             j = body_start
             while j < len(src):
-                m2 = re.search(r'#macro\b|#if\b|#ifdef\b|#ifndef\b|#while\b|#switch\b|#end\b', src[j:])
+                m2 = re.search(r'#macro\b|#if\b|#ifdef\b|#ifndef\b|#while\b|#for\b|#switch\b|#end\b', src[j:])
                 if not m2:
                     raise RuntimeError(f"Unterminated macro {name}")
                 k = j + m2.start()
                 token = m2.group(0)
-                if token in ('#macro', '#if', '#ifdef', '#ifndef', '#while', '#switch'):
+                if token in ('#macro', '#if', '#ifdef', '#ifndef', '#while', '#for', '#switch'):
                     depth += 1
                     j = k + len(token)
                 else:
@@ -359,7 +368,7 @@ class Interpreter:
                 i += len(m.group(0))
                 if kw in ('end','else','break'):
                     tokens.append(Token(kw)); continue
-                if kw in ('if','while','switch','case','range','ifdef','ifndef'):
+                if kw in ('if','while','switch','case','range','ifdef','ifndef','for'):
                     arg, i = read_paren_expr(s, i)
                     tokens.append(Token(kw, arg.strip())); continue
                 if kw == 'debug':
@@ -449,6 +458,20 @@ class Interpreter:
                     raise RuntimeError('while without #end')
                 pos += 1
                 out.append(WhileStmt(cond, body))
+            elif tk.kind == 'for':
+                parts = split_args(tk.value)
+                if len(parts) not in (3,4):
+                    raise RuntimeError('for expects 3 or 4 arguments')
+                var = parts[0].strip()
+                start = parts[1].strip()
+                end = parts[2].strip()
+                step = parts[3].strip() if len(parts) == 4 else '1'
+                pos += 1
+                body, pos = self._parse_stmt_list(toks, pos, {'end'})
+                if pos >= len(toks) or toks[pos].kind != 'end':
+                    raise RuntimeError('for without #end')
+                pos += 1
+                out.append(ForStmt(var, start, end, step, body))
             elif tk.kind == 'switch':
                 expr = tk.value
                 pos += 1
@@ -494,6 +517,23 @@ class Interpreter:
                     guard += 1
                     if guard > 200000:
                         raise RuntimeError(f'Loop guard triggered in while({st.cond}) with locals={env.locals}')
+            elif isinstance(st, ForStmt):
+                start = self.eval_expr(st.start, env)
+                end = self.eval_expr(st.end, env)
+                step = self.eval_expr(st.step, env)
+                if abs(step) < EPS:
+                    raise RuntimeError('for step may not be zero')
+                i = start
+                guard = 0
+                def cont(cur):
+                    return cur <= end + EPS if step > 0 else cur >= end - EPS
+                while cont(i):
+                    env.set_local(st.var, i)
+                    self.exec_stmts(st.body, env)
+                    i = i + step
+                    guard += 1
+                    if guard > 200000:
+                        raise RuntimeError(f'Loop guard triggered in for({st.var},{st.start},{st.end},{st.step}) with locals={env.locals}')
             elif isinstance(st, SwitchStmt):
                 val = self.eval_expr(st.expr, env)
                 matched = False
