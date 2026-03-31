@@ -181,6 +181,9 @@ data = [
 ['truncated pentagonal trapezohedron'          , 'truncated_trapezohedron(5)'              , (58,)],    # Infinite family
 ['truncated  hexagonal trapezohedron'          , 'truncated_trapezohedron(6)'              , (58,)],    # Infinite family
 ['truncated heptagonal trapezohedron'          , 'truncated_trapezohedron(7)'              , (58,)],    # Infinite family
+['truncated  octagonal trapezohedron'          , 'truncated_trapezohedron(8)'              , (58,)],    # Infinite family
+['truncated  nonagonal trapezohedron'          , 'truncated_trapezohedron(9)'              , (58,)],    # Infinite family
+['truncated  decagonal trapezohedron'          , 'truncated_trapezohedron(10)'             , (58,)],    # Infinite family
 ]
 
 atad = [
