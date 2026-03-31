@@ -56,6 +56,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The *n*-bipyramids for *n* = 3&ndash;10
 * The *n*-trapezohedra for *n* = 2&ndash;10
 * The truncated *n*-trapezohedra for *n* = 3&ndash;10
+* The diminished *n*-trapezohedra for *n* = 3&ndash;10
 * The compound of five tetrahedra
 * [This toroidal complex of eight octahedra](https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif)
 * The Schoenhardt polyhedron
@@ -100,7 +101,6 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Hill_tetrahedron
 * https://en.wikipedia.org/wiki/Tetradecahedron
 * https://dmccooey.com/polyhedra/index.html
-* Diminished trapezohedra
 * Truncated bipyramids
 * Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
