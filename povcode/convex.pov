@@ -1397,6 +1397,60 @@
   
 #end
 
+
+#macro diminished_trapezohedron(N)
+  #declare MaximumVerticesPerFace = max(4,N);
+  
+  // TODO: This c is copied from truncated_tetrahedron.
+  // Since we are reducing the radius of the upper ring, is that really the best c to use here?
+  
+  #local c = sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2;
+  #local r1 = 0.66;
+  #local r2 = 1;
+  
+  // Points 0 through  N-1 are the upper ring.
+  #for (I, 0, 2*N-2, 2)
+    addpoint(<r1 * cos(I * pi/N), r1 * sin(I * pi/N),  c>)
+  #end
+  
+  // Points N through 2N-1 are the lower ring.
+  #for (I, 1, 2*N-1, 2)
+    addpoint(<r2 * cos(I * pi/N), r2 * sin(I * pi/N), -c>)
+  #end
+  
+  
+  #local A = points[0]; // <r1, 0, c>
+  #local B = points[1];
+  #local C = points[N];
+  #local AB = A - B;
+  #local AC = A - C;
+  #local ABxAC = vcross(AB, AC);
+  
+  // The plane containing A, B, and C has equation
+  // ABxAC.x * (x - A.x)  +  ABxAC.y * (y - A.y)  +  ABxAC.z * (z - A.z)  == 0
+  // ABxAC.x * (x - r1 )  +  ABxAC.y * (y -  0 )  +  ABxAC.z * (z -  c )  == 0
+  // The +z apex of the solid is this plane's z-intercept.
+  // ABxAC.x * (0 - r1 )  +  ABxAC.y * (0 -  0 )  +  ABxAC.z * (z -  c )  == 0
+  // -ABxAC.x * r1        +            0          +  ABxAC.z * (z -  c )  == 0
+  // ABxAC.z * (z -  c ) ==     ABxAC.x * r1
+  //            z -  c   ==     ABxAC.x * r1 / ABxAC.z
+  //            z        == c + ABxAC.x * r1 / ABxAC.z
+  
+  addpoint(<0, 0, c + ABxAC.x * r1 / ABxAC.z>)
+  
+  addplane(N, N+1, N+2) // The N-gon
+  
+  #for (I, 0, N-1)
+    addplane(I, mod(I+1,N), I+N)
+    addplane(I+N, mod(I+1,N)+N, mod(I+1,N))
+  #end
+  
+#end
+
+
+
+
+
 //<<<<<<<<<<<<<<<<< added AGK  [20041101]
 
 
@@ -1541,12 +1595,12 @@ This_shape_will_be_drawn()
   #declare p[np]=a;
   #declare np=np+1;
 #end
-#local a=0; #while(a<nfaces-.5)
+#for (a, 0, nfaces-1)
   #declare p=array[MaximumVerticesPerFace];
   #declare np=0;
-  #local b=0; #while(b<npoints-.5)
+  #for (b, 0, npoints-1)
     #if(vdot(faces[a],points[b])>1-0.00001) addp(b) #end
-  #local b=b+1; #end
+  #end
   #local c=0; #while(c<np-.5)
     #local d=0; #while(d<np-.5) #if(p[c]<p[d]-.5)
       #local f=1;
@@ -1562,7 +1616,7 @@ This_shape_will_be_drawn()
       #end #end        
     #local d=d+1; #end
   #local c=c+1; #end
-#local a=a+1; #end
+#end
 /*#local a=0; #while(a<npoints-.5)
   #local b=a+1; #while(b<npoints-.5)
     #if(vlength(points[a]-points[b])<elength+0.00001)
