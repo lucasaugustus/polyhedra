@@ -1397,7 +1397,6 @@
   
 #end
 
-
 #macro diminished_trapezohedron(N)
   #declare MaximumVerticesPerFace = max(4,N);
   
@@ -1447,7 +1446,28 @@
   
 #end
 
-
+#macro elongated_gyrobifastigium()
+  addpoint(< 1, 1, 1/2>) // 0
+  addpoint(< 1, 1,-1/2>) // 1
+  addpoint(< 1,-1, 1/2>) // 2
+  addpoint(< 1,-1,-1/2>) // 3
+  addpoint(<-1, 1, 1/2>) // 4
+  addpoint(<-1, 1,-1/2>) // 5
+  addpoint(<-1,-1, 1/2>) // 6
+  addpoint(<-1,-1,-1/2>) // 7
+  addpoint(< 1, 0, 2/2>) // 8
+  addpoint(<-1, 0, 2/2>) // 9
+  addpoint(< 0, 1,-2/2>) // 10
+  addpoint(< 0,-1,-2/2>) // 11
+  addplane(0, 1, 2)
+  addplane(0, 1, 4)
+  addplane(4, 6, 7)
+  addplane(2, 6, 7)
+  addplane(0, 8, 9)
+  addplane(6, 8, 9)
+  addplane(1, 10, 11)
+  addplane(7, 10, 11)
+#end
 
 
 
