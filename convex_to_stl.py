@@ -329,7 +329,7 @@ class Interpreter:
                         body = src[body_start:k].strip()
                         expr_body = None
                         body_no_comments = remove_comments(body).strip()
-                        if body_no_comments.startswith('(') and body_no_comments.endswith(')') and '#'+'' not in body_no_comments:
+                        if is_single_expression(body_no_comments):
                             expr_body = body_no_comments
                         self.macros[name] = Macro(name, params, body, expr_body)
                         macro_spans.append((start, k + 4))
@@ -625,6 +625,76 @@ def remove_block_comments(s):
 
 def remove_comments(s):
     return re.sub(r'//.*', '', s)
+
+
+def is_single_expression(s):
+    s = s.strip()
+    if not s or '#' in s or ';' in s:
+        return False
+
+    # POV expression macros are often written as a single parenthesized expression
+    # spread across multiple lines. The old heuristic rejected those because it
+    # treated top-level whitespace around operators as evidence of multiple
+    # statements, which caused expression macros such as rotateabout(...) to be
+    # parsed as statement blocks.
+    if s[0] in '(<+-0123456789."':
+        depth = angle = 0
+        in_string = False
+        for i, ch in enumerate(s):
+            if ch == '"' and (i == 0 or s[i-1] != '\\'):
+                in_string = not in_string
+                continue
+            if in_string:
+                continue
+            if ch == '(':
+                depth += 1
+            elif ch == ')':
+                depth -= 1
+                if depth < 0:
+                    return False
+            elif ch == '<':
+                angle += 1
+            elif ch == '>':
+                angle -= 1
+                if angle < 0:
+                    return False
+        return depth == 0 and angle == 0
+
+    depth = angle = 0
+    in_string = False
+    saw_top_level_nonspace = False
+    saw_top_level_space_after_content = False
+    for i, ch in enumerate(s):
+        if ch == '"' and (i == 0 or s[i-1] != '\\'):
+            in_string = not in_string
+            if depth == 0 and angle == 0:
+                if saw_top_level_space_after_content:
+                    return False
+                saw_top_level_nonspace = True
+            continue
+        if in_string:
+            continue
+        if ch == '(':
+            depth += 1
+        elif ch == ')':
+            depth -= 1
+            if depth < 0:
+                return False
+        elif ch == '<':
+            angle += 1
+        elif ch == '>':
+            angle -= 1
+            if angle < 0:
+                return False
+        elif depth == 0 and angle == 0:
+            if ch.isspace():
+                if saw_top_level_nonspace:
+                    saw_top_level_space_after_content = True
+            else:
+                if saw_top_level_space_after_content:
+                    return False
+                saw_top_level_nonspace = True
+    return depth == 0 and angle == 0 and saw_top_level_nonspace
 
 def read_paren_expr(s, i):
     while i < len(s) and s[i].isspace(): i += 1
