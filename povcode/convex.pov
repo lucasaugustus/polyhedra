@@ -1122,15 +1122,7 @@
   addpoint(<0.75,th/2,-h1>)
   addpoint(<0.5,th,0>)
   autobalance()
-  addplane(0,1,2)
-  addplane(5,10,6)
-  addplane(9,3,8)
-  addplane(1,6,7)
-  addplane(10,8,7)
-  addplane(3,2,7)
-  addplane(4,5,1)
-  addplane(4,9,10)
-  addplane(4,0,3)
+  convex_hull()
 #end
 
 #macro addplane(a,b,c)
@@ -1156,23 +1148,8 @@
   addpoint(<3.3333332539, 0, 1.8856180906>) 
   addpoint(<4, 0.66666668653, 0.94280904531>) 
   addpoint(<3.3333332539, 1.3333333731, 1.8856180906>)
-  autobalance() 
-  addplane(1,4,5)
-  addplane(4,1,6)
-  addplane(9,8,7)
-  addplane(8,9,2)
-  addplane(12,0,6)
-  addplane(12,6,1)
-  addplane(12,1,0)
-  addplane(14,10,5)
-  addplane(14,5,4)
-  addplane(14,4,10)
-  addplane(13,2,9)
-  addplane(13,9,3)
-  addplane(13,3,2)
-  addplane(15,8,11)
-  addplane(15,11,7)
-  addplane(15,7,8)
+  autobalance()
+  convex_hull()
 #end
 
 #macro trapezo_rhombic_dodecahedron()
@@ -1275,30 +1252,7 @@
   addpoint(<-C2,  C2,  C2>)
   addpoint(<-C2, -C2, -C2>)
   autobalance()
-  addplane( 0,12, 4)
-  addplane( 1,13, 5)
-  addplane( 2,14, 6)
-  addplane( 3,15, 7)
-  addplane(24,12, 0)
-  addplane(24,20,10)
-  addplane(24,16, 5)
-  addplane(25,13, 1)
-  addplane( 0,12, 4)
-  addplane( 1,13, 5)
-  addplane( 2,14, 6)
-  addplane( 3,15, 7)
-  addplane(24,12, 0)
-  addplane(24,20,10)
-  addplane(24,16, 5)
-  addplane(25,13, 1)
-  addplane(25,21,11)
-  addplane(25,17, 4)
-  addplane(26,14, 2)
-  addplane(26,22, 8)
-  addplane(26,18, 7)
-  addplane(27,15, 3)
-  addplane(27,23, 9)
-  addplane(27,19, 6)
+  convex_hull()
 #end
 
 #macro truncated_trapezohedron(N)
@@ -1446,29 +1400,6 @@
   
 #end
 
-#macro elongated_gyrobifastigium()
-  addpoint(< 1, 1, 1/2>) // 0
-  addpoint(< 1, 1,-1/2>) // 1
-  addpoint(< 1,-1, 1/2>) // 2
-  addpoint(< 1,-1,-1/2>) // 3
-  addpoint(<-1, 1, 1/2>) // 4
-  addpoint(<-1, 1,-1/2>) // 5
-  addpoint(<-1,-1, 1/2>) // 6
-  addpoint(<-1,-1,-1/2>) // 7
-  addpoint(< 1, 0, 2/2>) // 8
-  addpoint(<-1, 0, 2/2>) // 9
-  addpoint(< 0, 1,-2/2>) // 10
-  addpoint(< 0,-1,-2/2>) // 11
-  addplane(0, 1, 2)
-  addplane(0, 1, 4)
-  addplane(4, 6, 7)
-  addplane(2, 6, 7)
-  addplane(0, 8, 9)
-  addplane(6, 8, 9)
-  addplane(1, 10, 11)
-  addplane(7, 10, 11)
-#end
-
 #macro rhombic_enneacontahedron()
   #local C0 = (   -sqrt(3) + sqrt(15)) / 6;
   #local C1 =      sqrt(3)             / 3;
@@ -1571,101 +1502,186 @@
   addpoint(<-C4,  C4, -C4>)
   addpoint(<-C4, -C4,  C4>)
   addpoint(<-C4, -C4, -C4>)
-  
-  addplane(24, 12,  2)
-  addplane(24, 38, 86)
-  addplane(24, 70,  4)
-  addplane(24, 68, 84)
-  addplane(24, 36,  0)
-  addplane(25, 13,  1)
-  addplane(25, 37, 85)
-  addplane(25, 69,  5)
-  addplane(25, 71, 87)
-  addplane(25, 39,  3)
-  addplane(26, 14,  0)
-  addplane(26, 40, 88)
-  addplane(26, 72,  6)
-  addplane(26, 74, 90)
-  addplane(26, 42,  2)
-  addplane(27, 15,  3)
-  addplane(27, 43, 91)
-  addplane(27, 75,  7)
-  addplane(27, 73, 89)
-  addplane(27, 41,  1)
-  addplane(28, 16,  5)
-  addplane(28, 45, 85)
-  addplane(28, 77,  8)
-  addplane(28, 76, 84)
-  addplane(28, 44,  4)
-  addplane(29, 17,  4)
-  addplane(29, 46, 86)
-  addplane(29, 78,  9)
-  addplane(29, 79, 87)
-  addplane(29, 47,  5)
-  addplane(30, 18,  6)
-  addplane(30, 48, 88)
-  addplane(30, 80, 10)
-  addplane(30, 81, 89)
-  addplane(30, 49,  7)
-  addplane(31, 19,  7)
-  addplane(31, 51, 91)
-  addplane(31, 83, 11)
-  addplane(31, 82, 90)
-  addplane(31, 50,  6)
-  addplane(32, 20, 10)
-  addplane(32, 56, 88)
-  addplane(32, 64,  0)
-  addplane(32, 60, 84)
-  addplane(32, 52,  8)
-  addplane(33, 21,  8)
-  addplane(33, 53, 85)
-  addplane(33, 61,  1)
-  addplane(33, 65, 89)
-  addplane(33, 57, 10)
-  addplane(34, 22,  9)
-  addplane(34, 54, 86)
-  addplane(34, 62,  2)
-  addplane(34, 66, 90)
-  addplane(34, 58, 11)
-  addplane(35, 23, 11)
-  addplane(35, 59, 91)
-  addplane(35, 67,  3)
-  addplane(35, 63, 87)
-  addplane(35, 55,  9)
-  addplane( 2, 12,  0)
-  addplane( 3, 15,  1)
-  addplane( 4, 17,  5)
-  addplane( 7, 19,  6)
-  addplane( 8, 21, 10)
-  addplane( 9, 22, 11)
-  addplane(36, 84, 60)
-  addplane(37,  1, 61)
-  addplane(38,  2, 62)
-  addplane(39, 87, 63)
-  addplane(40,  0, 64)
-  addplane(41, 89, 65)
-  addplane(42, 90, 66)
-  addplane(43,  3, 67)
-  addplane(44, 84, 68)
-  addplane(45,  5, 69)
-  addplane(46,  4, 70)
-  addplane(47, 87, 71)
-  addplane(48,  6, 72)
-  addplane(49, 89, 73)
-  addplane(50, 90, 74)
-  addplane(51,  7, 75)
-  addplane(52, 84, 76)
-  addplane(53,  8, 77)
-  addplane(54,  9, 78)
-  addplane(55, 87, 79)
-  addplane(56, 10, 80)
-  addplane(57, 89, 81)
-  addplane(58, 90, 82)
-  addplane(59, 11, 83)
+  autobalance()
+  convex_hull()
 #end
 
-//<<<<<<<<<<<<<<<<< added AGK  [20041101]
+#macro elongated_gyrobifastigium()
+  addpoint(< 1, 1, 1/2>)
+  addpoint(< 1, 1,-1/2>)
+  addpoint(< 1,-1, 1/2>)
+  addpoint(< 1,-1,-1/2>)
+  addpoint(<-1, 1, 1/2>)
+  addpoint(<-1, 1,-1/2>)
+  addpoint(<-1,-1, 1/2>)
+  addpoint(<-1,-1,-1/2>)
+  addpoint(< 1, 0, 2/2>)
+  addpoint(<-1, 0, 2/2>)
+  addpoint(< 0, 1,-2/2>)
+  addpoint(< 0,-1,-2/2>)
+  autobalance()
+  convex_hull()
+#end
 
+#macro convex_hull()
+  #local N    = npoints;
+  #local EPS  = 1e-9;
+  #local MaxF = 2*N;       // Enough for a triangulated 3D convex hull with N points.
+  #local Face    = array[MaxF];
+  #local AffectedEdges = array[3*N];  // Enough for a triangulated 3D convex hull with N points.
+  #local MarkedForDeletion = array[MaxF];
+  #local EdgeMarks = array[N][N]; // The contents will be 0s and 1s.
+  
+  // Initialize Mark[][] to all zeros.
+  #for (i, 0, N-1)
+    #for (j, i+1, N-1)      // Only elements with first index < second index will be used.
+      #local EdgeMarks[i][j] = 0;
+    #end
+  #end
+  
+  // Find 4 non-coplanar points.  Step 1: Find 3 non-collinear points.
+  #local i0 = 0; #local I0 = points[i0];
+  #local i1 = 1; #local I1 = points[i1];
+  #local i2 = 2;
+  #while (vlength(vcross(I1-I0, points[i2]-I0)) < EPS)
+    #local i2 = i2 + 1;
+  #end
+  #local I2 = points[i2];
+  // Now find a fourth point that is non-coplanar with the first 3.
+  #local I01xI02 = vcross(I1-I0, I2-I0);
+  #local i3 = i2 + 1;
+  #while (abs(vdot(points[i3] - I0, I01xI02)) < EPS)
+    #local i3 = i3 + 1;
+  #end
+  #local I3 = points[i3];
+  
+  // The current hull is points i0, i1, i2, and i3.  We will incrementally expand this.
+  // The point "Inside" could be any point inside the current hull; it will stay inside the hull as it expands.
+  #local Inside = (I0 + I1 + I2 + I3) / 4;
+  
+  // Now we build the initial tetrahedron by storing its faces in "Face".
+  // A face ABC is stored in "Face" as a vector, whose elements are the indices of A, B, and C.
+  // The orientation of the face is recorded by the order of the indices:
+  // face <a,b,c> is oriented in the direction of the cross product AB x AC.
+  #if (vdot(vcross(I1-I0, I2-I0), I0-Inside) > EPS)
+    #local Face[0] = <i0,i1,i2>;
+  #else
+    #local Face[0] = <i0,i2,i1>;
+  #end
+  
+  #if (vdot(vcross(I3-I0, I1-I0), I0-Inside) > EPS)
+    #local Face[1] = <i0,i3,i1>;
+  #else
+    #local Face[1] = <i0,i1,i3>;
+  #end
+  
+  #if (vdot(vcross(I2-I0, I3-I0), I0-Inside) > EPS)
+    #local Face[2] = <i0,i2,i3>;
+  #else
+    #local Face[2] = <i0,i3,i2>;
+  #end
+  
+  #if (vdot(vcross(I3-I1, I2-I1), I1-Inside) > EPS)
+    #local Face[3] = <i1,i3,i2>;
+  #else
+    #local Face[3] = <i1,i2,i3>;
+  #end
+  
+  #local Facecount = 4; // The number of faces stores in "Face".
+  
+  // We now select a new point P and expand the hull to it.
+  // We do this by finding those faces that P can see, deleting them, figuring out what the new faces are, and adding those.
+  
+  #local MFD = 0;   // The number of points that get marked for deletion.  This will be reset to zero during each deletion pass.
+  #for (p, 0, N-1)
+    #if ((p != i0) & (p != i1) & (p != i2) & (p != i3))
+      #local P = points[p];
+      
+      // Find those faces that P can see.
+      // Recall that faces are stored with an orientation, pointing outward.
+      // Build a plane's normal vector in that orientation, with its tail on the plane.
+      // Then P can see the plane iff it is on the same side of the plane as the vector's head.
+      #for (f, 0, Facecount-1)
+        #local F = Face[f];
+        #local A = points[F.x];
+        #local B = points[F.y];
+        #local C = points[F.z];
+        // We are now examining the face with index f, which is through points A, B, and C.
+        // The vector AB x AC is normal to it and pointed outwards.
+        // Point P can see face F iff the projection of AP onto AB x AC is positive.
+        #local Side = vdot(P-A, vcross(B-A, C-A));
+        #if (Side > EPS)
+          #local MarkedForDeletion[MFD] = f;
+          #local MFD = MFD + 1;
+        #end
+        // TODO: What if Side == 0?  This can happen when a side has more than 3 vertices.
+        // If we treat the Side == 0 case as if we had Side < 0, then I think everything works out fine.
+      #end // for f.  Thus endeth the face-finding phase.
+      
+      // Delete the marked faces, and track how many times each edge gets affected.
+      #local MarkedEdges = 0;
+      #while (MFD > 0)
+        #local f = MarkedForDeletion[MFD-1];
+        // Face f needs to be removed.  It suffices to overwrite Face[f] with Face[F-1], and then decrement F.
+        
+        // Before removing face f, record which edges are affected.
+        // For each affected edge ab, toggle EdgeMarks[a][b] between 0 and 1.
+        // Each edge is used by exactly two faces.  Therefore,
+        // when the deletion pass is done, the exposed edges will have their EdgeMarks entries at 1,
+        //    while the unaffected and totally-deleted edges will have their EdgeMarks entries at 0.
+        #local F = Face[f];
+        #local xyzx = array[4] {F.x, F.y, F.z, F.x};
+        #for (i, 0, 2)
+          #local a = min(xyzx[i], xyzx[i+1]);
+          #local b = max(xyzx[i], xyzx[i+1]);
+          #local EdgeMarks[a][b] = 1 - EdgeMarks[a][b];
+          #local AffectedEdges[MarkedEdges] = <a,b>;
+          #local MarkedEdges = MarkedEdges + 1;
+        #end
+        
+        #local Face[f] = Face[Facecount-1];
+        #local Facecount = Facecount - 1;
+        #local MFD = MFD - 1;
+      #end // while.  Thus endeth the deletion pass.
+      
+      // Figure out what the new faces are.
+      // Each new triangle will use point P, and the opposite side will be one of the exposed edges.
+      #for (i, 0, MarkedEdges-1)
+        
+        #local Edge = AffectedEdges[i];
+        #local a = Edge.u;
+        #local b = Edge.v;
+        
+        #if (EdgeMarks[a][b])
+          
+          #local A = points[a];
+          #local B = points[b];
+          
+          // Triangle ABP is part of the new increment of the convex hull.
+          // We need to figure out its orientation and store it.
+          // It needs to be stored with the orientation that puts "Inside" on the negative side.
+          
+          #if (vdot(Inside - A, vcross(B-A, P-A)) < 0)
+            #local Face[Facecount] = <a,b,p>;
+          #else
+            #local Face[Facecount] = <b,a,p>;
+          #end
+          #local Facecount = Facecount + 1;
+          
+          #local EdgeMarks[a][b] = 0;
+        #end // if
+        
+      #end // for i.  Thus endeth the new-face-construction phase.
+      
+    #end // if p != i0,i1,i2,i3
+  #end // for p
+  
+  // Emit planes.  Deduplication is handled by addplane().
+  #for (f, 0, Facecount-1)
+    #local F = Face[f];
+    addplane(F.x, F.y, F.z)
+  #end
+#end
 
 #declare points=array[1000];
 #declare tpoints=array[1000];
@@ -1725,9 +1741,9 @@
 #macro addface(d,l)
   #local a=vnormalize(d)/l; 
   #local f=1;
-  #local n=0; #while(n<nfaces-.5)
+  #for (n, 0, nfaces-1)
     #if(vlength(faces[n]-a)<0.00001) #local f=0; #end
-  #local n=n+1; #end
+  #end
   #if(f)
     #declare faces[nfaces]=a;
     #declare nfaces=nfaces+1;
@@ -1746,33 +1762,37 @@
 #macro autoface() //WARNING: ONLY WORKS IF ALL EDGES HAVE EQUAL LENGTH
   //Find edge length 
   #declare elength=1000;
-  #local a=0; #while(a<npoints-.5) #local b=0; #while(b<npoints-.5)
-    #local c=vlength(points[a]-points[b]); #if(c>0.00001 & c<elength) #local elength=c; #end
-  #local b=b+1; #end #local a=a+1; #end
+  #for (a, 0, npoints-1)
+    #for (b, 0, npoints-1)
+      #local c=vlength(points[a]-points[b]); #if(c>0.00001 & c<elength) #local elength=c; #end
+    #end
+  #end
 
         #debug concat("elength=",str(elength,9,9),"\n")    showvtxs()
  
   //Find planes
   //#macro planes()
-  #local a=0; #while(a<npoints-.5)
-    #local b=a+1; #while(b<npoints-.5)
-      #if(vlength(points[a]-points[b])<elength+0.00001) #local c=b+1; #while(c<npoints-.5)
-        #if(vlength(points[a]-points[c])<elength+0.00001)
-          #local n=vnormalize(vcross(points[b]-points[a],points[c]-points[a]));
-          #local d=vdot(n,points[a]);
-          #if(d<0) #local n=-n; #local d=-d; #end
-          #local f=1;
-          #local e=0; #while(e<npoints-.5)
-            #if(vdot(n, points[e])>d+0.00001) #local f=0; #end
-          #local e=e+1; #end
-          #if(f)
-            #declare ld=d;
-            addface(n,d) //plane { n, d }
-          #end
-        #end
-      #local c=c+1; #end #end
-    #local b=b+1; #end
-  #local a=a+1; #end
+  #for (a, 0, npoints-1)
+    #for (b, a+1, npoints-1)
+      #if(vlength(points[a]-points[b])<elength+0.00001)
+        #for (c, b+1, npoints-1)
+          #if(vlength(points[a]-points[c])<elength+0.00001)
+            #local n=vnormalize(vcross(points[b]-points[a],points[c]-points[a]));
+            #local d=vdot(n,points[a]);
+            #if(d<0) #local n=-n; #local d=-d; #end
+            #local f=1;
+            #for (e, 0, npoints-1)
+              #if(vdot(n, points[e])>d+0.00001) #local f=0; #end
+            #end
+            #if(f)
+              #declare ld=d;
+              addface(n,d) //plane { n, d }
+            #end
+          #end // if
+        #end  // for c
+      #end  // if
+    #end  // for b
+  #end  // for a
 #end
 
 This_shape_will_be_drawn()
@@ -1792,15 +1812,18 @@ This_shape_will_be_drawn()
 #if(1)
     //Scale shape to fit in unit sphere
     #local b=0;
-    #local a=0; #while(a<npoints-.5)
-      #local c=vlength(points[a]); #if(c>b) #local b=c; #end
-    #local a=a+1; #end
-    #local a=0; #while(a<npoints-.5)
+    #for (a, 0, npoints-1)
+      #local c=vlength(points[a]);
+      #if(c>b)
+        #local b=c;
+      #end
+    #end
+    #for (a, 0, npoints-1)
       #local points[a]=points[a]/b;
-    #local a=a+1; #end
-    #local a=0; #while(a<nfaces-.5)
+    #end
+    #for (a, 0, nfaces-1)
       #local faces[a]=faces[a]*b;
-    #local a=a+1; #end
+    #end
 #end
 
 //Draw edges
@@ -1814,21 +1837,25 @@ This_shape_will_be_drawn()
   #for (b, 0, npoints-1)
     #if(vdot(faces[a],points[b])>1-0.00001) addp(b) #end
   #end
-  #local c=0; #while(c<np-.5)
-    #local d=0; #while(d<np-.5) #if(p[c]<p[d]-.5)
-      #local f=1;
-      #local e=0; #while(e<np-.5) #if(e!=c & e!=d & vdot(vcross(points[p[c]],points[p[d]]),points[p[e]])<0)
-        #local f=0;
-      #end #local e=e+1; #end
-      #if(f)
-        object {
-          cylinder { points[p[c]], points[p[d]], .01 dorot() }
-          pigment { colour <.3,.3,.3> }
-          finish { ambient 0 diffuse 1 phong 1 }
-        }
-      #end #end        
-    #local d=d+1; #end
-  #local c=c+1; #end
+  #for (c, 0, np-1)
+    #for (d, 0, np-1)
+      #if(p[c]<p[d]-.5)
+        #local f=1;
+        #for (e, 0, np-1)
+          #if(e!=c & e!=d & vdot(vcross(points[p[c]],points[p[d]]),points[p[e]])<0)
+            #local f=0;
+          #end
+        #end // for e
+        #if(f)
+          object {
+            cylinder { points[p[c]], points[p[d]], .01 dorot() }
+            pigment { colour <.3,.3,.3> }
+            finish { ambient 0 diffuse 1 phong 1 }
+          }
+        #end // if
+      #end // if
+    #end // for d
+  #end // #for c
 #end
 /*#local a=0; #while(a<npoints-.5)
   #local b=a+1; #while(b<npoints-.5)
@@ -1842,38 +1869,22 @@ This_shape_will_be_drawn()
   #local b=b+1; #end
 #local a=a+1; #end*/
 
-//>>>>>>>>>>>>>>>>> changed AGK  [20041101]
 //Draw points
-#if (1)
-    #local a=0; #while(a<npoints-.5)
-      object {
-        sphere { points[a], .01 dorot() }
-        pigment { colour <.3,.3,.3> }
-        finish { ambient 0 diffuse 1 phong 1 }
-      }
-    #local a=a+1; #end
-#else
-    #local a=0; #while(a<npoints-.5)
-        #local i=0; 
-        #while(i<=a)
-          object {
-            sphere { (1+i/10)*points[a], .01 dorot() }
-            pigment { colour <.3,.3,.3> }
-            finish { ambient 0 diffuse 1 phong 1 }
-          }
-        #local i=i+1;
-        #end
-    #local a=a+1; #end
-#end
-//<<<<<<<<<<<<<<<<< changed AGK  [20041101]
+union {
+  #for (a, 0, npoints-1)
+    sphere { points[a], .01 dorot() }
+  #end
+  pigment { colour <.3,.3,.3> }
+  finish { ambient 0 diffuse 1 phong 1 }
+}
 
 #if(notwireframe)
 //Draw planes
 object {
   intersection {
-    #local a=0; #while(a<nfaces-.5)
+    #for (a, 0, nfaces-1)
       plane { faces[a], 1/vlength(faces[a]) }
-    #local a=a+1; #end
+    #end
     //planes()
     //sphere { <0,0,0>, 1 }
     //sphere { <0,0,0>, ld+.01 inverse }
@@ -1921,8 +1932,7 @@ background { color <1,1,1> }
     // some auto-framing.  Not for animated versions.
     #declare camera_loc=<0,0,-4.8>;
     #declare max_elevation=0;  #declare max_bearing=0;
-    #declare i=0;
-    #while (i<npoints)
+    #for (i, 0, npoints-1)
         #declare sighting=points[i];
         #declare sighting=vaxis_rotate(sighting,y,rot1*180/pi);
         #declare sighting=vaxis_rotate(sighting,x,rot2*180/pi);
@@ -1934,7 +1944,6 @@ background { color <1,1,1> }
         #declare max_bearing = max(max_bearing,abs(bearing));
     //     sphere{ (camera_loc+<bearing,elevation,1>*10), 0.2 
     //         pigment{ colour rgb <1,0,1> } }
-        #declare i=i+1;
     #end
     #debug concat("Maximum: Elevation = ",str(max_elevation,4,4),"  Bearing = ",str(max_bearing,4,4),"\n")
     #if(1) // 1:1 aspect ratio
