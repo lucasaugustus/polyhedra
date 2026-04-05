@@ -109,7 +109,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 
 # Credits
 
-* The POV-Ray code in `convex.pov` was largely written by Wikipedia users Cyp (https://en.wikipedia.org/wiki/User:Cyp/Poly.pov) and AndrewKepert (https://en.wikipedia.org/wiki/User:AndrewKepert/poly.pov), though some of the solids in it are my contribution.
+* The POV-Ray code in `convex.pov` was largely written by Wikipedia users Cyp (https://en.wikipedia.org/wiki/User:Cyp/Poly.pov) and AndrewKepert (https://en.wikipedia.org/wiki/User:AndrewKepert/poly.pov), though some of the solids in it are my contribution, as is the `convex_hull` macro.
 * The POV-Ray code for the Herschel enneahedron and triakis truncated tetrahedron comes from https://github.com/timhutton/povray-polyhedra.
 * The POV-Ray code for the Kepler-Poinsot solids and compound of five tetrahedra is derived from https://commons.wikimedia.org/wiki/File:GreatStellatedDodecahedron.jpg.  
 * The original POV-Ray code renders only one polyhedron at a time and requires a manual modification for each rendering; I wrote `render.py` to automate everything.
