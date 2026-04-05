@@ -1378,6 +1378,7 @@ def main():
                     face_alpha_scale=args.face_alpha_scale)
     with open(args.output, 'w', encoding='utf-8') as f:
         f.write(svg)
+    print("Wrote", args.output)
 
 
 if __name__ == '__main__':
