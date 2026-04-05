@@ -1110,17 +1110,17 @@
   #local th=sqrt(3)/2;
   #local h1=1/2;
   #local h2=h1*4/3;
-  addpoint(<0.5,0,-h1>)
-  addpoint(<0,0,0>)
-  addpoint(<0.5,0,h1>)
-  addpoint(<1,0,0>)
-  addpoint(<0.5,th/3,-h2>)
-  addpoint(<0.25,th/2,-h1>)
-  addpoint(<0.25,th/2,h1>)
-  addpoint(<0.5,th/3,h2>)
-  addpoint(<0.75,th/2,h1>)
-  addpoint(<0.75,th/2,-h1>)
-  addpoint(<0.5,th,0>)
+  addpoint(< 0.5 ,   0 , -h1 >)
+  addpoint(< 0   ,   0 ,  0  >)
+  addpoint(< 0.5 ,   0 ,  h1 >)
+  addpoint(< 1   ,   0 ,  0  >)
+  addpoint(< 0.5 , th/3, -h2 >)
+  addpoint(< 0.25, th/2, -h1 >)
+  addpoint(< 0.25, th/2,  h1 >)
+  addpoint(< 0.5 , th/3,  h2 >)
+  addpoint(< 0.75, th/2,  h1 >)
+  addpoint(< 0.75, th/2, -h1 >)
+  addpoint(< 0.5 , th  ,  0  >)
   autobalance()
   convex_hull()
 #end
@@ -1131,23 +1131,28 @@
   addface(n,d)
 #end
 
-#macro triakistruncatedtetrahedron()           
-  addpoint(<2.6666667461, 0.33333334327, 1.1785112619>)           
-  addpoint(<3, 0.66666668653, 0.70710676908>)
-  addpoint(<3.6666667461, 0, 1.6499158144>) 
-  addpoint(<3, 0, 1.6499158144>)
-  addpoint(<3.6666667461, 0.66666668653, 0.70710676908>) 
-  addpoint(<4, 0.33333334327, 1.1785112619>)
-  addpoint(<2.6666667461, 1, 1.1785112619>) 
-  addpoint(<3, 1.3333333731, 1.6499158144>)
-  addpoint(<3.3333332539, 1, 2.1213202477>) 
-  addpoint(<3.3333332539, 0.33333334327, 2.1213202477>)
-  addpoint(<4, 1, 1.1785112619>) 
-  addpoint(<3.6666667461, 1.3333333731, 1.6499158144>)
-  addpoint(<2.6666667461, 0.66666668653, 0.94280904531>) 
-  addpoint(<3.3333332539, 0, 1.8856180906>) 
-  addpoint(<4, 0.66666668653, 0.94280904531>) 
-  addpoint(<3.3333332539, 1.3333333731, 1.8856180906>)
+#macro triakistruncatedtetrahedron()
+  addpoint(< 8/3, 1/3, 5/(3*sqrt(2))>)
+  addpoint(< 8/3, 2/3, 4/(3*sqrt(2))>)
+  addpoint(< 8/3, 1  , 5/(3*sqrt(2))>)
+  
+  addpoint(< 3  , 0  , 7/(3*sqrt(2))>)
+  addpoint(< 3  , 2/3, 1/   sqrt(2) >)
+  addpoint(< 3  , 4/3, 7/(3*sqrt(2))>)
+  
+  addpoint(<10/3, 0  , 8/(3*sqrt(2))>)
+  addpoint(<10/3, 1/3, 3/   sqrt(2) >)
+  addpoint(<10/3, 1  , 3/   sqrt(2) >)
+  addpoint(<10/3, 4/3, 8/(3*sqrt(2))>)
+  
+  addpoint(<11/3, 0  , 7/(3*sqrt(2))>)
+  addpoint(<11/3, 2/3, 1/   sqrt(2) >)
+  addpoint(<11/3, 4/3, 7/(3*sqrt(2))>)
+  
+  addpoint(< 4  , 1/3, 5/(3*sqrt(2))>)
+  addpoint(< 4  , 2/3, 4/(3*sqrt(2))>)
+  addpoint(< 4  , 1  , 5/(3*sqrt(2))>)
+  
   autobalance()
   convex_hull()
 #end
@@ -1223,34 +1228,21 @@
   #local C2 =  1 / sqrt(  3);
   #local C3 = 11 / sqrt(243);
   #local C4 =  5 / sqrt( 27);
-  addpoint(< C1,  C1,  C4>)
-  addpoint(< C1, -C1, -C4>)
-  addpoint(<-C1, -C1,  C4>)
-  addpoint(<-C1,  C1, -C4>)
-  addpoint(< C4,  C1,  C1>)
-  addpoint(< C4, -C1, -C1>)
-  addpoint(<-C4, -C1,  C1>)
-  addpoint(<-C4,  C1, -C1>)
-  addpoint(< C1,  C4,  C1>)
-  addpoint(< C1, -C4, -C1>)
-  addpoint(<-C1, -C4,  C1>)
-  addpoint(<-C1,  C4, -C1>)
-  addpoint(< C3, -C0,  C3>)
-  addpoint(< C3,  C0, -C3>)
-  addpoint(<-C3,  C0,  C3>)
-  addpoint(<-C3, -C0, -C3>)
-  addpoint(< C3, -C3,  C0>)
-  addpoint(< C3,  C3, -C0>)
-  addpoint(<-C3,  C3,  C0>)
-  addpoint(<-C3, -C3, -C0>)
-  addpoint(< C0, -C3,  C3>)
-  addpoint(< C0,  C3, -C3>)
-  addpoint(<-C0,  C3,  C3>)
-  addpoint(<-C0, -C3, -C3>)
-  addpoint(< C2, -C2,  C2>)
-  addpoint(< C2,  C2, -C2>)
-  addpoint(<-C2,  C2,  C2>)
+  
+  addevenperms(< C1,  C1,  C4>)
+  addevenperms(< C1, -C1, -C4>)
+  addevenperms(<-C1, -C1,  C4>)
+  addevenperms(<-C1,  C1, -C4>)
+  
+  addevenperms(< C3, -C0,  C3>)
+  addevenperms(< C3,  C0, -C3>)
+  addevenperms(<-C3,  C0,  C3>)
+  addevenperms(<-C3, -C0, -C3>)
+  
+  addevenperms(< C2, -C2,  C2>)
+  
   addpoint(<-C2, -C2, -C2>)
+  
   autobalance()
   convex_hull()
 #end
@@ -1308,7 +1300,6 @@
   #for (I, 1, 2*N-1, 2)
     addpoint(<cos(I * pi/N), sin(I * pi/N), -c>)
   #end
-  
   
   #local A = points[0]; // <1, 0, c>
   #local B = points[1];
@@ -1371,7 +1362,6 @@
     addpoint(<r2 * cos(I * pi/N), r2 * sin(I * pi/N), -c>)
   #end
   
-  
   #local A = points[0]; // <r1, 0, c>
   #local B = points[1];
   #local C = points[N];
@@ -1410,111 +1400,19 @@
   #local C6 = (5 * sqrt(3) + sqrt(15)) / 6;
   #local C7 = (2 * sqrt(3) + sqrt(15)) / 3;
   
-  addpoint(< 0 ,  C2,  C7>)
-  addpoint(< 0 ,  C2, -C7>)
-  addpoint(< 0 , -C2,  C7>)
-  addpoint(< 0 , -C2, -C7>)
-  addpoint(< C7,  0 ,  C2>)
-  addpoint(< C7,  0 , -C2>)
-  addpoint(<-C7,  0 ,  C2>)
-  addpoint(<-C7,  0 , -C2>)
-  addpoint(< C2,  C7,  0 >)
-  addpoint(< C2, -C7,  0 >)
-  addpoint(<-C2,  C7,  0 >)
-  addpoint(<-C2, -C7,  0 >)
-  addpoint(< C0,  0 ,  C7>)
-  addpoint(< C0,  0 , -C7>)
-  addpoint(<-C0,  0 ,  C7>)
-  addpoint(<-C0,  0 , -C7>)
-  addpoint(< C7,  C0,  0 >)
-  addpoint(< C7, -C0,  0 >)
-  addpoint(<-C7,  C0,  0 >)
-  addpoint(<-C7, -C0,  0 >)
-  addpoint(< 0 ,  C7,  C0>)
-  addpoint(< 0 ,  C7, -C0>)
-  addpoint(< 0 , -C7,  C0>)
-  addpoint(< 0 , -C7, -C0>)
-  addpoint(< C3,  0 ,  C6>)
-  addpoint(< C3,  0 , -C6>)
-  addpoint(<-C3,  0 ,  C6>)
-  addpoint(<-C3,  0 , -C6>)
-  addpoint(< C6,  C3,  0 >)
-  addpoint(< C6, -C3,  0 >)
-  addpoint(<-C6,  C3,  0 >)
-  addpoint(<-C6, -C3,  0 >)
-  addpoint(< 0 ,  C6,  C3>)
-  addpoint(< 0 ,  C6, -C3>)
-  addpoint(< 0 , -C6,  C3>)
-  addpoint(< 0 , -C6, -C3>)
-  addpoint(< C2,  C2,  C6>)
-  addpoint(< C2,  C2, -C6>)
-  addpoint(< C2, -C2,  C6>)
-  addpoint(< C2, -C2, -C6>)
-  addpoint(<-C2,  C2,  C6>)
-  addpoint(<-C2,  C2, -C6>)
-  addpoint(<-C2, -C2,  C6>)
-  addpoint(<-C2, -C2, -C6>)
-  addpoint(< C6,  C2,  C2>)
-  addpoint(< C6,  C2, -C2>)
-  addpoint(< C6, -C2,  C2>)
-  addpoint(< C6, -C2, -C2>)
-  addpoint(<-C6,  C2,  C2>)
-  addpoint(<-C6,  C2, -C2>)
-  addpoint(<-C6, -C2,  C2>)
-  addpoint(<-C6, -C2, -C2>)
-  addpoint(< C2,  C6,  C2>)
-  addpoint(< C2,  C6, -C2>)
-  addpoint(< C2, -C6,  C2>)
-  addpoint(< C2, -C6, -C2>)
-  addpoint(<-C2,  C6,  C2>)
-  addpoint(<-C2,  C6, -C2>)
-  addpoint(<-C2, -C6,  C2>)
-  addpoint(<-C2, -C6, -C2>)
-  addpoint(< C1,  C4,  C5>)
-  addpoint(< C1,  C4, -C5>)
-  addpoint(< C1, -C4,  C5>)
-  addpoint(< C1, -C4, -C5>)
-  addpoint(<-C1,  C4,  C5>)
-  addpoint(<-C1,  C4, -C5>)
-  addpoint(<-C1, -C4,  C5>)
-  addpoint(<-C1, -C4, -C5>)
-  addpoint(< C5,  C1,  C4>)
-  addpoint(< C5,  C1, -C4>)
-  addpoint(< C5, -C1,  C4>)
-  addpoint(< C5, -C1, -C4>)
-  addpoint(<-C5,  C1,  C4>)
-  addpoint(<-C5,  C1, -C4>)
-  addpoint(<-C5, -C1,  C4>)
-  addpoint(<-C5, -C1, -C4>)
-  addpoint(< C4,  C5,  C1>)
-  addpoint(< C4,  C5, -C1>)
-  addpoint(< C4, -C5,  C1>)
-  addpoint(< C4, -C5, -C1>)
-  addpoint(<-C4,  C5,  C1>)
-  addpoint(<-C4,  C5, -C1>)
-  addpoint(<-C4, -C5,  C1>)
-  addpoint(<-C4, -C5, -C1>)
-  addpoint(< C4,  C4,  C4>)
-  addpoint(< C4,  C4, -C4>)
-  addpoint(< C4, -C4,  C4>)
-  addpoint(< C4, -C4, -C4>)
-  addpoint(<-C4,  C4,  C4>)
-  addpoint(<-C4,  C4, -C4>)
-  addpoint(<-C4, -C4,  C4>)
-  addpoint(<-C4, -C4, -C4>)
+  addevenpermssgn(< 0, C7, C0>, <0,1,1>)
+  addevenpermssgn(< 0, C2, C7>, <0,1,1>)
+  addevenpermssgn(< 0, C6, C3>, <0,1,1>)
+  addevenpermssgn(<C2, C2, C6>, <1,1,1>)
+  addevenpermssgn(<C1, C4, C5>, <1,1,1>)
+  addpointssgn(   <C4, C4, C4>, <1,1,1>)
+  
   autobalance()
   convex_hull()
 #end
 
 #macro elongated_gyrobifastigium()
-  addpoint(< 1, 1, 1/2>)
-  addpoint(< 1, 1,-1/2>)
-  addpoint(< 1,-1, 1/2>)
-  addpoint(< 1,-1,-1/2>)
-  addpoint(<-1, 1, 1/2>)
-  addpoint(<-1, 1,-1/2>)
-  addpoint(<-1,-1, 1/2>)
-  addpoint(<-1,-1,-1/2>)
+  addpointssgn(<1,1,1/2>, <1,1,1>)
   addpoint(< 1, 0, 2/2>)
   addpoint(<-1, 0, 2/2>)
   addpoint(< 0, 1,-2/2>)
@@ -1524,13 +1422,14 @@
 #end
 
 #macro convex_hull()
+  // This is an incremental convex-hull algorithm.  It should run in O(N^2) time.
   #local N    = npoints;
   #local EPS  = 1e-9;
-  #local MaxF = 2*N;       // Enough for a triangulated 3D convex hull with N points.
-  #local Face    = array[MaxF];
-  #local AffectedEdges = array[3*N];  // Enough for a triangulated 3D convex hull with N points.
+  #local MaxF = 2*N;    // Enough for a triangulated 3D convex hull with N points.
+  #local Face              = array[MaxF];
+  #local AffectedEdges     = array[3*N];    // Enough for a triangulated 3D convex hull with N points.
   #local MarkedForDeletion = array[MaxF];
-  #local EdgeMarks = array[N][N]; // The contents will be 0s and 1s.
+  #local EdgeMarks         = array[N][N];   // The contents will be 0s and 1s.
   
   // Initialize Mark[][] to all zeros.
   #for (i, 0, N-1)
@@ -1682,6 +1581,9 @@
     addplane(F.x, F.y, F.z)
   #end
 #end
+
+
+
 
 #declare points=array[1000];
 #declare tpoints=array[1000];
