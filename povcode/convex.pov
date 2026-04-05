@@ -1441,28 +1441,15 @@
   // A face ABC is stored in "Face" as a vector, whose elements are the indices of A, B, and C.
   // The orientation of the face is recorded by the order of the indices:
   // face <a,b,c> is oriented in the direction of the cross product AB x AC.
-  #if (vdot(vcross(I1-I0, I2-I0), I0-Inside) > EPS)
-    #local Face[0] = <i0,i1,i2>;
-  #else
-    #local Face[0] = <i0,i2,i1>;
-  #end
-  
-  #if (vdot(vcross(I3-I0, I1-I0), I0-Inside) > EPS)
-    #local Face[1] = <i0,i3,i1>;
-  #else
-    #local Face[1] = <i0,i1,i3>;
-  #end
-  
-  #if (vdot(vcross(I2-I0, I3-I0), I0-Inside) > EPS)
-    #local Face[2] = <i0,i2,i3>;
-  #else
-    #local Face[2] = <i0,i3,i2>;
-  #end
-  
-  #if (vdot(vcross(I3-I1, I2-I1), I1-Inside) > EPS)
-    #local Face[3] = <i1,i3,i2>;
-  #else
-    #local Face[3] = <i1,i2,i3>;
+  #local A = array[4] {I0, I0, I0, I1}; #local a = array[4] {i0, i0, i0, i1}
+  #local B = array[4] {I1, I3, I2, I3}; #local b = array[4] {i1, i3, i2, i3}
+  #local C = array[4] {I2, I1, I3, I2}; #local c = array[4] {i2, i1, i3, i2}
+  #for (i, 0, 3)
+    #if (vdot(vcross(B[i]-A[i], C[i]-A[i]), A[i]-Inside) > EPS)
+      #local Face[i] = <a[i],b[i],c[i]>;
+    #else
+      #local Face[i] = <a[i],c[i],b[i]>;
+    #end
   #end
   
   #local Facecount = 4; // The number of faces stores in "Face".
