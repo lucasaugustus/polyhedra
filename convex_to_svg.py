@@ -142,7 +142,7 @@ TOKEN_RE = re.compile(
         \#\w+ |
         "(?:\\.|[^"])*" |
         \d+\.\d*|\.\d+|\d+\.\d*[eE][+\-]?\d+|\d+[eE][+\-]?\d+|\d+ |
-        <=|>=|!=|==|\|\||&&|[+\-*/=(),;\[\].&<>|] |
+        <=|>=|!=|==|\|\||&&|[+\-*/=(),;\[\].&<>|{}] |
         [A-Za-z_][A-Za-z0-9_]*
     )''',
     re.X | re.S,
@@ -366,8 +366,10 @@ class Parser:
             a = self.parse_expr(stop_tokens={',','>'})
             self.pop(',')
             b = self.parse_expr(stop_tokens={',','>'})
-            self.pop(',')
-            c = self.parse_expr(stop_tokens={',','>'})
+            if self.maybe(','):
+                c = self.parse_expr(stop_tokens={',','>'})
+            else:
+                c = Expr('num', 0.0)
             self.pop('>')
             left = Expr('vec', args=[a, b, c])
         elif tok == '-':
@@ -383,7 +385,17 @@ class Parser:
             while self.maybe('['):
                 dims.append(self.parse_expr(stop_tokens={']'}))
                 self.pop(']')
-            left = Expr('array', args=dims)
+            if self.maybe('{'):
+                items = []
+                if self.peek() != '}':
+                    while True:
+                        items.append(self.parse_expr(stop_tokens={',','}'}))
+                        if not self.maybe(','):
+                            break
+                self.pop('}')
+                left = Expr('array_init', args=(dims, items))
+            else:
+                left = Expr('array', args=dims)
         else:
             left = Expr('name', tok)
 
@@ -495,11 +507,28 @@ class Env:
                     return [None for _ in range(ds[0])]
                 return [make(ds[1:]) for _ in range(ds[0])]
             return make(dims)
+        if k == 'array_init':
+            dims_exprs, items_exprs = e.args
+            dims = [int(round(float(self.eval_expr(a)))) for a in dims_exprs]
+            items = [self.eval_expr(a) for a in items_exprs]
+            if len(dims) != 1:
+                raise NotImplementedError('Only one-dimensional array initializers are supported')
+            n = dims[0]
+            arr = [None for _ in range(n)]
+            for i, item in enumerate(items[:n]):
+                arr[i] = item
+            return arr
         if k == 'neg':
             return -self.eval_expr(e.value)
         if k == 'attr':
             obj = self.eval_expr(e.value)
-            return getattr(obj, e.args)
+            attr = e.args
+            if isinstance(obj, Vec):
+                if attr == 'u':
+                    attr = 'x'
+                elif attr == 'v':
+                    attr = 'y'
+            return getattr(obj, attr)
         if k == 'index':
             arr = self.eval_expr(e.value)
             idx = int(round(float(self.eval_expr(e.args))))
