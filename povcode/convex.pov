@@ -1081,17 +1081,17 @@
   #local th=sqrt(3)/2;
   #local h1=1/2;
   #local h2=h1*4/3;
-  addpoint(< 0.5 ,   0 , -h1 >)
-  addpoint(< 0   ,   0 ,  0  >)
-  addpoint(< 0.5 ,   0 ,  h1 >)
-  addpoint(< 1   ,   0 ,  0  >)
-  addpoint(< 0.5 , th/3, -h2 >)
-  addpoint(< 0.25, th/2, -h1 >)
-  addpoint(< 0.25, th/2,  h1 >)
-  addpoint(< 0.5 , th/3,  h2 >)
-  addpoint(< 0.75, th/2,  h1 >)
-  addpoint(< 0.75, th/2, -h1 >)
-  addpoint(< 0.5 , th  ,  0  >)
+  addpoint(< 1/2,   0 , -h1 >)
+  addpoint(<  0 ,   0 ,  0  >)
+  addpoint(< 1/2,   0 ,  h1 >)
+  addpoint(<  1 ,   0 ,  0  >)
+  addpoint(< 1/2, th/3, -h2 >)
+  addpoint(< 1/4, th/2, -h1 >)
+  addpoint(< 1/4, th/2,  h1 >)
+  addpoint(< 1/2, th/3,  h2 >)
+  addpoint(< 3/4, th/2,  h1 >)
+  addpoint(< 3/4, th/2, -h1 >)
+  addpoint(< 1/2, th  ,  0  >)
   autobalance()
   convex_hull()
 #end
@@ -1227,7 +1227,6 @@
   //    C == < cos(pi/N), sin(pi/N), -c >,
   // using the labels that we will give them below.  The distance between these points is
   // sqrt((1 - cos(pi/N))^2 + sin(pi/N)^2 + 4c^2)
-  // == sqrt( 1 - 2 * cos(pi/N) + 1 + 4c^2)
   // == sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                       (1)
   // The apex will be at z == c * cot(pi/(2*N))^2.
   // The neighbour of A on the upper main ring will be
@@ -1235,15 +1234,9 @@
   // == < q , 0 , c + z - z*q >.
   // The distance bewteen these points is
   // sqrt( (q-1)^2 + (0-0)^2 + (c + z - z*q - c)^2 )
-  // == sqrt( (q-1)^2 + (z - z*q)^2 )
-  // == sqrt( (q-1)^2 + z^2 * (1-q)^2 )
-  // == sqrt( (1+z^2) * (q-1)^2 )
-  // == sqrt(1+z^2) * abs(q-1)
-  // == sqrt(1+z^2) * (1-q)
   // == sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )         (2)
   // For aesthetics, I want (1) and (2) to be equal:
   // sqrt( 4c^2 + 2 - 2 * cos(pi/N) )    ==    sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )
-  // sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )    ==      1 - q
   // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
   
   // As below, let A == <1, 0, c> be a point on the upper middle ring.
@@ -1253,8 +1246,6 @@
   // AD  ==  <1,0,c> - <cos(pi/N), -sin(pi/N), -c>  == < 1 - cos(pi/N) ,  sin(pi/N) , 2c >
   // For the angle to be right, we need AC (dot) AD == 0:
   // 0 == (1 - cos(pi/N))^2 - sin(pi/N)^2 + 4c^2
-  // 0 == 1 - 2*cos(pi/N) + cos(pi/N)^2 - sin(pi/N)^2 + 4c^2
-  // 4c^2 = 2 * cos(pi/N) - cos(2*pi/N) - 1
   // c == sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2
   
   #local c = sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2;
@@ -1275,19 +1266,14 @@
   #local A = points[0]; // <1, 0, c>
   #local B = points[1];
   #local C = points[N];
-  #local AB = A - B;
-  #local AC = A - C;
-  #local ABxAC = vcross(AB, AC);
+  #local ABxAC = vcross(B-A, C-A);
   
   // The plane containing A, B, and C has equation
   // ABxAC.x * (x - A.x)  +  ABxAC.y * (y - A.y)  +  ABxAC.z * (z - A.z)  == 0
   // ABxAC.x * (x -  1 )  +  ABxAC.y * (y -  0 )  +  ABxAC.z * (z -  c )  == 0
   // The +z apex of the solid is this plane's z-intercept.
   // ABxAC.x * (0 -  1 )  +  ABxAC.y * (0 -  0 )  +  ABxAC.z * (z -  c )  == 0
-  // -ABxAC.x             +            0          +  ABxAC.z * (z -  c )  == 0
-  // ABxAC.z * (z -  c ) ==     ABxAC.x
-  //            z -  c   ==     ABxAC.x / ABxAC.z
-  //            z        == c + ABxAC.x / ABxAC.z
+  // z == c + ABxAC.x / ABxAC.z
   
   #local Apex = <0, 0, c + ABxAC.x / ABxAC.z>;
   // The upper upper ring will be the weighted average of the upper middle ring and Apex,
@@ -1336,19 +1322,9 @@
   #local A = points[0]; // <r1, 0, c>
   #local B = points[1];
   #local C = points[N];
-  #local AB = A - B;
-  #local AC = A - C;
-  #local ABxAC = vcross(AB, AC);
+  #local ABxAC = vcross(B-A, C-A);
   
-  // The plane containing A, B, and C has equation
-  // ABxAC.x * (x - A.x)  +  ABxAC.y * (y - A.y)  +  ABxAC.z * (z - A.z)  == 0
-  // ABxAC.x * (x - r1 )  +  ABxAC.y * (y -  0 )  +  ABxAC.z * (z -  c )  == 0
-  // The +z apex of the solid is this plane's z-intercept.
-  // ABxAC.x * (0 - r1 )  +  ABxAC.y * (0 -  0 )  +  ABxAC.z * (z -  c )  == 0
-  // -ABxAC.x * r1        +            0          +  ABxAC.z * (z -  c )  == 0
-  // ABxAC.z * (z -  c ) ==     ABxAC.x * r1
-  //            z -  c   ==     ABxAC.x * r1 / ABxAC.z
-  //            z        == c + ABxAC.x * r1 / ABxAC.z
+  // As with truncated_tetrahedron, the apex of the solid is z == c + ABxAC.x * r1 / ABxAC.z.
   
   addpoint(<0, 0, c + ABxAC.x * r1 / ABxAC.z>)
   
@@ -1445,7 +1421,7 @@
   #local B = array[4] {I1, I3, I2, I3}; #local b = array[4] {i1, i3, i2, i3}
   #local C = array[4] {I2, I1, I3, I2}; #local c = array[4] {i2, i1, i3, i2}
   #for (i, 0, 3)
-    #if (vdot(vcross(B[i]-A[i], C[i]-A[i]), A[i]-Inside) > EPS)
+    #if (vdot(vcross(B[i]-A[i], C[i]-A[i]), A[i]-Inside) > 0)
       #local Face[i] = <a[i],b[i],c[i]>;
     #else
       #local Face[i] = <a[i],c[i],b[i]>;
