@@ -15,46 +15,46 @@
 
 #macro tetrahedron()
   addpointsevensgn(<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro hexahedron()
   addpointssgn(<1,1,1>,<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro octahedron()
   addevenpermssgn(<1,0,0>,<1,0,0>)
-  autoface()
+  convex_hull()
 #end
 
 #macro dodecahedron()
   addpointssgn(<1,1,1>,<1,1,1>)
   addevenpermssgn(<0,1/tau,tau>,<0,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro icosahedron()
   addevenpermssgn(<0,1,tau>,<0,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 
 #macro weirdahedron()
   addpermssgn(<1,2,3>,<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 
 #macro cuboctahedron()
   addevenpermssgn(<0,1,1>,<0,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro icosidodecahedron()
   addevenpermssgn(<0,0,2*tau>,<0,0,1>)
   addevenpermssgn(<1,tau,1+tau>,<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 
@@ -64,7 +64,7 @@
 // augment(6,points[3],points[0],points[1])
     augment(6,points[0],points[1],points[4])
   #end
-  autoface()
+  convex_hull()
 #end
 
 #macro truncatedhexahedron(augmentation)
@@ -73,7 +73,7 @@
     #case(2) augment(8,points[7],points[23],points[22])
     #case(1) augment(8,points[16],points[0],points[1])
   #end
-  autoface()
+  convex_hull()
 #end
 
 #macro truncated_cube()
@@ -90,7 +90,7 @@
 
 #macro truncatedoctahedron()
   addpermssgn(<0,1,2>,<0,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro truncateddodecahedron(augmentation)
@@ -106,32 +106,32 @@
             #case(-2) augment(10,points[32],points[10],points[9])  // towards (-tau,1,0) -- on paradi
         #end
     #end
-    autoface()
+    convex_hull()
 #end
 
 #macro truncatedicosahedron()
   addevenpermssgn(<0,1,3*tau>,<0,1,1>)
   addevenpermssgn(<2,1+2*tau,tau>,<1,1,1>)
   addevenpermssgn(<1,2+tau,2*tau>,<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 
 #macro rhombicuboctahedron()
   addevenpermssgn(<1+sq2,1,1>,<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro truncatedcuboctahedron()
   addpermssgn(<1,1+sq2,1+sq2*2>,<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro rhombicosidodecahedron()
   addevenpermssgn(<1,1,1+2*tau>,<1,1,1>)
   addevenpermssgn(<tau,2*tau,1+tau>,<1,1,1>)
   addevenpermssgn(<2+tau,0,1+tau>,<1,0,1>)
-  autoface()
+  convex_hull()
 #end
 
 #macro truncatedicosidodecahedron()
@@ -140,13 +140,13 @@
   addevenpermssgn(<1/tau,1+tau,3*tau-1>,<1,1,1>)
   addevenpermssgn(<2*tau-1,2,2+tau>,<1,1,1>)
   addevenpermssgn(<tau,3,2*tau>,<1,1,1>)
-  autoface()
+  convex_hull()
 #end
 
 
 #macro snubhexahedron(s)
   addpermsaltsgn(<1,1/xi,xi>*s)
-  autoface()
+  convex_hull()
 #end
 
 #macro snub_cube(s)
@@ -159,7 +159,7 @@
   addevenpermsevensgn(<-alfa/tau+veta*tau+1,-alfa+veta/tau-tau,alfa*tau+veta-1/tau>*s)
   addevenpermsevensgn(<-alfa/tau+veta*tau-1,alfa-veta/tau-tau,alfa*tau+veta+1/tau>*s)
   addevenpermsevensgn(<alfa+veta/tau-tau,alfa*tau-veta+1/tau,alfa/tau+veta*tau+1>*s)
-  autoface()
+  convex_hull()
 #end
 
 #macro rhombicdodecahedron()
@@ -235,11 +235,11 @@
   #local a=-a; #local b=b+1; #end
 #end
 #macro rprism(n)
-  rprism_vtx(n) autoface()
+  rprism_vtx(n) convex_hull()
 #end
 #macro antiprism(n)
   antiprism_vtx(n)
-  autoface()
+  convex_hull()
 #end
 //<<<<<<<<<<<<<<<<< changed AGK  [20041101]
 
@@ -334,34 +334,6 @@
     #end
 #end
 
-#macro drawit()
-    #local i=0;
-    #while (i<npoints)
-        sphere { points[i], .05 dorot()
-            pigment { colour <.3,.3,.3> }
-            finish { ambient 0 diffuse 1 phong 1 } }
-        #local j=0;
-        #while (j<npoints)
-            #ifdef(edgelen[i][j])
-                #local dist=vlength(points[i]-points[j]);
-                cylinder { points[i],points[j], .02    dorot()
-                    pigment {
-                        #switch (dist-edgelen[i][j])
-                        #range (-999,-0.1) colour <1,0,0>  #break
-                        #range (0.1,999)   colour <0,0,1>  #break
-                        #else
-                        colour <.3,.3,.3>
-                        #end
-                    #debug concat("Edge ",str(i,0,0)," & ",str(j,0,0)," has length ",str(dist,5,5)," want length ",str(edgelen[i][j],5,5),"\n")
-                        }
-                    finish { ambient 0 diffuse 1 phong 1 } }
-            #end
-            #local j=j+1;
-        #end
-        #local i=i+1;
-    #end
-#end
-
 //--------------- macros to find "sporadic" Johnson solids via iterative optimisation kludge
 #declare el=1;
 #declare edgelen=array[120][120];
@@ -380,7 +352,7 @@
     make_triangle(a,b,f) make_square(b,c,e,f) make_triangle(c,d,e)
 #end
 #macro optimise(gen_threshold,force_threshold)
-    #local gen=0;  #local maxforce=force_threshold+1; 
+    #local gen=0;  #local maxforce=force_threshold+1;
     #while ((gen<gen_threshold) & (maxforce>force_threshold))
         #debug concat("Gen ",str(gen,0,0)," ")
 //     showvtxs()
@@ -415,59 +387,59 @@
 // J1 = square_pyramid (octahedron with vtx dropped)
 #macro square_pyramid()
   addevenpermssgn(<1,0,0>,<1,0,0>) drop_vtx(99)
-  autobalance()  autoface()
+  autobalance()  convex_hull()
 #end
 // J2 = pentagonal_pyramid (six vtxs of an icosahedron)
 #macro pentagonal_pyramid()
     addevenpermssgn(<0,1,tau>,<0,1,1>) drop_halfspace(points[0],0)
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 // ----------------- cuboctahedron modifications J - 3, 18, 22, 27, 35, 36, 44
 // J3 = triangular_cupola (9 vtxs of a cuboctahedron)
 #macro triangular_cupola()
     polygon_vtx(6)
     augment(6,points[0],points[1],points[2])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro triangular_gyrobicupola()   //actually a cuboctahedron
     polygon_vtx(6)
     augment(6,points[0],points[1],points[2])
     augment(6,points[2],points[1],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro elongated_triangular_cupola()   //J18
     rprism_vtx(6)
     augment(6,points[1],points[3],points[5])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro gyroelongated_triangular_cupola()   //J22
     antiprism_vtx(6)
     augment(6,points[1],points[3],points[5])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro triangular_orthobicupola()  //J27
     polygon_vtx(6)
     augment(6,points[0],points[1],points[2])
     augment(6,points[3],points[2],points[1])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro elongated_triangular_orthobicupola()    //J35
     rprism_vtx(6)
     augment(6,points[1],points[3],points[5])
     augment(6,points[6],points[4],points[2])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro elongated_triangular_gyrobicupola() //J36
     rprism_vtx(6)
     augment(6,points[1],points[3],points[5])
     augment(6,points[4],points[2],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro gyroelongated_triangular_bicupola() //J44
     antiprism_vtx(6)
     augment(6,points[1],points[3],points[5])
     augment(6,points[4],points[2],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 // two triangular prisms
@@ -475,13 +447,13 @@
     addpointssgn(<1,1,0>,<1,1,0>)
     addpointssgn(<1,0,sqrt(3)>,<1,0,0>)
     addpointssgn(<0,1,-sqrt(3)>,<0,1,0>)
-    autobalance()  autoface()
-#end   
+    autobalance()  convex_hull()
+#end
 //---------------- miscellaneous cut and pasting
 #macro elongated_pyramid(n)    // J7-9 (for n=3,4,5)
     rprism_vtx(n)
     augment(n,points[4],points[2],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 #macro elongated_triangular_pyramid()
@@ -500,13 +472,13 @@
     polygon_vtx(n)
     augment(n,points[0],points[1],points[2])
     augment(n,points[2],points[1],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro elongated_dipyramid(n)  // J14-16 (for n=3,4,5)
     rprism_vtx(n)
     augment(n,points[4],points[2],points[0])
     augment(n,points[1],points[3],points[5])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro elongated_triangular_dipyramid() elongated_dipyramid(3) #end    // J7
 #macro elongated_square_dipyramid() elongated_dipyramid(4) #end    // J8
@@ -555,25 +527,25 @@
     autobalance()
 #end
 // Now the named macros of these modified rhombicuboctahedron
-#macro square_cupola()                 rhombicuboctahedron_mod(4)  autoface() #end //  J4
-#macro elongated_square_cupola()       rhombicuboctahedron_mod(19) autoface() #end //  J19
-#macro gyroelongated_square_cupola()   rhombicuboctahedron_mod(23) autoface() #end //  J23
-#macro square_orthobicupola()          rhombicuboctahedron_mod(28) autoface() #end //  J28
-#macro square_gyrobicupola()           rhombicuboctahedron_mod(29) autoface() #end //  J29
-#macro elongated_square_gyrobicupola() rhombicuboctahedron_mod(37) autoface() #end //  J37
-#macro gyroelongated_square_bicupola() rhombicuboctahedron_mod(45) autoface() #end //  J45
+#macro square_cupola()                 rhombicuboctahedron_mod(4)  convex_hull() #end //  J4
+#macro elongated_square_cupola()       rhombicuboctahedron_mod(19) convex_hull() #end //  J19
+#macro gyroelongated_square_cupola()   rhombicuboctahedron_mod(23) convex_hull() #end //  J23
+#macro square_orthobicupola()          rhombicuboctahedron_mod(28) convex_hull() #end //  J28
+#macro square_gyrobicupola()           rhombicuboctahedron_mod(29) convex_hull() #end //  J29
+#macro elongated_square_gyrobicupola() rhombicuboctahedron_mod(37) convex_hull() #end //  J37
+#macro gyroelongated_square_bicupola() rhombicuboctahedron_mod(45) convex_hull() #end //  J45
 
 #macro elongated_square_cupola_alt()   //  J19
     rprism_vtx(8)
     augment(8,points[4],points[2],points[0])
-    autoface() #end
+    convex_hull() #end
 
 // J10.    (cap a square antiprism)
 #macro gyroelongated_square_pyramid()
   antiprism_vtx(4)
   #local  va=points[1];
   addpoint(<0,0,-(abs(va.z)+1)>)
-  autoface()
+  convex_hull()
 #end
 // J17.    (bicap a square antiprism)
 #macro gyroelongated_square_dipyramid()
@@ -581,7 +553,7 @@
   #local  va=points[1];
   addpoint(<0,0,abs(va.z)+1>)
   addpoint(<0,0,-(abs(va.z)+1)>)
-  autoface()
+  convex_hull()
 #end
 
 // ----------------- icosahedron modifications
@@ -589,14 +561,14 @@
 #macro gyroelongated_pentagonal_pyramid()
   addevenpermssgn(<0,1,tau>,<0,1,1>)
   drop_vtx(99)
-  autoface()
+  convex_hull()
 #end
 // J62.    (drop 2 vertices from an icosahedron)
 #macro metabidiminished_icosahedron()
   addevenpermssgn(<0,1,tau>,<0,1,1>)
   drop_vtx(99)
   drop_vtx(6)
-  autoface()
+  convex_hull()
 #end
 // J63.    (drop 3 vertices from an icosahedron)
 #macro tridiminished_icosahedron()
@@ -604,7 +576,7 @@
   drop_vtx(99)
   drop_vtx(6)
   drop_vtx(0)  // 5 OK too
-  autoface()
+  convex_hull()
 #end
 // J64.    (drop 3 vertices from an icosahedron, add a tetrahedron)
 #macro augmented_tridiminished_icosahedron()
@@ -613,7 +585,7 @@
   drop_vtx(6)
   drop_vtx(0)
   augment(3,points[1],points[7],points[8])
-  autoface()
+  convex_hull()
 #end
 
 // -------------------- dodecahedron modifications: J58-61
@@ -622,7 +594,7 @@
   addevenpermssgn(<0,1/tau,tau>,<0,1,1>)
   augment(5,points[4],points[13],points[12])
   showvtxs()
-  autobalance() autoface()
+  autobalance() convex_hull()
 #end
 #macro parabiaugmented_dodecahedron() //J59
   addpointssgn(<1,1,1>,<1,1,1>)
@@ -631,7 +603,7 @@
   #local a=points[npoints-1];
   addpoint(-a)
   showvtxs()
-  autobalance() autoface()
+  autobalance() convex_hull()
 #end
 #macro metabiaugmented_dodecahedron() //J60
   addpointssgn(<1,1,1>,<1,1,1>)
@@ -640,7 +612,7 @@
   #local a=points[npoints-1];
   addpoint(<a.y,a.z,a.x>)
   showvtxs()
-  autobalance() autoface()
+  autobalance() convex_hull()
 #end
 #macro triaugmented_dodecahedron() //J61
   addpointssgn(<1,1,1>,<1,1,1>)
@@ -649,7 +621,7 @@
   #local a=points[npoints-1]; drop_vtx(999)
   addevenperms(a)
   showvtxs()
-  autobalance() autoface()
+  autobalance() convex_hull()
 #end
 
 // ----------------- icosidodecahedron modifications
@@ -702,7 +674,7 @@
         rotate_vtxs(raxis,twist,0)
     #end
     showvtxs()
-    autobalance() autoface()
+    autobalance() convex_hull()
 #end
 
 #macro pentagonal_rotunda() icosidodecahedron_mod(6)    #end // J6. Half an icosidodecahedron
@@ -723,33 +695,33 @@
 #macro elongated_pentagonal_cupola()   //J20
     rprism_vtx(10)
     augment(10,points[4],points[2],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro gyroelongated_pentagonal_cupola()   //J24
     antiprism_vtx(10)
     augment(10,points[4],points[2],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 #macro pentagonal_orthobicupola()  //J30
     polygon_vtx(10)
     augment(10,points[0],points[1],points[2])
     augment(10,points[3],points[2],points[1])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 #macro pentagonal_gyrobicupola()   //J31
     polygon_vtx(10)
     augment(10,points[0],points[1],points[2])
     augment(10,points[2],points[1],points[0])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 #macro elongated_pentagonal_orthobicupola()    //J38
     rprism_vtx(10)
     augment(10,points[4],points[2],points[0])
     augment(10,points[3],points[5],points[7])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 #macro elongated_pentagonal_gyrobicupola() //J39
@@ -757,13 +729,13 @@
     augment(10,points[4],points[2],points[0])
     augment(10,points[1],points[3],points[5])
     showvtxs()
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro gyroelongated_pentagonal_bicupola() //J46
     antiprism_vtx(10)
     augment(10,points[4],points[2],points[0])
     augment(10,points[1],points[3],points[5])
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 // -------------------- side-capped prisms : J49-57
@@ -776,7 +748,7 @@
 //     #debug concat("Augment face ",str(facenum,0,0)," of ",str(n,0,0), " <",str(points[npoints-1].x,0,3),",",str(points[npoints-1].y,0,3),",",str(points[npoints-1].z,0,3),"> \n")
         #local i=i+1;
     #end
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 #macro augmented_triangular_prism() augmented_prisms(3,"0") #end   // J49
 #macro biaugmented_triangular_prism() augmented_prisms(3,"01") #end    // J50
@@ -788,14 +760,14 @@
 #macro metabiaugmented_hexagonal_prism()   augmented_prisms(6,"02")    #end    // J56
 #macro triaugmented_hexagonal_prism()  augmented_prisms(6,"024")   #end    // J57
 
-// ----------------- rhombicosidodecahedron modifications 
+// ----------------- rhombicosidodecahedron modifications
 #macro pentagonal_cupola() //J5
   addevenpermssgn(<1,1,1+2*tau>,<1,1,1>)
   addevenpermssgn(<tau,2*tau,1+tau>,<1,1,1>)
   addevenpermssgn(<2+tau,0,1+tau>,<1,0,1>)
   #local raxis=vnormalize(<tau,-1,0>);
   drop_halfspace(raxis,3.077)
-  autobalance()  autoface()
+  autobalance()  convex_hull()
 #end
 #macro mogrified_rhombicosidodecahedron(mods)  //J72-J83
     // mods is a 4-character string of D (drop), G (gyrate) and other (leave alone)
@@ -814,7 +786,7 @@
         #if (strcmp(modchar,"G")=0) rotate_vtxs(-raxis[i],36,-3.077) #end
         #local i=i+1;
     #end
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
 
 // #macro diminished_rhombicosidodecahedron()  //J76
@@ -823,7 +795,7 @@
 //   addevenpermssgn(<2+tau,0,1+tau>,<1,0,1>)
 //   #local raxis=vnormalize(<tau,-1,0>);
 //   drop_halfspace(-raxis,-3.077)
-//   autobalance()  autoface()
+//   autobalance()  convex_hull()
 // #end
 // #macro tridiminished_rhombicosidodecahedron()   //J83
 //   addevenpermssgn(<1,1,1+2*tau>,<1,1,1>)
@@ -835,7 +807,7 @@
 //   drop_halfspace(-raxis,-3.077)
 //   #local raxis=vnormalize(<-1,0,tau>);
 //   drop_halfspace(-raxis,-3.077)
-//   autobalance()  autoface()
+//   autobalance()  convex_hull()
 // #end
 // #macro metabidiminished_rhombicosidodecahedron()    //J81
 //   addevenpermssgn(<1,1,1+2*tau>,<1,1,1>)
@@ -845,7 +817,7 @@
 //   drop_halfspace(-raxis,-3.077)
 //   #local raxis=vnormalize(<-1,0,tau>);
 //   drop_halfspace(-raxis,-3.077)
-//   autobalance()  autoface()
+//   autobalance()  convex_hull()
 // #end
 // #macro parabidiminished_rhombicosidodecahedron()    //J80
 //   addevenpermssgn(<1,1,1+2*tau>,<1,1,1>)
@@ -854,16 +826,15 @@
 //   #local raxis=vnormalize(<tau,-1,0>);
 //   drop_halfspace(-raxis,-3.077)
 //   drop_halfspace( raxis,-3.077)
-//   autobalance()  autoface()
+//   autobalance()  convex_hull()
 // #end
-// 
 // #macro gyrate_rhombicosidodecahedron()  //J72
 //   addevenpermssgn(<1,1,1+2*tau>,<1,1,1>)
 //   addevenpermssgn(<tau,2*tau,1+tau>,<1,1,1>)
 //   addevenpermssgn(<2+tau,0,1+tau>,<1,0,1>)
 //   #local raxis=vnormalize(<tau,-1,0>);
 //   rotate_vtxs(-raxis,36,-3.077)
-//   autobalance()  autoface()
+//   autobalance()  convex_hull()
 // #end
 // #macro trigyrate_rhombicosidodecahedron()   //J75
 //   addevenpermssgn(<1,1,1+2*tau>,<1,1,1>)
@@ -875,7 +846,7 @@
 //   rotate_vtxs(-raxis,36,-3.077)
 //   #local raxis=vnormalize(<-1,0,tau>);
 //   rotate_vtxs(-raxis,36,-3.077)
-//   autobalance()  autoface()
+//   autobalance()  convex_hull()
 // #end
 
 ////////////// sporadics
@@ -896,9 +867,9 @@
     addedge(NORTH1,NORTH2,1)
     addedge(SOUTH1,SOUTH2,1)
     optimise(100,0.000001)
-    autobalance()  autoface()
+    autobalance()  convex_hull()
 #end
-    
+
 #macro snub_square_antiprism() // J85
     addpoint(<sq2,0,0>)    #local E1=npoints-1;
     addpoint(<1,1,0>)  #local E2=npoints-1;
@@ -930,7 +901,7 @@
     addedge(S3,S4,1)       addedge(S4,S1,1)    addedge(S2,S4,sq2)
     optimise(400,0.00000001)
     autobalance()
-    autoface()
+    convex_hull()
 #end
 
 #macro sphenocoronae(n)    // J86 & J87
@@ -952,7 +923,7 @@
     optimise(400,0.00000001)
     #if(n=87) augment(4,points[E2],points[E3],points[N2]) #end
     autobalance()
-    autoface()
+    convex_hull()
 #end
 #macro sphenocorona()  // J86
     sphenocoronae(86)
@@ -980,32 +951,32 @@
     make_triangle(A,E2,E3) make_triangle(A,N2,N1)
     optimise(400,0.00000001)
     autobalance()
-    autoface()
+    convex_hull()
 #end
 #macro sphenomegacorona()  // J88
-    addpoint(<1.3,0,0.1>)  #local E1=npoints-1;
-    addpoint(<.5,.6,0>)    #local E2=npoints-1;
-    addpoint(<-.5,.6,0>)   #local E3=npoints-1;
-    addpoint(<-1.3,0,0.1>) #local E4=npoints-1;
-    addpoint(<-.5,-.6,0>)  #local E5=npoints-1;
-    addpoint(<.5,-.6,0>)   #local E6=npoints-1;
-    addpoint(<.5,0,.7>)    #local N1=npoints-1;
-    addpoint(<-.5,0,.7>)   #local N2=npoints-1;
-    addpoint(<0,.5,-.9>)   #local S1=npoints-1;
-    addpoint(<-.8,0,-.8>)  #local S2=npoints-1;
-    addpoint(<0,-.5,-.9>)  #local S3=npoints-1;
-    addpoint(<.8,0,-.8>)   #local S4=npoints-1;
+    addpoint(< 1.3, 0  , 0.1>) #local E1=npoints-1;
+    addpoint(< 0.5, 0.6, 0  >) #local E2=npoints-1;
+    addpoint(<-0.5, 0.6, 0  >) #local E3=npoints-1;
+    addpoint(<-1.3, 0  , 0.1>) #local E4=npoints-1;
+    addpoint(<-0.5,-0.6, 0  >) #local E5=npoints-1;
+    addpoint(< 0.5,-0.6, 0  >) #local E6=npoints-1;
+    addpoint(< 0.5, 0  , 0.7>) #local N1=npoints-1;
+    addpoint(<-0.5, 0  , 0.7>) #local N2=npoints-1;
+    addpoint(< 0  , 0.5,-0.9>) #local S1=npoints-1;
+    addpoint(<-0.8, 0  ,-0.8>) #local S2=npoints-1;
+    addpoint(< 0  ,-0.5,-0.9>) #local S3=npoints-1;
+    addpoint(< 0.8, 0  ,-0.8>) #local S4=npoints-1;
     make_lune(E1,E2,E3,E4,N2,N1)
     make_lune(E4,E5,E6,E1,N1,N2)
     make_triangle(E1,E2,S4) make_triangle(E2,E3,S1) make_triangle(E3,E4,S2)
     make_triangle(E4,E5,S2) make_triangle(E5,E6,S3) make_triangle(E6,E1,S4)
-    make_triangle(S1,S2,S3)    make_triangle(S3,S4,S1)
+    make_triangle(S1,S2,S3) make_triangle(S3,S4,S1)
     optimise(400,0.000001)
 // showvtxs()
     autobalance()
-    autoface()
+    convex_hull()
 #end
-    
+
 #macro hebesphenomegacorona()  // J89
     addpoint(< 1.10, 0.00, 0.20>)  #local E1=npoints-1;
     addpoint(< 0.50, 0.72,-0.15>)  #local E2=npoints-1;
@@ -1032,9 +1003,9 @@
     optimise(400,0.000001)
     showvtxs()
     autobalance()
-    autoface()
+    convex_hull()
 #end
-    
+
 #macro disphenocingulum()  //  J90
     addpoint(< 0.00, 0.50, 1.10>)  #local NN1=npoints-1;
     addpoint(< 0.00,-0.50, 1.10>)  #local NN2=npoints-1;
@@ -1065,7 +1036,7 @@
     optimise(400,0.000001)
     showvtxs()
     autobalance()
-    autoface()
+    convex_hull()
 #end
 
 #macro bilunabirotunda() // J91
@@ -1089,7 +1060,7 @@
     #if (points[i].x>0) addpoint(<-points[i].x,points[i].y,points[i].z>) #end
     #local i=i+1;
   #end // (while loop)
-  autoface()
+  convex_hull()
 #end
 
 #macro triangular_hebesphenorotunda() // J92
@@ -1102,7 +1073,7 @@
     addevenperms( <0,1,-tau>-<tau,0,1>)
     addevenperms(-<1,tau,0>-<tau,0,1>)
     autobalance()
-    autoface()
+    convex_hull()
 #end
 
 #macro herschel_enneahedron()
@@ -1183,7 +1154,7 @@
   addpoint(< 0,  2, c  >)
   addpoint(< 0, -2, c  >)
   autobalance()
-  autoface()
+  convex_hull()
 #end
 
 #macro rhombic_icosahedron()
@@ -1219,7 +1190,7 @@
   addpoint(< A,  H,  0>)
   addpoint(<-A, -H,  0>)
   autobalance()
-  autoface()
+  convex_hull()
 #end
 
 #macro trunc_triakis_tet()
@@ -1420,6 +1391,14 @@
   autobalance()
   convex_hull()
 #end
+
+
+
+
+
+
+
+
 
 #macro convex_hull()
   // This is an incremental convex-hull algorithm.  It should run in O(N^2) time.
@@ -1641,7 +1620,7 @@
   #if(s.z) addevenperms(a*<1,1,-1>) #end
 #end*/
 #macro addface(d,l)
-  #local a=vnormalize(d)/l; 
+  #local a=vnormalize(d)/l;
   #local f=1;
   #for (n, 0, nfaces-1)
     #if(vlength(faces[n]-a)<0.00001) #local f=0; #end
@@ -1654,48 +1633,12 @@
 #macro dual()
   #declare temp=faces;
   #declare faces=points;
-  #declare points=temp; 
+  #declare points=temp;
   #declare temp=nfaces;
   #declare nfaces=npoints;
-  #declare npoints=temp; 
+  #declare npoints=temp;
 #end
 
-
-#macro autoface() //WARNING: ONLY WORKS IF ALL EDGES HAVE EQUAL LENGTH
-  //Find edge length 
-  #declare elength=1000;
-  #for (a, 0, npoints-1)
-    #for (b, 0, npoints-1)
-      #local c=vlength(points[a]-points[b]); #if(c>0.00001 & c<elength) #local elength=c; #end
-    #end
-  #end
-
-        #debug concat("elength=",str(elength,9,9),"\n")    showvtxs()
- 
-  //Find planes
-  //#macro planes()
-  #for (a, 0, npoints-1)
-    #for (b, a+1, npoints-1)
-      #if(vlength(points[a]-points[b])<elength+0.00001)
-        #for (c, b+1, npoints-1)
-          #if(vlength(points[a]-points[c])<elength+0.00001)
-            #local n=vnormalize(vcross(points[b]-points[a],points[c]-points[a]));
-            #local d=vdot(n,points[a]);
-            #if(d<0) #local n=-n; #local d=-d; #end
-            #local f=1;
-            #for (e, 0, npoints-1)
-              #if(vdot(n, points[e])>d+0.00001) #local f=0; #end
-            #end
-            #if(f)
-              #declare ld=d;
-              addface(n,d) //plane { n, d }
-            #end
-          #end // if
-        #end  // for c
-      #end  // if
-    #end  // for b
-  #end  // for a
-#end
 
 This_shape_will_be_drawn()
 
@@ -1708,8 +1651,6 @@ This_shape_will_be_drawn()
   rotate rot2*180/pi*x
   rotate rot3*180/pi*y
 #end
-
-// drawit()
 
 #if(1)
     //Scale shape to fit in unit sphere
@@ -1812,7 +1753,7 @@ object {
 
 #for (a, 0, 11)
   light_source { <4*sin(a*pi*2/11), 5*cos(a*pi*6/11), -4*cos(a*pi*2/11)> colour (1+<sin(a*pi*2/11),sin(a*pi*2/11+pi*2/3),sin(a*pi*2/11+pi*4/3)>)*2/11 }
-//  light_source { <4*sin(a*pi*2/11), 5*cos(a*pi*6/11), -4*cos(a*pi*2/11)> 
+//  light_source { <4*sin(a*pi*2/11), 5*cos(a*pi*6/11), -4*cos(a*pi*2/11)>
  //        colour (1+<sin(a*pi*2/11),sin(a*pi*2/11+pi*2/3),sin(a*pi*2/11+pi*4/3)>)*2/11 }
 #end
 
@@ -1844,7 +1785,7 @@ background { color <1,1,1> }
         #declare bearing=sighting.x/sighting.z;
         #declare max_elevation = max(max_elevation,abs(elevation));
         #declare max_bearing = max(max_bearing,abs(bearing));
-    //     sphere{ (camera_loc+<bearing,elevation,1>*10), 0.2 
+    //     sphere{ (camera_loc+<bearing,elevation,1>*10), 0.2
     //         pigment{ colour rgb <1,0,1> } }
     #end
     #debug concat("Maximum: Elevation = ",str(max_elevation,4,4),"  Bearing = ",str(max_bearing,4,4),"\n")
