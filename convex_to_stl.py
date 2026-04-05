@@ -5,6 +5,30 @@ from typing import Any, List, Tuple, Optional
 
 EPS = 1e-6
 
+def _pov_index(ix):
+    if isinstance(ix, slice):
+        start = None if ix.start is None else int(round(ix.start))
+        stop = None if ix.stop is None else int(round(ix.stop))
+        step = None if ix.step is None else int(round(ix.step))
+        return slice(start, stop, step)
+    return int(round(ix))
+
+class PovArray(list):
+    def __getitem__(self, ix):
+        return super().__getitem__(_pov_index(ix))
+    def __setitem__(self, ix, val):
+        return super().__setitem__(_pov_index(ix), val)
+
+class Vec2:
+    __slots__ = ('u','v','x','y')
+    def __init__(self, u=0.0, v=0.0):
+        self.u = float(u)
+        self.v = float(v)
+        self.x = self.u
+        self.y = self.v
+    def __repr__(self):
+        return f"<{self.u:.6g},{self.v:.6g}>"
+
 class Vec3:
     __slots__ = ('x','y','z')
     def __init__(self, x=0.0, y=0.0, z=0.0):
@@ -72,10 +96,10 @@ def vaxis_rotate(v, axis, ang):
 def make_array(*dims):
     dims = [int(round(d)) for d in dims]
     if not dims:
-        return []
+        return PovArray()
     if len(dims) == 1:
-        return [None] * dims[0]
-    return [make_array(*dims[1:]) for _ in range(dims[0])]
+        return PovArray([None] * dims[0])
+    return PovArray([make_array(*dims[1:]) for _ in range(dims[0])])
 
 def pov_mod(a,b):
     return int(a) % int(b)
@@ -105,6 +129,12 @@ def pov_rand(_):
 
 def translate_array_syntax(expr):
     s = expr
+    # Handle POV-Ray array initializers such as: array[4] {a,b,c,d}
+    s = re.sub(
+        r'\barray\s*(?:\[\s*[^\[\]]+\s*\])+\s*\{([^{}]*)\}',
+        lambda m: 'PovArray([' + m.group(1).strip() + '])',
+        s
+    )
     while True:
         new = re.sub(r'\barray\s*((?:\[\s*[^\[\]]+\s*\])+)',
                      lambda m: 'array(' + ','.join(part.strip()[1:-1].strip() for part in re.findall(r'\[\s*[^\[\]]+\s*\]', m.group(1))) + ')',
@@ -225,13 +255,15 @@ class Interpreter:
             self.assign_lhs(g, lhs, val, local=False)
         for nm in ('points','tpoints','faces'):
             if nm not in g.locals:
-                g.set_declared(nm, [None]*1000)
+                g.set_declared(nm, PovArray([None]*1000))
         for nm, default in [('npoints',0),('nfaces',0)]:
             if nm not in g.locals:
                 g.set_declared(nm, default)
     def func_context(self, env):
         return {
+            'Vec2': Vec2,
             'Vec3': Vec3,
+            'PovArray': PovArray,
             'sqrt': math.sqrt,
             'pow': pow,
             'sin': math.sin,
@@ -578,7 +610,7 @@ class Interpreter:
             while ix >= len(ref):
                 ref.append(None)
             if ref[ix] is None:
-                ref[ix] = []
+                ref[ix] = PovArray()
             ref = ref[ix]
         ix = idx_vals[-1]
         while ix >= len(ref):
@@ -806,7 +838,9 @@ def replace_vectors(s):
                 out.append('<'); i += 1; continue
             inner = s[i+1:j]
             comps = split_args(inner)
-            if len(comps) == 3:
+            if len(comps) == 2:
+                out.append(f"Vec2({comps[0]},{comps[1]})")
+            elif len(comps) == 3:
                 out.append(f"Vec3({comps[0]},{comps[1]},{comps[2]})")
             else:
                 out.append('<'+inner+'>')
