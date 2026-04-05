@@ -262,7 +262,6 @@ for (name, code, angles, file) in data_reduced:
                        '+I' + srcfilename, '+O' + imgfilename,
                        '+w' + resolution,  '+h' + resolution,
                        '+A', '-D',       # +A turns on antialiasing; -D suppresses the preview window.
-                       '+GD',
                        ]
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
             run(command, check=True)
@@ -279,7 +278,7 @@ for (name, code, angles, file) in data_reduced:
                            '--brightness',       '1.5',
                            '--face-alpha-scale', '1.3',
                            '--vertex-scale',     '0.0',
-                           '--edge-scale',       '0.6',
+                           '--edge-scale',       '1.0',
                            ]
                 run(command, check=True)
             else:
