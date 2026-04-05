@@ -1017,33 +1017,83 @@ def shaded_face_style(normal: Vec, base_rgbt, depth01: float,
     opacity = clamp01((1.0 - t) * face_alpha_scale)
     return rgb01_to_hex(rgb), opacity
 
-def extract_colors_and_radii(text: str):
+def _extract_balanced_brace_block(text: str, start: int) -> Optional[str]:
+    brace = text.find('{', start)
+    if brace == -1:
+        return None
+    depth = 0
+    i = brace
+    in_string = False
+    while i < len(text):
+        ch = text[i]
+        if ch == '"' and (i == 0 or text[i-1] != '\\'):
+            in_string = not in_string
+        elif not in_string:
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    return text[start:i+1]
+        i += 1
+    return None
+
+
+def _extract_rgb_triplet(text: str) -> Optional[Tuple[float, float, float]]:
+    m = re.search(r'colour\s*(?:rgb\s*)?<\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*>', text, re.S)
+    if not m:
+        return None
+    return tuple(map(float, m.groups()))
+
+
+def _extract_rgbt_quad(text: str) -> Optional[Tuple[float, float, float, float]]:
+    m = re.search(r'colour\s*rgbt\s*<\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*>', text, re.S)
+    if not m:
+        return None
+    return tuple(map(float, m.groups()))
+
+
+def extract_scene_styles(scene_tail: str):
     edge_rgb = (0.3, 0.3, 0.3, 1.0)
     point_rgb = (0.3, 0.3, 0.3, 1.0)
     face_rgbt = (0.8, 0.8, 0.8, 0.4)
-    edge_radius = 0.02
-    point_radius = 0.05
+    edge_radius = 0.01
+    point_radius = 0.01
 
-    m = re.search(r'cylinder\s*\{\s*[^,{}]+\s*,\s*[^,{}]+\s*,\s*([0-9.+\-eE]+)', text, re.S)
-    if m:
-        edge_radius = float(m.group(1))
-    m = re.search(r'sphere\s*\{\s*[^,{}]+\s*,\s*([0-9.+\-eE]+)', text, re.S)
-    if m:
-        point_radius = float(m.group(1))
+    edge_anchor = scene_tail.find('//Draw edges')
+    if edge_anchor != -1:
+        edge_block = _extract_balanced_brace_block(scene_tail, edge_anchor)
+        if edge_block:
+            m = re.search(r'cylinder\s*\{\s*[^,{}]+\s*,\s*[^,{}]+\s*,\s*([0-9.+\-eE]+)', edge_block, re.S)
+            if m:
+                edge_radius = float(m.group(1))
+            rgb = _extract_rgb_triplet(edge_block)
+            if rgb is not None:
+                edge_rgb = rgb + (1.0,)
 
-    m = re.search(r'cylinder\s*\{.*?pigment\s*\{\s*colour\s*(?:rgb\s*)?<\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*>', text, re.S)
-    if m:
-        edge_rgb = tuple(map(float, m.groups())) + (1.0,)
-    m = re.search(r'sphere\s*\{.*?pigment\s*\{\s*colour\s*(?:rgb\s*)?<\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*>', text, re.S)
-    if m:
-        point_rgb = tuple(map(float, m.groups())) + (1.0,)
-    m = re.search(r'pigment\s*\{\s*colour\s*rgbt\s*<\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*,\s*([0-9.+\-eE]+)\s*>', text, re.S)
-    if m:
-        face_rgbt = tuple(map(float, m.groups()))
+    point_anchor = scene_tail.find('//Draw points')
+    if point_anchor != -1:
+        point_block = _extract_balanced_brace_block(scene_tail, point_anchor)
+        if point_block:
+            m = re.search(r'sphere\s*\{\s*[^,{}]+\s*,\s*([0-9.+\-eE]+)', point_block, re.S)
+            if m:
+                point_radius = float(m.group(1))
+            rgb = _extract_rgb_triplet(point_block)
+            if rgb is not None:
+                point_rgb = rgb + (1.0,)
+
+    plane_anchor = scene_tail.find('//Draw planes')
+    if plane_anchor != -1:
+        plane_block = _extract_balanced_brace_block(scene_tail, plane_anchor)
+        if plane_block:
+            rgbt = _extract_rgbt_quad(plane_block)
+            if rgbt is not None:
+                face_rgbt = rgbt
+
     return edge_rgb, point_rgb, face_rgbt, edge_radius, point_radius
 
 
-def build_svg(points: List[Vec], faces: List[Vec], width: int, height: int, text: str, rotation_stream: POVRandom,
+def build_svg(points: List[Vec], faces: List[Vec], width: int, height: int, scene_tail: str, rotation_stream: POVRandom,
               edge_radius_scale: float = 1.0, point_radius_scale: float = 1.0,
               tint_strength: float = 1.0, shade_strength: float = 1.0,
               brightness: float = 1.0, face_alpha_scale: float = 1.0) -> str:
@@ -1143,7 +1193,7 @@ def build_svg(points: List[Vec], faces: List[Vec], width: int, height: int, text
 
     proj = [project_point(p, camera_loc, max_bear, max_elev, width, height) for p in rpoints]
 
-    edge_rgba, point_rgba, face_rgbt, edge_radius, point_radius = extract_colors_and_radii(text)
+    edge_rgba, point_rgba, face_rgbt, edge_radius, point_radius = extract_scene_styles(scene_tail)
     edge_color = svg_color(*edge_rgba[:3])
     point_color = svg_color(*point_rgba[:3])
 
@@ -1369,7 +1419,9 @@ def main():
     points = env.get('points')[:npoints]
     faces = env.get('faces')[:nfaces]
 
-    svg = build_svg(points, faces, args.width, args.height, text, env.get('rotation'),
+    scene_tail = clean[marker:]
+
+    svg = build_svg(points, faces, args.width, args.height, scene_tail, env.get('rotation'),
                     edge_radius_scale=args.edge_scale,
                     point_radius_scale=args.vertex_scale,
                     tint_strength=args.tint_strength,
