@@ -670,7 +670,7 @@
   convex_hull()
 #end
 
-#macro mogrified_rhombicosidodecahedron(mods) // J72, J73, J74, J75, J76, J77, J78, J79, J80, J81, J82, J83
+#macro rhombicosidodecahedron_mod(mods) // J72, J73, J74, J75, J76, J77, J78, J79, J80, J81, J82, J83
   // mods is a 4-character string of D (drop), G (gyrate), and other (leave alone)
   addevenpermssgn(<1, 1, 1+2*phi>, <1,1,1>)
   addevenpermssgn(<phi, 2*phi, 1+phi>, <1,1,1>)
@@ -689,7 +689,7 @@
   convex_hull()
 #end
 
-#macro snub_disphenoid() // J84
+#macro snub_disphenoid() // J84.  TODO: Get exact coordinates.
   addpoint(< 1, 0, 0>)  #local  EQTR1=npoints-1;
   addpoint(< 0, 1, 0>)  #local  EQTR2=npoints-1;
   addpoint(<-1, 0, 0>)  #local  EQTR3=npoints-1;
@@ -712,7 +712,7 @@
   convex_hull()
 #end
 
-#macro snub_square_antiprism() // J85
+#macro snub_square_antiprism() // J85.  TODO: Get exact coordinates.
   addpoint(<   sq2,     0, 0>)  #local E1 = npoints-1;
   addpoint(<     1,     1, 0>)  #local E2 = npoints-1;
   addpoint(<     0,   sq2, 0>)  #local E3 = npoints-1;
@@ -750,7 +750,7 @@
   convex_hull()
 #end
 
-#macro sphenocoronae(n) // J86, J87
+#macro sphenocoronae(n) // J86, J87.  TODO: Get exact coordinates.
   addpoint(<  1 ,  0 , 0>)  #local E1 = npoints-1;
   addpoint(< 1/2,  1 , 0>)  #local E2 = npoints-1;
   addpoint(<-1/2,  1 , 0>)  #local E3 = npoints-1;
@@ -772,7 +772,7 @@
   convex_hull()
 #end
 
-#macro sphenomegacorona() // J88
+#macro sphenomegacorona() // J88.  TODO: Get exact coordinates.
   addpoint(< 1.3, 0  , 0.1>)  #local E1 = npoints-1;
   addpoint(< 0.5, 0.6, 0  >)  #local E2 = npoints-1;
   addpoint(<-0.5, 0.6, 0  >)  #local E3 = npoints-1;
@@ -796,7 +796,7 @@
   convex_hull()
 #end
 
-#macro hebesphenomegacorona() // J89
+#macro hebesphenomegacorona() // J89.  TODO: Get exact coordinates.
   addpoint(< 1.10, 0.00, 0.20>)  #local E1 = npoints-1;
   addpoint(< 0.50, 0.72,-0.15>)  #local E2 = npoints-1;
   addpoint(<-0.50, 0.72,-0.15>)  #local E3 = npoints-1;
@@ -823,7 +823,7 @@
   convex_hull()
 #end
 
-#macro disphenocingulum() // J90
+#macro disphenocingulum() // J90.  TODO: Get exact coordinates.
   addpoint(< 0.00, 0.50, 1.10>)  #local NN1 = npoints-1;
   addpoint(< 0.00,-0.50, 1.10>)  #local NN2 = npoints-1;
   addpoint(< 0.00, 1.12, 0.33>)  #local  N1 = npoints-1;
