@@ -1,7 +1,3 @@
-#declare notwireframe = 1;
-#declare withreflection = 0;
-#declare flashiness = 1;
-
 #declare phi = (1 + sqrt(5)) / 2;
 #declare sq2 = sqrt(2);
 
@@ -51,12 +47,12 @@
 #macro truncatedtetrahedron(augmentation)
   addevenpermsevensgn(<1,1,3>)
   #if (augmentation)
-    augment(6,points[0],points[1],points[4])
+    augment(6, points[0], points[1], points[4])
   #end
   convex_hull()
 #end
 
-#macro truncatedhexahedron(augmentation)
+#macro truncatedhexahedron(augmentation) // Truncated cube (n=0), J66 (n=1), J67 (n=2)
   addevenpermssgn(<sq2-1, 1, 1>, <1,1,1>)
   #switch (augmentation)
     #case(2) augment(8, points[ 7], points[23], points[22])
@@ -65,37 +61,25 @@
   convex_hull()
 #end
 
-#macro truncated_cube()
-  truncatedhexahedron(0)
-#end
-
-#macro augmented_truncated_cube()
-  truncatedhexahedron(1)
-#end
-
-#macro biaugmented_truncated_cube()
-  truncatedhexahedron(2)
-#end
-
 #macro truncatedoctahedron()
   addpermssgn(<0,1,2>, <0,1,1>)
   convex_hull()
 #end
 
-#macro truncateddodecahedron(augmentation)
-    addevenpermssgn(<0, phi-1, 2+phi>, <0,1,1>)
-    addevenpermssgn(<phi-1, phi, 2*phi>, <1,1,1>)
-    addevenpermssgn(<phi, 2, 1+phi>, <1,1,1>)
-    #if (augmentation)
-        augment(10, points[50], points[58], points[34])     // towards (phi,-1,0) -- common to all
-        #switch (augmentation)
-            #case( 3) augment(10, points[54], points[38], points[14])   // towards (-1,0,phi) -- on tri
-            #case( 2) augment(10, points[40], points[48], points[24])   // towards (0,phi,-1) -- on metadi and tri
-            #break
-            #case(-2) augment(10, points[32], points[10], points[ 9])   // towards (-phi,1,0) -- on paradi
-        #end
+#macro truncateddodecahedron(augmentation) // Truncated dodecahedron (n=0), J68 (n=1), J69 (n=-2), J70 (n=2), J71 (n=3)
+  addevenpermssgn(<0, phi-1, 2+phi>, <0,1,1>)
+  addevenpermssgn(<phi-1, phi, 2*phi>, <1,1,1>)
+  addevenpermssgn(<phi, 2, 1+phi>, <1,1,1>)
+  #if (augmentation)
+    augment(10, points[50], points[58], points[34])     // towards (phi,-1,0) -- common to all
+    #switch (augmentation)
+      #case( 3) augment(10, points[54], points[38], points[14])   // towards (-1,0,phi) -- on tri
+      #case( 2) augment(10, points[40], points[48], points[24])   // towards (0,phi,-1) -- on metadi and tri
+      #break
+      #case(-2) augment(10, points[32], points[10], points[ 9])   // towards (-phi,1,0) -- on paradi
     #end
-    convex_hull()
+  #end
+  convex_hull()
 #end
 
 #macro truncatedicosahedron()
@@ -882,7 +866,7 @@
     #local minx = min(minx, points[i].x);
     //#if (minx > points[i].x) #local minx = points[i].x; #end
   #end
-  #local np=npoints;
+  #local np = npoints;
   #for (i, 0, np-1)
     #declare points[i] = points[i] + <-minx,0,0>;
     #if (points[i].x > 0) addpoint(<-points[i].x, points[i].y, points[i].z>) #end
@@ -906,19 +890,19 @@
 // Miscellaneous:
 
 #macro herschel_enneahedron()
-  // http://aperiodical.com/2013/10/an-enneahedron-for-herschel/
-  #local th=sqrt(3)/2;
-  addpoint(< 1/2,   0 , -1/2 >)
-  addpoint(<  0 ,   0 ,   0  >)
-  addpoint(< 1/2,   0 ,  1/2 >)
-  addpoint(<  1 ,   0 ,   0  >)
-  addpoint(< 1/2, th/3, -2/3 >)
-  addpoint(< 1/4, th/2, -1/2 >)
-  addpoint(< 1/4, th/2,  1/2 >)
-  addpoint(< 1/2, th/3,  2/3 >)
-  addpoint(< 3/4, th/2,  1/2 >)
-  addpoint(< 3/4, th/2, -1/2 >)
-  addpoint(< 1/2, th  ,   0  >)
+  // https://aperiodical.com/2013/10/an-enneahedron-for-herschel/
+  #local c = sqrt(3);
+  addpoint(< 6, 0  , -6>)
+  addpoint(< 0, 0  ,  0>)
+  addpoint(< 6, 0  ,  6>)
+  addpoint(<12, 0  ,  0>)
+  addpoint(< 6, 2*c, -8>)
+  addpoint(< 3, 3*c, -6>)
+  addpoint(< 3, 3*c,  6>)
+  addpoint(< 6, 2*c,  8>)
+  addpoint(< 9, 3*c,  6>)
+  addpoint(< 9, 3*c, -6>)
+  addpoint(< 6, 6*c,  0>)
   autobalance()
   convex_hull()
 #end
@@ -957,27 +941,25 @@
 #macro elongated_dodecahedron()
   #local c = sqrt(3) / 2;
   
-  addpointssgn(<1,1,c+1>, <1,1,1>)
-  addpointssgn(<2,0,c  >, <1,0,1>)
-  addpointssgn(<0,2,c  >, <0,1,1>)
-  
-  addpoint(<0, 0,  c+2>)
-  addpoint(<0, 0, -c-2>)
+  addpointssgn(<1, 1, c+1>, <1,1,1>)
+  addpointssgn(<2, 0, c  >, <1,0,1>)
+  addpointssgn(<0, 2, c  >, <0,1,1>)
+  addpointssgn(<0, 0, c+2>, <0,0,1>)
   
   autobalance()
   convex_hull()
 #end
 
 #macro rhombic_icosahedron()
-  #local A = sqrt(10 * (25 - 11 * sqrt(5))) / 20;
-  #local B = sqrt(10 * ( 5 -      sqrt(5))) / 20;
-  #local C = sqrt(10 * ( 5 +      sqrt(5))) / 20;
-  #local D = sqrt(10 * ( 5 -      sqrt(5))) / 10;
-  #local E = sqrt( 2 * ( 5 -      sqrt(5))) /  4;
-  #local F = sqrt(10 * ( 5 +      sqrt(5))) / 10;
-  #local G = sqrt( 2 * ( 5 +      sqrt(5))) /  4;
-  #local H = sqrt(10 * (25 + 11 * sqrt(5))) / 20;
-  #local I = sqrt( 5 * ( 5 +  2 * sqrt(5))) /  5;
+  #local A = sqrt((25 - 11 * sqrt(5)) / 40);
+  #local B = sqrt(( 5 -      sqrt(5)) / 40);
+  #local C = sqrt(( 5 +      sqrt(5)) / 40);
+  #local D = sqrt(( 5 -      sqrt(5)) / 10);
+  #local E = sqrt(( 5 -      sqrt(5)) /  8);
+  #local F = sqrt(( 5 +      sqrt(5)) / 10);
+  #local G = sqrt(( 5 +      sqrt(5)) /  8);
+  #local H = sqrt((25 + 11 * sqrt(5)) / 40);
+  #local I = sqrt(( 5 +  2 * sqrt(5)) /  5);
   addpoint(< C, -B,  I>)
   addpoint(< C, -B, -I>)
   addpoint(<-C,  B,  I>)
@@ -1007,16 +989,13 @@
 #macro trunc_triakis_tet()
   #local C0 =  1 / sqrt(243);
   #local C1 =  1 / sqrt( 27);
-  #local C2 =  1 / sqrt(  3);
+  #local C2 = -1 / sqrt(  3);
   #local C3 = 11 / sqrt(243);
   #local C4 =  5 / sqrt( 27);
   
   addevenpermsevensgn(<C1,  C1, C4>)
   addevenpermsevensgn(<C3, -C0, C3>)
-  
-  addevenperms(<C2, -C2, C2>)
-  
-  addpoint(<-C2, -C2, -C2>)
+  addpointsevensgn(   <C2,  C2, C2>)
   
   autobalance()
   convex_hull()
@@ -1046,8 +1025,8 @@
   // As below, let A == <1, 0, c> be a point on the upper middle ring.
   // Then C == <cos(pi/N), sin(pi/N), -c> (as below) and D == <cos(pi/N), -sin(pi/N), -c>
   // are its nearest neighbours in the lower middle ring.  For aesthetics, I want angle CAD to be 90 degrees.
-  // AC  ==  <1,0,c> - <cos(pi/N),  sin(pi/N), -c>  == < 1 - cos(pi/N) , -sin(pi/N) , 2c >
-  // AD  ==  <1,0,c> - <cos(pi/N), -sin(pi/N), -c>  == < 1 - cos(pi/N) ,  sin(pi/N) , 2c >
+  // AC  ==  < 1 - cos(pi/N) , -sin(pi/N) , 2c >
+  // AD  ==  < 1 - cos(pi/N) ,  sin(pi/N) , 2c >
   // For the angle to be right, we need AC (dot) AD == 0:
   // 0 == (1 - cos(pi/N))^2 - sin(pi/N)^2 + 4c^2
   // c == sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2
@@ -1057,40 +1036,25 @@
   // I actually want the upper and lower rings to be a bit closer than I described above.
   #local q = 1 - sqrt( 4*c*c + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c*c * p*p*p*p ) * 0.75;
   
-  // Points 0 through  N-1 are the upper middle ring.
-  #for (I, 0, 2*N-2, 2)
-    addpoint(<cos(I * pi/N), sin(I * pi/N),  c>)
+  #for (I, 0, 2*N-1)    // The points on the middle rings.  Even indices are upper middle; odd indices are lower middle.
+    addpoint(<cos(I * pi/N), sin(I * pi/N),  c * cos(I * pi)>)
   #end
   
-  // Points N through 2N-1 are the lower middle ring.
-  #for (I, 1, 2*N-1, 2)
-    addpoint(<cos(I * pi/N), sin(I * pi/N), -c>)
-  #end
-  
-  #local A = points[0]; // <1, 0, c>
+  #local A = points[0];
   #local B = points[1];
-  #local C = points[N];
+  #local C = points[2];
   #local ABxAC = vcross(B-A, C-A);
   
-  // The plane containing A, B, and C has equation
-  // ABxAC.x * (x - A.x)  +  ABxAC.y * (y - A.y)  +  ABxAC.z * (z - A.z)  == 0
-  // ABxAC.x * (x -  1 )  +  ABxAC.y * (y -  0 )  +  ABxAC.z * (z -  c )  == 0
-  // The +z apex of the solid is this plane's z-intercept.
-  // ABxAC.x * (0 -  1 )  +  ABxAC.y * (0 -  0 )  +  ABxAC.z * (z -  c )  == 0
-  // z == c + ABxAC.x / ABxAC.z
+  // Face ABC is embedded in the plane
+  // ABxAC.x * (x -  1 )  +  ABxAC.y * (y -  0 )  +  ABxAC.z * (z -  c )  == 0.
+  // The +z apex of the solid is this plane's z-intercept, c + ABxAC.x / ABxAC.z.
   
   #local Apex = <0, 0, c + ABxAC.x / ABxAC.z>;
   // The upper upper ring will be the weighted average of the upper middle ring and Apex,
   // with the ring weighted by q and Apex weighted by 1-q, and similarly for the lower lower ring.
   
-  // Points 2N through 3N-1 are the upper upper ring.
-  #for (I, 0, N-1)
-    addpoint(points[I] * q + Apex * (1-q))
-  #end
-  
-  // Points 3N through 4N-1 are the lower lower ring.
-  #for (I, N, 2*N-1)
-    addpoint(points[I] * q - Apex * (1-q))
+  #for (I, 0, 2*N-1)    // The points on the upper upper and lower lower rings.
+    addpoint(points[I] * q + Apex * (1-q) * cos(I * pi))
   #end
   
   convex_hull()
@@ -1121,7 +1085,7 @@
   #local C = points[N];
   #local ABxAC = vcross(B-A, C-A);
   
-  // As with truncated_tetrahedron, the apex of the solid is z == c + ABxAC.x * r1 / ABxAC.z.
+  // As with truncated_trapezohedron, the apex of the solid is z == c + ABxAC.x * r1 / ABxAC.z.
   
   addpoint(<0, 0, c + ABxAC.x * r1 / ABxAC.z>)
   
@@ -1129,14 +1093,14 @@
 #end
 
 #macro rhombic_enneacontahedron()
-  #local C0 = (   -sqrt(3) + sqrt(15)) / 6;
-  #local C1 =      sqrt(3)             / 3;
-  #local C2 = (    sqrt(3) + sqrt(15)) / 6;
-  #local C3 =                sqrt(15)  / 3;
-  #local C4 = (3 * sqrt(3) + sqrt(15)) / 6;
-  #local C5 = (    sqrt(3) + sqrt(15)) / 3;
-  #local C6 = (5 * sqrt(3) + sqrt(15)) / 6;
-  #local C7 = (2 * sqrt(3) + sqrt(15)) / 3;
+  #local C0 = (-1 + sqrt(5)) / sqrt(12);
+  #local C1 =   1            / sqrt( 3);
+  #local C2 = ( 1 + sqrt(5)) / sqrt(12);
+  #local C3 =       sqrt(5)  / sqrt( 3);
+  #local C4 = ( 3 + sqrt(5)) / sqrt(12);
+  #local C5 = ( 1 + sqrt(5)) / sqrt( 3);
+  #local C6 = ( 5 + sqrt(5)) / sqrt(12);
+  #local C7 = ( 2 + sqrt(5)) / sqrt( 3);
   
   addevenpermssgn(< 0, C7, C0>, <0,1,1>)
   addevenpermssgn(< 0, C2, C7>, <0,1,1>)
@@ -1176,9 +1140,9 @@
   #local MarkedForDeletion = array[2*N];
   #local EdgeMarks         = array[N][N];   // The contents will be 0s and 1s.
   
-  // Initialize Mark[][] to all zeros.
+  // Initialize Mark[][] to all zeros.  Only elements with first index < second index will be used.
   #for (i, 0, N-1)
-    #for (j, i+1, N-1)      // Only elements with first index < second index will be used.
+    #for (j, i+1, N-1)
       #local EdgeMarks[i][j] = 0;
     #end
   #end
