@@ -3,10 +3,9 @@
 # For usage instructions, credits, and further details, see https://github.com/lucasaugustus/polyhedra/blob/main/README.md.
 
 from os import mkdir, remove
-from time import time, sleep
-from itertools import count
 from subprocess import run
 from shutil import which
+from time import time
 from sys import argv
 
 starttime = time()
@@ -217,13 +216,13 @@ for (name, file, angles) in atad:
     name = ' '.join(name.split())               # Replace all runs of spaces with single spaces.
     data.append([name, '', angles, file])
 
-resolution = '1024'
 solids = {x[0] for x in data}
 frames = '120'
-keepframes = False
-filetypes = ['png']
-angle_override = []
 threads = ''
+filetypes = ['png']
+keepframes = False
+resolution = '1024'
+angle_override = []
 
 for arg in argv:
     if '=' in arg:
@@ -231,10 +230,10 @@ for arg in argv:
         if arg1 == 'res': resolution = arg2
         if arg1 == 'target': solids = set(' '.join(x.split()) for x in arg2.split(','))
         if arg1 == 'frames': frames = arg2
-        if arg1 == 'filetypes': filetypes = [x.lower() for x in arg2.split(',')]
-        if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
         if arg1 == 'angles': angle_override = list(map(int, arg2.split(',')))
         if arg1 == 'threads': threads = arg2
+        if arg1 == 'filetypes': filetypes = [x.lower() for x in arg2.split(',')]
+        if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
 
 data_reduced = [x for x in data if x[0] in solids]
 
@@ -261,7 +260,8 @@ for (name, code, angles, file) in data_reduced:
             command = ['povray',
                        '+I' + srcfilename, '+O' + imgfilename,
                        '+w' + resolution,  '+h' + resolution,
-                       '+A', '-D',       # +A turns on antialiasing; -D suppresses the preview window.
+                       '+A', '-D',      # +A turns on antialiasing; -D suppresses the preview window.
+                       #'+GD',           # Pring #debug messages
                        ]
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
             run(command, check=True)
@@ -328,7 +328,6 @@ for (name, code, angles, file) in data_reduced:
                         remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
         
         if 'pov' not in filetypes: remove(srcfilename)
-        #sleep(0.1)
     
     if 'stl' in filetypes:
         if file == 'convex.pov':
