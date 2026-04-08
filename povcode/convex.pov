@@ -1093,6 +1093,23 @@
   convex_hull()
 #end
 
+#macro noperthedron()
+  // https://arxiv.org/pdf/2508.18475v1
+  #declare MaximumVerticesPerFace = 30;
+  #local P = < 152024884,          0,  210152163> / 259375205;
+  #local Q = <6632738028, 6106948881, 3980949609> / 1e10;
+  #local R = <8193990033, 5298215096, 1230614493> / 1e10;
+  #for (i, 1, 15)
+    #local P = rotateabout(<0,0,1>, 2*pi/15, P);
+    #local Q = rotateabout(<0,0,1>, 2*pi/15, Q);
+    #local R = rotateabout(<0,0,1>, 2*pi/15, R);
+    addpoint(P)  addpoint(-P)
+    addpoint(Q)  addpoint(-Q)
+    addpoint(R)  addpoint(-R)
+  #end
+  autobalance()
+  convex_hull()
+#end
 
 
 
