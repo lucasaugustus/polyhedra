@@ -689,25 +689,19 @@
   convex_hull()
 #end
 
-#macro snub_disphenoid() // J84.  TODO: Get exact coordinates.
-  addpoint(< 1, 0, 0>)  #local  EQTR1=npoints-1;
-  addpoint(< 0, 1, 0>)  #local  EQTR2=npoints-1;
-  addpoint(<-1, 0, 0>)  #local  EQTR3=npoints-1;
-  addpoint(< 0,-1, 0>)  #local  EQTR4=npoints-1;
-  addpoint(< 1, 0, 1>)  #local NORTH1=npoints-1;
-  addpoint(<-1, 0, 1>)  #local NORTH2=npoints-1;
-  addpoint(< 0, 1,-1>)  #local SOUTH1=npoints-1;
-  addpoint(< 0,-1,-1>)  #local SOUTH2=npoints-1;
-  
-  make_triangle(EQTR1,EQTR2,NORTH1)  make_triangle(EQTR1,EQTR2,SOUTH1)
-  make_triangle(EQTR1,EQTR4,NORTH1)  make_triangle(EQTR1,EQTR4,SOUTH2)
-  make_triangle(EQTR2,EQTR3,NORTH2)  make_triangle(EQTR2,EQTR3,SOUTH1)
-  make_triangle(EQTR3,EQTR4,NORTH2)  make_triangle(EQTR3,EQTR4,SOUTH2)
-  
-  addedge(NORTH1,NORTH2,1)  addedge(SOUTH1,SOUTH2,1)
-  
-  optimise(100,0.000001)
-  
+#macro snub_disphenoid() // J84.
+  #local q = 0.1690222294241758308998888; // Positive root of 2x^3 + 11x^2 + 4x - 1 (casus irreducibilis)
+  #local a = sqrt(q);               // 0.411120420... = 2 * 0.20556021...
+  #local b = sqrt((1-q) / (2*q));   // 1.567874291... = 2 * 0.78393714...
+  #local c = 2*a*b;                 // 1.289170275... = 2 * 0.64458513...
+  addpoint(< c,  0, -a>)
+  addpoint(< 0,  c,  a>)
+  addpoint(<-c,  0, -a>)
+  addpoint(< 0, -c,  a>)
+  addpoint(< 1,  0,  b>)
+  addpoint(<-1,  0,  b>)
+  addpoint(< 0,  1, -b>)
+  addpoint(< 0, -1, -b>)
   autobalance()
   convex_hull()
 #end
