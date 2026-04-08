@@ -706,40 +706,16 @@
   convex_hull()
 #end
 
-#macro snub_square_antiprism() // J85.  TODO: Get exact coordinates.
-  addpoint(<   sq2,     0, 0>)  #local E1 = npoints-1;
-  addpoint(<     1,     1, 0>)  #local E2 = npoints-1;
-  addpoint(<     0,   sq2, 0>)  #local E3 = npoints-1;
-  addpoint(<    -1,     1, 0>)  #local E4 = npoints-1;
-  addpoint(<  -sq2,     0, 0>)  #local E5 = npoints-1;
-  addpoint(<    -1,    -1, 0>)  #local E6 = npoints-1;
-  addpoint(<     0,  -sq2, 0>)  #local E7 = npoints-1;
-  addpoint(<     1,    -1, 0>)  #local E8 = npoints-1;
-  addpoint(<   1/2,   1/2, 1>)  #local N1 = npoints-1;
-  addpoint(<  -1/2,   1/2, 1>)  #local N2 = npoints-1;
-  addpoint(<  -1/2,  -1/2, 1>)  #local N3 = npoints-1;
-  addpoint(<   1/2,  -1/2, 1>)  #local N4 = npoints-1;
-  addpoint(< 1/sq2,     0,-1>)  #local S1 = npoints-1;
-  addpoint(<     0, 1/sq2,-1>)  #local S2 = npoints-1;
-  addpoint(<-1/sq2,     0,-1>)  #local S3 = npoints-1;
-  addpoint(<     0,-1/sq2,-1>)  #local S4 = npoints-1;
-  
-  make_triangle(E1,E2,N1)  make_triangle(E1,E2,S1)
-  make_triangle(E2,E3,N1)  make_triangle(E2,E3,S2)
-  make_triangle(E3,E4,N2)  make_triangle(E3,E4,S2)
-  make_triangle(E4,E5,N2)  make_triangle(E4,E5,S3)
-  make_triangle(E5,E6,N3)  make_triangle(E5,E6,S3)
-  make_triangle(E6,E7,N3)  make_triangle(E6,E7,S4)
-  make_triangle(E7,E8,N4)  make_triangle(E7,E8,S4)
-  make_triangle(E8,E1,N4)  make_triangle(E8,E1,S1)
-  
-  addedge(N1,N2,1)  addedge(N2,N3,1)  addedge(N1,N3,sq2)
-  addedge(N3,N4,1)  addedge(N4,N1,1)  addedge(N2,N4,sq2)
-  addedge(S1,S2,1)  addedge(S2,S3,1)  addedge(S1,S3,sq2)
-  addedge(S3,S4,1)  addedge(S4,S1,1)  addedge(S2,S4,sq2)
-  
-  optimise(400,0.00000001)
-  
+#macro snub_square_antiprism() // J85.
+  #local A = 1.7157317369103943337370248; // Positive root of x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
+  #local B = sqrt(1 - (1-1/sq2) * A * A);
+  #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
+  addpointssgn(< 1/2  , 1/2  ,  C/2>, <1,1,0>)
+  addpointssgn(< A/sq2, 0    ,  B/2>, <1,0,0>)
+  addpointssgn(< 0    , A/sq2,  B/2>, <0,1,0>)
+  addpointssgn(< A/2  , A/2  , -B/2>, <1,1,0>)
+  addpointssgn(< 1/sq2, 0    , -C/2>, <1,0,0>)
+  addpointssgn(< 0    , 1/sq2, -C/2>, <0,1,0>)
   autobalance()
   convex_hull()
 #end
