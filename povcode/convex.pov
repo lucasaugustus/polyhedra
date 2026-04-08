@@ -255,61 +255,7 @@
 #macro showvtxs()
   #for (i, 0, npoints-1)
     #debug concat("Vtx ", str(i,0,0), " of ", str(npoints,0,0), "= <",
-                  str(points[i].x,0,7), ",", str(points[i].y,0,7), ",", str(points[i].z,0,7), ">\n")
-  #end
-#end
-
-// Macros to find "sporadic" Johnson solids via iterative optimisation kludge
-#declare el = 1;
-#declare edgelen = array[120][120];
-#declare forces = array[120];
-#macro addedge(a, b, len)
-  #declare edgelen[a][b] = len;
-  #declare edgelen[b][a] = len;
-#end
-#macro make_triangle(a, b, c)
-  addedge(a, b, 1)
-  addedge(a, c, 1)
-  addedge(b, c, 1)
-#end
-#macro make_square(a, b, c, d)
-  addedge(a,b,1)
-  addedge(b,c,1)
-  addedge(c,d,1)
-  addedge(d,a,1)
-  addedge(a,c,sq2*1)
-  addedge(b,d,sq2*1)
-#end
-#macro make_lune(a,b,c,d,e,f)  // a and d are points of lune
-  make_triangle(a,b,f)
-  make_square(b,c,e,f)
-  make_triangle(c,d,e)
-#end
-#macro optimise(gen_threshold, force_threshold)
-  #local gen = 0;
-  #local maxforce = force_threshold + 1;
-  #while ((gen < gen_threshold) & (maxforce > force_threshold))
-    #debug concat("Gen ", str(gen,0,0), " ")
-    //showvtxs()
-    #local maxforce = -999;
-    #for (i, 0, npoints-1)
-      #declare forces[i] = <0,0,0>;
-      #for (j, 0, npoints-1)
-        #ifdef (edgelen[i][j])
-          #local dist = vlength(points[i] - points[j]);
-          #declare forces[i] = forces[i] + (dist - edgelen[i][j]) * (points[j] - points[i]);
-          //#debug concat("Edge ",str(i,0,0)," & ",str(j,0,0)," has length ",str(dist,5,5)," want length ",str(edgelen[i][j],5,5),"\n")
-        #end
-      #end
-      #if (maxforce < vlength(forces[i]))
-        #local maxforce = vlength(forces[i]);
-      #end
-    #end
-    #debug concat("maxforce =", str(maxforce,9,9), "\n")
-    #for (i, 0, npoints-1)
-      #declare points[i] = points[i] + 0.1 * forces[i];
-    #end
-    #local gen=gen+1;
+                  str(points[i].x,0,15), ",", str(points[i].y,0,15), ",", str(points[i].z,0,15), ">\n")
   #end
 #end
 
@@ -459,7 +405,7 @@
   convex_hull()
 #end
 
-#macro bipyramid(n) // J12, J13 (n = 3,5)
+#macro bipyramid_j(n) // J12, J13 (n = 3,5)
   polygon_vtx(n)
   augment(n, points[0], points[1], points[2])
   augment(n, points[2], points[1], points[0])
@@ -689,7 +635,7 @@
   convex_hull()
 #end
 
-#macro snub_disphenoid() // J84.
+#macro snub_disphenoid() // J84
   #local q = 0.1690222294241758308998888; // Positive root of 2x^3 + 11x^2 + 4x - 1 (casus irreducibilis)
   #local a = sqrt(q);               // 0.411120420... = 2 * 0.20556021...
   #local b = sqrt((1-q) / (2*q));   // 1.567874291... = 2 * 0.78393714...
@@ -706,7 +652,7 @@
   convex_hull()
 #end
 
-#macro snub_square_antiprism() // J85.
+#macro snub_square_antiprism() // J85
   #local A = 1.7157317369103943337370248; // Positive root of x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
   #local B = sqrt(1 - (1-1/sq2) * A * A);
   #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
@@ -720,105 +666,69 @@
   convex_hull()
 #end
 
-#macro sphenocoronae(n) // J86, J87.  TODO: Get exact coordinates.
-  addpoint(<  1 ,  0 , 0>)  #local E1 = npoints-1;
-  addpoint(< 1/2,  1 , 0>)  #local E2 = npoints-1;
-  addpoint(<-1/2,  1 , 0>)  #local E3 = npoints-1;
-  addpoint(<  -1,  0 , 0>)  #local E4 = npoints-1;
-  addpoint(<-1/2, -1 , 0>)  #local E5 = npoints-1;
-  addpoint(< 1/2, -1 , 0>)  #local E6 = npoints-1;
-  addpoint(< 1/2,  0 , 1>)  #local N1 = npoints-1;
-  addpoint(<-1/2,  0 , 1>)  #local N2 = npoints-1;
-  addpoint(<  0 , 1/2,-1>)  #local S1 = npoints-1;
-  addpoint(<  0 ,-1/2,-1>)  #local S2 = npoints-1;
-  make_lune(E1,E2,E3,E4,N2,N1)
-  make_lune(E4,E5,E6,E1,N1,N2)
-  make_triangle(E1,E2,S1)  make_triangle(E2,E3,S1)  make_triangle(E3,E4,S1)
-  make_triangle(E4,E5,S2)  make_triangle(E5,E6,S2)  make_triangle(E6,E1,S2)
-  addedge(S1,S2,1)
-  optimise(400,0.00000001)
-  #if(n=87) augment(4, points[E2], points[E3], points[N2]) #end
-  autobalance()
-  convex_hull()
-#end
-
-#macro sphenomegacorona() // J88.  TODO: Get exact coordinates.
-  addpoint(< 1.3, 0  , 0.1>)  #local E1 = npoints-1;
-  addpoint(< 0.5, 0.6, 0  >)  #local E2 = npoints-1;
-  addpoint(<-0.5, 0.6, 0  >)  #local E3 = npoints-1;
-  addpoint(<-1.3, 0  , 0.1>)  #local E4 = npoints-1;
-  addpoint(<-0.5,-0.6, 0  >)  #local E5 = npoints-1;
-  addpoint(< 0.5,-0.6, 0  >)  #local E6 = npoints-1;
-  addpoint(< 0.5, 0  , 0.7>)  #local N1 = npoints-1;
-  addpoint(<-0.5, 0  , 0.7>)  #local N2 = npoints-1;
-  addpoint(< 0  , 0.5,-0.9>)  #local S1 = npoints-1;
-  addpoint(<-0.8, 0  ,-0.8>)  #local S2 = npoints-1;
-  addpoint(< 0  ,-0.5,-0.9>)  #local S3 = npoints-1;
-  addpoint(< 0.8, 0  ,-0.8>)  #local S4 = npoints-1;
-  make_lune(E1,E2,E3,E4,N2,N1)
-  make_lune(E4,E5,E6,E1,N1,N2)
-  make_triangle(E1,E2,S4)  make_triangle(E2,E3,S1)  make_triangle(E3,E4,S2)
-  make_triangle(E4,E5,S2)  make_triangle(E5,E6,S3)  make_triangle(E6,E1,S4)
-  make_triangle(S1,S2,S3)  make_triangle(S3,S4,S1)
-  optimise(400,0.000001)
-  //showvtxs()
-  autobalance()
-  convex_hull()
-#end
-
-#macro hebesphenomegacorona() // J89.  TODO: Get exact coordinates.
-  addpoint(< 1.10, 0.00, 0.20>)  #local E1 = npoints-1;
-  addpoint(< 0.50, 0.72,-0.15>)  #local E2 = npoints-1;
-  addpoint(<-0.50, 0.72,-0.15>)  #local E3 = npoints-1;
-  addpoint(<-1.10, 0.00, 0.20>)  #local E4 = npoints-1;
-  addpoint(<-0.50,-0.72,-0.15>)  #local E5 = npoints-1;
-  addpoint(< 0.50,-0.72,-0.15>)  #local E6 = npoints-1;
-  addpoint(< 0.50, 0.50, 0.83>)  #local N1 = npoints-1;
-  addpoint(<-0.50, 0.50, 0.83>)  #local N2 = npoints-1;
-  addpoint(<-0.50,-0.50, 0.83>)  #local N3 = npoints-1;
-  addpoint(< 0.50,-0.50, 0.83>)  #local N4 = npoints-1;
-  addpoint(< 0.00, 0.50,-0.99>)  #local S1 = npoints-1;
-  addpoint(<-0.84, 0.00,-0.76>)  #local S2 = npoints-1;
-  addpoint(< 0.00,-0.50,-0.99>)  #local S3 = npoints-1;
-  addpoint(< 0.84, 0.00,-0.76>)  #local S4 = npoints-1;
-  make_lune(E1,E2,E3,E4,N2,N1)
-  make_lune(E4,E5,E6,E1,N4,N3)
-  make_lune(E1,N1,N2,E4,N3,N4)
-  make_triangle(E1,E2,S4)  make_triangle(E2,E3,S1)  make_triangle(E3,E4,S2)
-  make_triangle(E4,E5,S2)  make_triangle(E5,E6,S3)  make_triangle(E6,E1,S4)
-  make_triangle(S1,S2,S3)  make_triangle(S3,S4,S1)
-  optimise(400,0.000001)
+#macro sphenocoronae(n) // J86, J87
+  #local k = (6 + sqrt(6) + 2 * sqrt(213 - 57*sqrt(6))) / 30; // Minimal polynomial 60x^4 - 48x^3 - 100x^2 + 56x + 23
+  addpointssgn(<0, 1/2, sqrt(1-k*k)>, <0,1,0>)
+  addpointssgn(<k, 1/2, 0>, <1,1,0>)
+  addpointssgn(<0, 1/2 + sqrt((3-4*k*k)/(1-k*k))/2, (1-2*k*k)/(2*sqrt(1-k*k))>, <0,1,0>)
+  addpointssgn(<1/2, 0, -sqrt(1/2 + k - k*k)>, <1,0,0>)
+  #if(n=87)
+    #local a = (k - sqrt(2-2*k*k))/2;
+    addpoint(<k - a, 0, sqrt(3/4 - a*a)>)
+  #end
   showvtxs()
   autobalance()
   convex_hull()
 #end
 
-#macro disphenocingulum() // J90.  TODO: Get exact coordinates.
-  addpoint(< 0.00, 0.50, 1.10>)  #local NN1 = npoints-1;
-  addpoint(< 0.00,-0.50, 1.10>)  #local NN2 = npoints-1;
-  addpoint(< 0.00, 1.12, 0.33>)  #local  N1 = npoints-1;
-  addpoint(< 0.77, 0.50, 0.46>)  #local  N2 = npoints-1;
-  addpoint(< 0.77,-0.50, 0.46>)  #local  N3 = npoints-1;
-  addpoint(< 0.00,-1.12, 0.33>)  #local  N4 = npoints-1;
-  addpoint(<-0.77,-0.50, 0.46>)  #local  N5 = npoints-1;
-  addpoint(<-0.77, 0.50, 0.46>)  #local  N6 = npoints-1;
-  addpoint(< 0.50, 0.77,-0.46>)  #local  S1 = npoints-1;
-  addpoint(< 1.12, 0.00,-0.33>)  #local  S2 = npoints-1;
-  addpoint(< 0.50,-0.77,-0.46>)  #local  S3 = npoints-1;
-  addpoint(<-0.50,-0.77,-0.46>)  #local  S4 = npoints-1;
-  addpoint(<-1.12, 0.00,-0.33>)  #local  S5 = npoints-1;
-  addpoint(<-0.50, 0.77,-0.46>)  #local  S6 = npoints-1;
-  addpoint(< 0.50, 0.00,-1.10>)  #local SS1 = npoints-1;
-  addpoint(<-0.50, 0.00,-1.10>)  #local SS2 = npoints-1;
-  make_lune(N1,N2,N3,N4,NN2,NN1)
-  make_lune(N4,N5,N6,N1,NN1,NN2)
-  make_lune(S2,SS1,SS2,S5,S6,S1)
-  make_lune(S2,S3,S4,S5,SS2,SS1)
-  make_triangle(N1,S1,N2)  make_triangle(N2,S2,N3)  make_triangle(N3,S3,N4)
-  make_triangle(N4,S4,N5)  make_triangle(N5,S5,N6)  make_triangle(N6,S6,N1)
-  optimise(400,0.000001)
-  showvtxs()
+#macro sphenomegacorona() // J88
+  #local k = 0.5946333356326385300524244;
+  // k is the smallest positive root of
+  // 1680x^16 - 4800x^15 - 3712x^14 + 17216x^13 + 1568x^12 - 24576x^11 + 2464x^10 + 17248x^9
+  // - 3384x^8 - 5584x^7 + 2000x^6 + 240x^5 - 776x^4 + 304x^3 + 200x^2 - 56x - 23
+  #local j = sqrt(1-k*k);
+  addpointssgn(<1, 0, 2*j>, <1,0,0>)
+  addpointssgn(<1, 2*k, 0>, <1,1,0>)
+  addpointssgn(<sqrt(3-4*k*k)/j + 1, 0, (1-2*k*k) / j>, <1,0,0>)
+  addpointssgn(<0, 1, -sqrt(2+4*k-4*k*k)>, <0,1,0>)
+  addpointssgn(<1 - sqrt(3-4*k*k)*(2*k*k-1) / (j*j*j), 0, (2*k*k*k*k-1) / (j*j*j)>, <1,0,0>)
   autobalance()
+  showvtxs()
+  convex_hull()
+#end
+
+#macro hebesphenomegacorona() // J89
+  #local k = 0.18377570557055179182109963;
+  // 26880x^10 + 35328x^9 - 25600x^8 - 39680x^7 + 6112x^6 + 13696x^5 + 2128x^4 - 1808x^3 - 1119x^2 + 494x - 47
+  #local a = sqrt(1 - k*k);
+  #local b = sqrt(2 - 2*k - 4*k*k);
+  #local c = sqrt(3 - 4*k*k);
+  addpointssgn(<1, 1, 2*a>/2, <1,1,0>)
+  addpointssgn(<1+2*k, 1, 0>/2, <1,1,0>)
+  addpointssgn(<1, 0, -c>/2, <1,0,0>)
+  addpointssgn(<0, 1 + b/a, b*b/(2*a)>/2, <0,1,0>)
+  addpointssgn(<0, (b*c + k + 1) / (2*a*a), (2*k-1)*c / (2 - 2*k) - b / (2*a*a)>/2, <0,1,0>)
+  autobalance()
+  showvtxs()
+  convex_hull()
+#end
+
+#macro disphenocingulum() // J90
+  #local B = 1.5342622279669230038363354;
+  // B is the second-smallest postive root of
+  // x^12 - 4x^11 - 26x^10 + 116x^9 + 97x^8 - 824x^7 + 312x^6 + 2176x^5 - 2024x^4 - 1888x^3 + 2688x^2 - 192x - 368
+  #local C = sqrt((1 + 2*B - B*B) / 2);
+  #local A = C + sqrt(4 - B*B);
+  #local E = (A*A - B*B - C*C) / (2 * sqrt(4 - B*B));
+  #local D = 1 + sqrt(4 - (A-E)*(A-E));
+  addpointssgn(<0, 1,  A>, <0,1,0>)
+  addpointssgn(<B, 1,  C>, <1,1,0>)
+  addpointssgn(<0, D,  E>, <0,1,0>)
+  addpointssgn(<D, 0, -E>, <1,0,0>)
+  addpointssgn(<1, B, -C>, <1,1,0>)
+  addpointssgn(<1, 0, -A>, <1,0,0>)
+  autobalance()
+  showvtxs()
   convex_hull()
 #end
 
@@ -910,12 +820,10 @@
 
 #macro elongated_dodecahedron()
   #local c = sqrt(3) / 2;
-  
   addpointssgn(<1, 1, c+1>, <1,1,1>)
   addpointssgn(<2, 0, c  >, <1,0,1>)
   addpointssgn(<0, 2, c  >, <0,1,1>)
   addpointssgn(<0, 0, c+2>, <0,0,1>)
-  
   autobalance()
   convex_hull()
 #end
@@ -962,11 +870,9 @@
   #local C2 = -1 / sqrt(  3);
   #local C3 = 11 / sqrt(243);
   #local C4 =  5 / sqrt( 27);
-  
   addevenpermsevensgn(<C1,  C1, C4>)
   addevenpermsevensgn(<C3, -C0, C3>)
   addpointsevensgn(   <C2,  C2, C2>)
-  
   autobalance()
   convex_hull()
 #end
@@ -1413,6 +1319,7 @@ union {
   pigment { colour <.3,.3,.3> }
   finish { ambient 0 diffuse 1 phong 1 }
 }
+
 
 #if(notwireframe)
 //Draw planes
