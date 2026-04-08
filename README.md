@@ -70,6 +70,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The elongated dodecahedron
 * The elongated gyrobifastigium
 * The rhombic enneacontahedron
+* The noperthedron
 
 # TODO
 
