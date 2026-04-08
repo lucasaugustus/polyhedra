@@ -88,8 +88,8 @@ data = [
 [    'elongated pentagonal   pyramid'          , 'elongated_pyramid(5)'                 , (444,4,13)],               # J9
 ['gyroelongated     square   pyramid'          , 'gyroelongated_square_pyramid()'       , (6621,0,7,38,95)],         # J10
 ['gyroelongated pentagonal   pyramid'          , 'gyroelongated_pentagonal_pyramid()'   , (6621,4,30,36,63)],        # J11
-[              'triangular bipyramid'          , 'bipyramid(3)'                         , (654,6,23)],               # J12
-[              'pentagonal bipyramid'          , 'bipyramid(5)'                         , (654,6,23)],               # J13
+[              'triangular bipyramid'          , 'bipyramid_j(3)'                       , (654,6,23)],               # J12
+[              'pentagonal bipyramid'          , 'bipyramid_j(5)'                       , (654,6,23)],               # J13
 [    'elongated triangular bipyramid'          , 'elongated_bipyramid(3)'               , (654,13,27)],              # J14
 [    'elongated     square bipyramid'          , 'elongated_bipyramid(4)'               , (654,13,27)],              # J15
 [    'elongated pentagonal bipyramid'          , 'elongated_bipyramid(5)'               , (654,13,27)],              # J16
@@ -162,10 +162,10 @@ data = [
 [        'tridiminished rhombicosidodecahedron', 'rhombicosidodecahedron_mod("DDD.")'   , (19,)],                    # J83
 ['snub disphenoid'                             , 'snub_disphenoid()'                    , (142,4,63,66,75)],         # J84
 ['snub square antiprism'                       , 'snub_square_antiprism()'              , (418,6,11,18,35)],         # J85
-[               'sphenocorona'                 , 'sphenocoronae(86)'                    , (11,35,70,72)],            # J86
-[     'augmented sphenocorona'                 , 'sphenocoronae(87)'                    , (11,35,70,72)],            # J87
+[               'sphenocorona'                 , 'sphenocoronae(86)'                    , (3,53,56)],                # J86
+[     'augmented sphenocorona'                 , 'sphenocoronae(87)'                    , (3,53,56)],                # J87
 [               'sphenomegacorona'             , 'sphenomegacorona()'                   , (11,4,14,57,58)],          # J88
-[           'hebesphenomegacorona'             , 'hebesphenomegacorona()'               , (11,2,37,51,82)],          # J89
+[           'hebesphenomegacorona'             , 'hebesphenomegacorona()'               , (0,10,12,21)],             # J89
 ['disphenocingulum'                            , 'disphenocingulum()'                   , (11,0,6,15)],              # J90
 ['bilunabirotunda'                             , 'bilunabirotunda()'                    , (10,2,4)],                 # J91
 ['triangular hebesphenorotunda'                , 'triangular_hebesphenorotunda()'       , (855,13,14,22,29)],        # J92
@@ -262,7 +262,7 @@ for (name, code, angles, file) in data_reduced:
                        '+I' + srcfilename, '+O' + imgfilename,
                        '+w' + resolution,  '+h' + resolution,
                        '+A', '-D',      # +A turns on antialiasing; -D suppresses the preview window.
-                       #'+GD',           # Pring #debug messages
+                       '+GD',           # Pring #debug messages
                        ]
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
             run(command, check=True)
