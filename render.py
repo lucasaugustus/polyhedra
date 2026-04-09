@@ -173,7 +173,7 @@ data = [
 ['triakis truncated tetrahedron'               , 'triakistruncatedtetrahedron()'        , (190,8,10,18,32)],
 ['trapezo-rhombic dodecahedron'                , 'trapezo_rhombic_dodecahedron()'       , (51,)],
 ['elongated dodecahedron'                      , 'elongated_dodecahedron()'             , (154,)],
-['rhombic icosahedron'                         , 'rhombic_icosahedron()'                , (3,12,13,15)],
+['rhombic icosahedron'                         , 'rhombic_icosahedron()'                , (6,20,48)],
 ['truncated triakis tetrahedron'               , 'trunc_triakis_tet()'                  , (0,)],
 [' truncated triangular trapezohedron'         , 'truncated_trapezohedron(3)'           , (58,)],        # Infinite family
 [' truncated     square trapezohedron'         , 'truncated_trapezohedron(4)'           , (58,)],        # Infinite family
