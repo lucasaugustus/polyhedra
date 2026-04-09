@@ -142,7 +142,6 @@ A number of files will be created in the relevant subdirectories of `images/`.  
   * https://dmccooey.com/polyhedra/ToroidalNonRegular.html
   * https://dmccooey.com/polyhedra/HigherGenus.html
   * https://dmccooey.com/polyhedra/Other.html
-* Truncated bipyramids
 * Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
 * Handle chirality when relevant.
