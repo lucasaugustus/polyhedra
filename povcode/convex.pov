@@ -829,37 +829,15 @@
 #end
 
 #macro rhombic_icosahedron()
-  #local A = sqrt((25 - 11 * sqrt(5)) / 40);
-  #local B = sqrt(( 5 -      sqrt(5)) / 40);
-  #local C = sqrt(( 5 +      sqrt(5)) / 40);
-  #local D = sqrt(( 5 -      sqrt(5)) / 10);
-  #local E = sqrt(( 5 -      sqrt(5)) /  8);
-  #local F = sqrt(( 5 +      sqrt(5)) / 10);
-  #local G = sqrt(( 5 +      sqrt(5)) /  8);
-  #local H = sqrt((25 + 11 * sqrt(5)) / 40);
-  #local I = sqrt(( 5 +  2 * sqrt(5)) /  5);
-  addpoint(< C, -B,  I>)
-  addpoint(< C, -B, -I>)
-  addpoint(<-C,  B,  I>)
-  addpoint(<-C,  B, -I>)
-  addpoint(< C, -H,  F>)
-  addpoint(< C, -H, -F>)
-  addpoint(<-C,  H,  F>)
-  addpoint(<-C,  H, -F>)
-  addpoint(< C,  E,  F>)
-  addpoint(< C,  E, -F>)
-  addpoint(<-C, -E,  F>)
-  addpoint(<-C, -E, -F>)
-  addpoint(< G, -B,  D>)
-  addpoint(< G, -B, -D>)
-  addpoint(<-G,  B,  D>)
-  addpoint(<-G,  B, -D>)
-  addpoint(< G, -H,  0>)
-  addpoint(<-G,  H,  0>)
-  addpoint(< G,  E,  0>)
-  addpoint(<-G, -E,  0>)
-  addpoint(< A,  H,  0>)
-  addpoint(<-A, -H,  0>)
+  addpointssgn(<0,0,5>, <0,0,1>)
+  #local P = <4, 0, 3>;
+  #local Q = <2 + 2 * phi, sqrt(10 + 2*sqrt(5)), 1>;
+  #for (i, 1, 5)
+    #local P = rotateabout(<0,0,1>, 2*pi/5, P);
+    #local Q = rotateabout(<0,0,1>, 2*pi/5, Q);
+    addpoint(P) addpoint(-P)
+    addpoint(Q) addpoint(-Q)
+  #end
   autobalance()
   convex_hull()
 #end
@@ -1001,7 +979,6 @@
 
 #macro noperthedron()
   // https://arxiv.org/pdf/2508.18475v1
-  #declare MaximumVerticesPerFace = 30;
   #local P = < 152024884,          0,  210152163> / 259375205;
   #local Q = <6632738028, 6106948881, 3980949609> / 1e10;
   #local R = <8193990033, 5298215096, 1230614493> / 1e10;
@@ -1088,7 +1065,7 @@
       // Find those faces that P can see.
       // Recall that faces are stored with an orientation, pointing outward.
       // Build a plane's normal vector in that orientation, with its tail on the plane.
-      // Then P can see the plane iff it is on the same side of the plane as the vector's head.
+      // Then P can see the face iff it is on the same side of the plane as the vector's head.
       #for (f, 0, Facecount-1)
         #local F = Face[f];
         #local A = points[F.x];
