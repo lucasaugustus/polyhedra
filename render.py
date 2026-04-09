@@ -194,6 +194,7 @@ data = [
 ['elongated gyrobifastigium'                   , 'elongated_gyrobifastigium()'          , (10,13,27,58,91)],
 ['rhombic enneacontahedron'                    , 'rhombic_enneacontahedron()'           , (0,30,88,94)],
 ['noperthedron'                                , 'noperthedron()'                       , (58,)],
+['bilinski dodecahedron'                       , 'BilinskiDodecahedron()'               , (14,)],
 ]
 
 atad = [
@@ -231,7 +232,14 @@ for arg in argv:
         if arg1 == 'res': resolution = arg2
         if arg1 == 'target': solids = set(' '.join(x.split()) for x in arg2.split(','))
         if arg1 == 'frames': frames = arg2
-        if arg1 == 'angles': angle_override = list(map(int, arg2.split(',')))
+        if arg1 == 'angles':
+            for ang in arg2.split(','):
+                if '-' in ang:
+                    a, b = ang.split('-')
+                    angle_override.extend(range(int(a), int(b)+1))
+                else:
+                    angle_override.append(int(ang))
+            #angle_override = list(map(int, arg2.split(',')))
         if arg1 == 'threads': threads = arg2
         if arg1 == 'filetypes': filetypes = [x.lower() for x in arg2.split(',')]
         if arg1 == 'keepframes': keepframes = (arg2 == 'yes')
