@@ -859,9 +859,7 @@
   #declare MaximumVerticesPerFace = max(5,N);
   
   // A pair of nearest-neighbour points on the middle rings is
-  //    A == <     1    ,     0    ,  c >
-  // and
-  //    C == < cos(pi/N), sin(pi/N), -c >,
+  //    A == <     1    ,     0    ,  c >    and    C == < cos(pi/N), sin(pi/N), -c >,
   // using the labels that we will give them below.  The distance between these points is
   // sqrt((1 - cos(pi/N))^2 + sin(pi/N)^2 + 4c^2)
   // == sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                       (1)
@@ -990,6 +988,18 @@
     addpoint(Q)  addpoint(-Q)
     addpoint(R)  addpoint(-R)
   #end
+  autobalance()
+  convex_hull()
+#end
+
+#macro BilinskiDodecahedron()
+  #local C0 = sqrt(( 5 -     sqrt(5)) / 10);
+  #local C1 = sqrt(( 5 +     sqrt(5)) / 10);
+  #local C2 = sqrt((10 + 4 * sqrt(5)) / 10);
+  addpointssgn(< 0,  0, C2>, <0,0,1>)
+  addpointssgn(<C1, C0,  0>, <1,1,0>)
+  addpointssgn(<C1,  0, C1>, <1,0,1>)
+  addpointssgn(< 0, C0, C0>, <0,1,1>)
   autobalance()
   convex_hull()
 #end
@@ -1243,21 +1253,19 @@ This_shape_will_be_drawn()
   rotate rot3 * 180 / pi * y
 #end
 
-#if (1)
-  //Scale shape to fit in unit sphere
-  #local b=0;
-  #for (a, 0, npoints-1)
-    #local c = vlength(points[a]);
-    #if (c > b)
-      #local b = c;
-    #end
+//Scale shape to fit in unit sphere
+#local b=0;
+#for (a, 0, npoints-1)
+  #local c = vlength(points[a]);
+  #if (c > b)
+    #local b = c;
   #end
-  #for (a, 0, npoints-1)
-    #local points[a] = points[a] / b;
-  #end
-  #for (a, 0, nfaces-1)
-    #local faces[a] = faces[a] * b;
-  #end
+#end
+#for (a, 0, npoints-1)
+  #local points[a] = points[a] / b;
+#end
+#for (a, 0, nfaces-1)
+  #local faces[a] = faces[a] * b;
 #end
 
 #macro addp(a)
@@ -1265,6 +1273,10 @@ This_shape_will_be_drawn()
   #declare np = np + 1;
 #end
 union {
+  //Draw points
+  #for (a, 0, npoints-1)
+    sphere { points[a], .01 }
+  #end
   //Draw edges
   #for (a, 0, nfaces-1)
     #declare p = array[MaximumVerticesPerFace];
@@ -1287,29 +1299,21 @@ union {
         #end // if
       #end // for d
     #end // for c
-  #end
-  //Draw points
-  #for (a, 0, npoints-1)
-    sphere { points[a], .01 }
-  #end
+  #end // for a
   dorot()
   pigment { colour <.3,.3,.3> }
   finish { ambient 0 diffuse 1 phong 1 }
 }
 
-
 #if(notwireframe)
 //Draw planes
-object {
-  intersection {
-    #for (a, 0, nfaces-1)
-      plane { faces[a], 1 / vlength(faces[a]) }
-    #end
-    dorot()
-  }
+intersection {
+  #for (a, 0, nfaces-1)
+    plane { faces[a], 1 / vlength(faces[a]) }
+  #end
+  dorot()
   pigment { colour rgbt <.8,.8,.8,.4> }
   finish { ambient 0 diffuse 1 phong flashiness #if(withreflection) reflection { .2 } #end }
-  //interior { ior 1.5 }
   photons {
     target on
     refraction on
