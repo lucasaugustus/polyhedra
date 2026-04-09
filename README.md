@@ -40,7 +40,7 @@ By default, only PNGs will be made.  If making MP4s, they will be 360° rotation
 
 When animating, the default behavior is to delete all the frames after compiling them into the MP4.  If FFmpeg is not available, or if the `keepframes=yes` argument is used, then the frames will not be deleted.
 
-To override the built-in angles, use the `angles=` option.
+To override the built-in angles, use the `angles=` option; for example, `angles=0,7,20-27,2`.
 
 A number of files will be created in the relevant subdirectories of `images/`.  Any pre-existing files with conflicting filenames will be overwritten.  Some of the created files will be deleted, depending on the `filetypes=` argument.
 
@@ -71,6 +71,7 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * The elongated gyrobifastigium
 * The rhombic enneacontahedron
 * The noperthedron
+* The Bilinski dodecahedron
 
 # TODO
 
