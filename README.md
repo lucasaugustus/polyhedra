@@ -102,6 +102,46 @@ A number of files will be created in the relevant subdirectories of `images/`.  
 * https://en.wikipedia.org/wiki/Hill_tetrahedron
 * https://en.wikipedia.org/wiki/Tetradecahedron
 * https://dmccooey.com/polyhedra/index.html
+  * https://dmccooey.com/polyhedra/VersiRegular.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingQuasiRegular.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingQuasiRegularDual.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingQuasiQuasiRegular.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingQuasiQuasiRegularDual.html
+  * https://dmccooey.com/polyhedra/VersiQuasiRegular.html
+  * https://dmccooey.com/polyhedra/VersiQuasiRegularDual.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingTruncatedRegular.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingTruncatedRegularDual.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingTruncatedQuasiRegular.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingTruncatedQuasiRegularDual.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingSnubQuasiRegular.html
+  * https://dmccooey.com/polyhedra/SelfIntersectingSnubQuasiRegularDual.html
+  * https://dmccooey.com/polyhedra/StarPrismAntiprism.html
+  * https://dmccooey.com/polyhedra/StarDipyramidTrapezohedron.html
+  * https://dmccooey.com/polyhedra/Hull.html
+  * https://dmccooey.com/polyhedra/Propellor.html
+  * https://dmccooey.com/polyhedra/BiscribedNonChiral.html
+  * https://dmccooey.com/polyhedra/BiscribedChiral.html
+  * https://dmccooey.com/polyhedra/TruncatedArchimedean.html
+  * https://dmccooey.com/polyhedra/RectifiedArchimedean.html
+  * https://dmccooey.com/polyhedra/TruncatedCatalan.html
+  * https://dmccooey.com/polyhedra/Chamfer.html
+  * https://dmccooey.com/polyhedra/Derived.html
+  * https://dmccooey.com/polyhedra/GeodesicIcosahedra.html
+  * https://dmccooey.com/polyhedra/GeodesicIcosahedraPage2.html
+  * https://dmccooey.com/polyhedra/DualGeodesicIcosahedra.html
+  * https://dmccooey.com/polyhedra/DualGeodesicIcosahedraPage2.html
+  * https://dmccooey.com/polyhedra/GeodesicCubes.html
+  * https://dmccooey.com/polyhedra/GeodesicCubesPage2.html
+  * https://dmccooey.com/polyhedra/GeodesicRTs.html
+  * https://dmccooey.com/polyhedra/GeodesicRTsPage2.html
+  * https://dmccooey.com/polyhedra/HighOrderGeodesics.html
+  * https://dmccooey.com/polyhedra/GreaterSelfDual.html
+  * https://dmccooey.com/polyhedra/ToroidalRegularHexagonal.html
+  * https://dmccooey.com/polyhedra/ToroidalRegularTriangular.html
+  * https://dmccooey.com/polyhedra/ToroidalRegularTetragonal.html
+  * https://dmccooey.com/polyhedra/ToroidalNonRegular.html
+  * https://dmccooey.com/polyhedra/HigherGenus.html
+  * https://dmccooey.com/polyhedra/Other.html
 * Truncated bipyramids
 * Allow arbitrary members of the infinite families.
 * Ensure that this works across platforms.
