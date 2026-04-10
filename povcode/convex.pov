@@ -788,31 +788,32 @@
 #end
 
 #macro triakistruncatedtetrahedron()
-  addpoint(< 8/3, 1/3, 5/(3*sq2)>)
-  addpoint(< 8/3, 2/3, 4/(3*sq2)>)
-  addpoint(< 8/3, 1  , 5/(3*sq2)>)
+  addpoint(< 8, 1, 5/sq2>)
+  addpoint(< 8, 2, 4/sq2>)
+  addpoint(< 8, 3, 5/sq2>)
   
-  addpoint(< 3  , 0  , 7/(3*sq2)>)
-  addpoint(< 3  , 2/3, 1/   sq2 >)
-  addpoint(< 3  , 4/3, 7/(3*sq2)>)
+  addpoint(< 9, 0, 7/sq2>)
+  addpoint(< 9, 2, 3/sq2>)
+  addpoint(< 9, 4, 7/sq2>)
   
-  addpoint(<10/3, 0  , 8/(3*sq2)>)
-  addpoint(<10/3, 1/3, 3/   sq2 >)
-  addpoint(<10/3, 1  , 3/   sq2 >)
-  addpoint(<10/3, 4/3, 8/(3*sq2)>)
+  addpoint(<10, 0, 8/sq2>)
+  addpoint(<10, 1, 9/sq2>)
+  addpoint(<10, 3, 9/sq2>)
+  addpoint(<10, 4, 8/sq2>)
   
-  addpoint(<11/3, 0  , 7/(3*sq2)>)
-  addpoint(<11/3, 2/3, 1/   sq2 >)
-  addpoint(<11/3, 4/3, 7/(3*sq2)>)
+  addpoint(<11, 0, 7/sq2>)
+  addpoint(<11, 2, 3/sq2>)
+  addpoint(<11, 4, 7/sq2>)
   
-  addpoint(< 4  , 1/3, 5/(3*sq2)>)
-  addpoint(< 4  , 2/3, 4/(3*sq2)>)
-  addpoint(< 4  , 1  , 5/(3*sq2)>)
+  addpoint(<12, 1, 5/sq2>)
+  addpoint(<12, 2, 4/sq2>)
+  addpoint(<12, 3, 5/sq2>)
   
   autobalance()
   convex_hull()
 #end
 
+ 
 #macro trapezo_rhombic_dodecahedron()
   triangular_orthobicupola()
   dual()
@@ -967,10 +968,8 @@
 
 #macro elongated_gyrobifastigium()
   addpointssgn(<1,1,1/2>, <1,1,1>)
-  addpoint(< 1, 0, 1>)
-  addpoint(<-1, 0, 1>)
-  addpoint(< 0, 1,-1>)
-  addpoint(< 0,-1,-1>)
+  addpointssgn(<1,0, 1>, <1,0,0>)
+  addpointssgn(<0,1,-1>, <0,1,0>)
   autobalance()
   convex_hull()
 #end
@@ -1003,6 +1002,13 @@
   autobalance()
   convex_hull()
 #end
+
+#macro gyrate_deltoidal_icositetrahedron()
+  rhombicuboctahedron_mod(37) // elongated square gyrobicupola
+  dual()
+#end
+
+
 
 
 
