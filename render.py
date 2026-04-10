@@ -195,6 +195,7 @@ data = [
 ['rhombic enneacontahedron'                    , 'rhombic_enneacontahedron()'           , (0,30,88,94)],
 ['noperthedron'                                , 'noperthedron()'                       , (58,)],
 ['bilinski dodecahedron'                       , 'BilinskiDodecahedron()'               , (14,)],
+['gyrate deltoidal icositetrahedron'           , 'gyrate_deltoidal_icositetrahedron()'  , (13,)],
 ]
 
 atad = [
