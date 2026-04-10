@@ -53,12 +53,12 @@ For a complete enumeration of this package's coverage, see the lists `data` and 
 * All 13 Catalan solids
 * All 92 Johnson solids
 * All Kepler-Poinsot solids
-* The *n*-biprisms for *n* = 3&ndash;10
-* The *n*-antiprisms for *n* = 2&ndash;10 and 17
-* The *n*-bipyramids for *n* = 3&ndash;10
-* The *n*-trapezohedra for *n* = 2&ndash;10
-* The truncated *n*-trapezohedra for *n* = 3&ndash;10
-* The diminished *n*-trapezohedra for *n* = 3&ndash;10
+* The *n*-gonal prisms for *n* = 3&ndash;10
+* The *n*-gonal antiprisms for *n* = 2&ndash;10 and 17
+* The *n*-gonal bipyramids for *n* = 3&ndash;10
+* The *n*-gonal trapezohedra for *n* = 2&ndash;10
+* The truncated *n*-gonal trapezohedra for *n* = 3&ndash;10
+* The diminished *n*-gonal trapezohedra for *n* = 3&ndash;10
 * The compound of five tetrahedra
 * [This toroidal complex of eight octahedra](https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif)
 * The Herschel enneahedron
