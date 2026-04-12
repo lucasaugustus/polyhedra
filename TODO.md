@@ -13,6 +13,7 @@
 * https://en.wikipedia.org/wiki/Uniform_star_polyhedron
 * https://en.wikipedia.org/wiki/Compound_of_three_cubes
 * https://en.wikipedia.org/wiki/Compound_of_five_cubes
+* https://en.wikipedia.org/wiki/Steffen%27s_polyhedron
 * https://en.wikipedia.org/wiki/Compound_of_four_cubes
 * https://en.wikipedia.org/wiki/Jessen%27s_icosahedron
 * https://en.wikipedia.org/wiki/Tetrated_dodecahedron
