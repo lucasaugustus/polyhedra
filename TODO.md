@@ -24,6 +24,7 @@
 * https://en.wikipedia.org/wiki/Szilassi_polyhedron
 * https://en.wikipedia.org/wiki/Hexagonal_bifrustum
 * https://en.wikipedia.org/wiki/Regular_polyhedron
+* https://mathworld.wolfram.com/EschersSolid.html
 * https://en.wikipedia.org/wiki/Hill_tetrahedron
 * https://en.wikipedia.org/wiki/Tetradecahedron
 * https://dmccooey.com/polyhedra/index.html
