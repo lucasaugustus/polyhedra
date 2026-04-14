@@ -1008,6 +1008,69 @@
   dual()
 #end
 
+#macro class1_geodesic(F, N)
+  #if (F = 4)
+    addpointsevensgn(<1/sq2,1/sq2,1/sq2>)   // The tetrahedral vertices, with edge length 2
+    #local V = 4;
+  #end
+  #if (F = 8)
+    addevenpermssgn(<sq2,0,0>, <1,0,0>)     // The  octahedral vertices, with edge length 2
+    #local V = 6;
+  #end
+  #if (F = 20)
+    addevenpermssgn(<0,1,phi>, <0,1,1>)     // The icosahedral vertices, with edge length 2
+    #local V = 12;
+  #end
+  #for (a, 0, V-2)
+    #local A = points[a];
+    #for (b, a+1, V-1)
+      #local B = points[b];
+      #if (abs(vlength(A - B) - 2) < 1e-6)
+       
+        // We found an edge.  Subdivide it.
+        #for (i, 1, N-1)
+          addpoint((A*i + B*(N-i)) / N)
+        #end
+       
+        #for (c, b+1, V-1)
+          #local C = points[c];
+          #if ((abs(vlength(A - C) - 2) < 1e-6) & (abs(vlength(B - C) - 2) < 1e-6))
+           
+            // We found a face.  Subdivide it.
+            #for (d, 2, N-1)
+              #local End1 = (B*d + A*(N-d)) / N;
+              #local End2 = (C*d + A*(N-d)) / N;
+              #for (e, 1, d-1)
+                addpoint((End1*e + End2*(d-e)) / d)
+              #end
+            #end
+           
+          #end // if
+        #end // for c
+       
+      #end // if
+    #end // for b
+  #end // for a
+ 
+  // Finally, project all points onto the unit sphere.
+  autobalance()
+  #for (i, 0, npoints-1)
+    #declare points[i] = vnormalize(points[i]);
+  #end
+  
+  // TODO: For the octahedral and especially tetrahedral variants, we have rather poor spacing of points.
+  // Maybe add an iterative-optimization-type step, where we treat them as like charges?
+  // We would have to ensure that the topology does not change.
+  
+  showvtxs()
+  convex_hull()
+#end
+
+#macro class1_goldberg(V, N)
+  class1_geodesic(V, N)
+  dual()
+#end
+
 
 
 
@@ -1284,7 +1347,7 @@ union {
     sphere { points[a], .01 }
   #end
   //Draw edges
-  #for (a, 0, nfaces-1)
+  #for (a, 0, nfaces-1) // TODO: This can be done more efficiently.
     #declare p = array[MaximumVerticesPerFace];
     #declare np = 0;
     #for (b, 0, npoints-1)
