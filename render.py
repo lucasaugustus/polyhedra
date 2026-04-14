@@ -175,27 +175,53 @@ data = [
 ['elongated dodecahedron'                      , 'elongated_dodecahedron()'             , (154,)],
 ['rhombic icosahedron'                         , 'rhombic_icosahedron()'                , (6,20,48)],
 ['truncated triakis tetrahedron'               , 'trunc_triakis_tet()'                  , (0,)],
-[' truncated triangular trapezohedron'         , 'truncated_trapezohedron(3)'           , (58,)],        # Infinite family
-[' truncated     square trapezohedron'         , 'truncated_trapezohedron(4)'           , (58,)],        # Infinite family
-[' truncated pentagonal trapezohedron'         , 'truncated_trapezohedron(5)'           , (58,)],        # Infinite family
-[' truncated  hexagonal trapezohedron'         , 'truncated_trapezohedron(6)'           , (58,)],        # Infinite family
-[' truncated heptagonal trapezohedron'         , 'truncated_trapezohedron(7)'           , (58,)],        # Infinite family
-[' truncated  octagonal trapezohedron'         , 'truncated_trapezohedron(8)'           , (58,)],        # Infinite family
-[' truncated  nonagonal trapezohedron'         , 'truncated_trapezohedron(9)'           , (58,)],        # Infinite family
-[' truncated  decagonal trapezohedron'         , 'truncated_trapezohedron(10)'          , (58,)],        # Infinite family
-['diminished triangular trapezohedron'         , 'diminished_trapezohedron(3)'          , (58,)],        # Infinite family
-['diminished     square trapezohedron'         , 'diminished_trapezohedron(4)'          , (58,)],        # Infinite family
-['diminished pentagonal trapezohedron'         , 'diminished_trapezohedron(5)'          , (58,)],        # Infinite family
-['diminished  hexagonal trapezohedron'         , 'diminished_trapezohedron(6)'          , (58,)],        # Infinite family
-['diminished heptagonal trapezohedron'         , 'diminished_trapezohedron(7)'          , (58,)],        # Infinite family
-['diminished  octagonal trapezohedron'         , 'diminished_trapezohedron(8)'          , (58,)],        # Infinite family
-['diminished  nonagonal trapezohedron'         , 'diminished_trapezohedron(9)'          , (58,)],        # Infinite family
-['diminished  decagonal trapezohedron'         , 'diminished_trapezohedron(10)'         , (58,)],        # Infinite family
+[' truncated triangular trapezohedron'         , 'truncated_trapezohedron(3)'           , (58,)],       # Infinite family
+[' truncated     square trapezohedron'         , 'truncated_trapezohedron(4)'           , (58,)],       # Infinite family
+[' truncated pentagonal trapezohedron'         , 'truncated_trapezohedron(5)'           , (58,)],       # Infinite family
+[' truncated  hexagonal trapezohedron'         , 'truncated_trapezohedron(6)'           , (58,)],       # Infinite family
+[' truncated heptagonal trapezohedron'         , 'truncated_trapezohedron(7)'           , (58,)],       # Infinite family
+[' truncated  octagonal trapezohedron'         , 'truncated_trapezohedron(8)'           , (58,)],       # Infinite family
+[' truncated  nonagonal trapezohedron'         , 'truncated_trapezohedron(9)'           , (58,)],       # Infinite family
+[' truncated  decagonal trapezohedron'         , 'truncated_trapezohedron(10)'          , (58,)],       # Infinite family
+['diminished triangular trapezohedron'         , 'diminished_trapezohedron(3)'          , (58,)],       # Infinite family
+['diminished     square trapezohedron'         , 'diminished_trapezohedron(4)'          , (58,)],       # Infinite family
+['diminished pentagonal trapezohedron'         , 'diminished_trapezohedron(5)'          , (58,)],       # Infinite family
+['diminished  hexagonal trapezohedron'         , 'diminished_trapezohedron(6)'          , (58,)],       # Infinite family
+['diminished heptagonal trapezohedron'         , 'diminished_trapezohedron(7)'          , (58,)],       # Infinite family
+['diminished  octagonal trapezohedron'         , 'diminished_trapezohedron(8)'          , (58,)],       # Infinite family
+['diminished  nonagonal trapezohedron'         , 'diminished_trapezohedron(9)'          , (58,)],       # Infinite family
+['diminished  decagonal trapezohedron'         , 'diminished_trapezohedron(10)'         , (58,)],       # Infinite family
 ['elongated gyrobifastigium'                   , 'elongated_gyrobifastigium()'          , (10,13,27,58,91)],
 ['rhombic enneacontahedron'                    , 'rhombic_enneacontahedron()'           , (0,30,88,94)],
 ['noperthedron'                                , 'noperthedron()'                       , (58,)],
 ['bilinski dodecahedron'                       , 'BilinskiDodecahedron()'               , (14,)],
 ['gyrate deltoidal icositetrahedron'           , 'gyrate_deltoidal_icositetrahedron()'  , (13,)],
+['class 1 icosahedral geodesic of order 1'     , 'class1_geodesic(20, 1)'               , (0,)],        # Infinite family
+['class 1 icosahedral geodesic of order 2'     , 'class1_geodesic(20, 2)'               , (0,)],        # Infinite family
+['class 1 icosahedral geodesic of order 3'     , 'class1_geodesic(20, 3)'               , (0,)],        # Infinite family
+['class 1 icosahedral geodesic of order 4'     , 'class1_geodesic(20, 4)'               , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 1'     , 'class1_goldberg(20, 1)'               , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 2'     , 'class1_goldberg(20, 2)'               , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 3'     , 'class1_goldberg(20, 3)'               , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 4'     , 'class1_goldberg(20, 4)'               , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 1'     , 'class1_geodesic( 8, 1)'               , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 2'     , 'class1_geodesic( 8, 2)'               , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 3'     , 'class1_geodesic( 8, 3)'               , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 4'     , 'class1_geodesic( 8, 4)'               , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 5'     , 'class1_geodesic( 8, 5)'               , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 1'     , 'class1_goldberg( 8, 1)'               , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 2'     , 'class1_goldberg( 8, 2)'               , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 3'     , 'class1_goldberg( 8, 3)'               , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 4'     , 'class1_goldberg( 8, 4)'               , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 5'     , 'class1_goldberg( 8, 5)'               , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 1'     , 'class1_geodesic( 4, 1)'               , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 2'     , 'class1_geodesic( 4, 2)'               , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 3'     , 'class1_geodesic( 4, 3)'               , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 4'     , 'class1_geodesic( 4, 4)'               , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 1'     , 'class1_goldberg( 4, 1)'               , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 2'     , 'class1_goldberg( 4, 2)'               , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 3'     , 'class1_goldberg( 4, 3)'               , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 4'     , 'class1_goldberg( 4, 4)'               , (0,)],        # Infinite family
 ]
 
 atad = [
@@ -212,7 +238,7 @@ atad = [
 
 for i in range(len(data)):
     data[i][0] = ' '.join(data[i][0].split())   # Replace all runs of spaces with single spaces.
-    data[i][1] = '#macro This_shape_will_be_drawn()\n' + data[i][1] + '\n#end\n'
+    data[i][1] = '#macro This_shape_will_be_drawn()\n  ' + data[i][1] + '\n#end\n'
     data[i].append('convex.pov')
 
 for (name, file, angles) in atad:
