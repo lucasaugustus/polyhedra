@@ -52,13 +52,9 @@ For a complete enumeration of this package's coverage, see the lists `data` and 
 * All 13 Archimedean solids
 * All 13 Catalan solids
 * All 92 Johnson solids
-* All Kepler-Poinsot solids
-* The *n*-gonal prisms for *n* = 3&ndash;10
-* The *n*-gonal antiprisms for *n* = 2&ndash;10 and 17
-* The *n*-gonal bipyramids for *n* = 3&ndash;10
-* The *n*-gonal trapezohedra for *n* = 2&ndash;10
-* The truncated *n*-gonal trapezohedra for *n* = 3&ndash;10
-* The diminished *n*-gonal trapezohedra for *n* = 3&ndash;10
+* All 4 Kepler-Poinsot solids
+* The *n*-gonal prisms, antiprisms, bipyramids, and trapezohedra up to *n* = 10
+* The diminished and truncated *n*-gonal trapezohedra up to *n* = 10
 * The compound of five tetrahedra
 * [This toroidal complex of eight octahedra](https://commons.wikimedia.org/wiki/File:Toroidal_polyhedron.gif)
 * The Herschel enneahedron
@@ -66,6 +62,7 @@ For a complete enumeration of this package's coverage, see the lists `data` and 
 * The rhombic enneacontahedron
 * The noperthedron
 * The Bilinski dodecahedron
+* The class 1 geodesic and Goldberg polyhedra with icosahedral, octahedral, and tetrahedral symmetry
 
 # Credits
 
