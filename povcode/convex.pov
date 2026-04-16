@@ -635,11 +635,21 @@
   convex_hull()
 #end
 
+#macro casus_irreducibilis(A,B,C,D)
+  // Given the cubic polynomial Ax^3 + Bx^2 + Cx + D in the casus irreducibilis,
+  // return a 3-vector whose components are the roots of the polynomial, in ascending order.
+  #local P = (3*A*C - B*B) / (3*A*A);
+  #local Q = (2*B*B*B - 9*A*B*C + 27*A*A*D) / (27*A*A*A);
+  #local R = sqrt(-P/3);
+  #local S = acos( (3*Q) / (2*P*R) ) / 3;
+  (2 * R * <cos(S - 4*pi/3), cos(S - 2*pi/3), cos(S)> - B/(3*A))
+#end
+
 #macro snub_disphenoid() // J84
-  #local q = 0.1690222294241758308998888; // Positive root of 2x^3 + 11x^2 + 4x - 1 (casus irreducibilis)
-  #local a = sqrt(q);               // 0.411120420... = 2 * 0.20556021...
-  #local b = sqrt((1-q) / (2*q));   // 1.567874291... = 2 * 0.78393714...
-  #local c = 2*a*b;                 // 1.289170275... = 2 * 0.64458513...
+  #local q = casus_irreducibilis(2,11,4,-1).z;  // 0.169022229...
+  #local a = sqrt(q);                           // 0.411120420...
+  #local b = sqrt((1-q) / (2*q));               // 1.567874291...
+  #local c = 2*a*b;                             // 1.289170275...
   addpoint(< c,  0, -a>)
   addpoint(< 0,  c,  a>)
   addpoint(<-c,  0, -a>)
@@ -653,7 +663,8 @@
 #end
 
 #macro snub_square_antiprism() // J85
-  #local A = 1.7157317369103943337370248; // Positive root of x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
+  #local Roots = casus_irreducibilis(1, sq2-1, 2*sq2-6, 2-2*sq2);
+  #local A = Roots.z;   // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
   #local B = sqrt(1 - (1-1/sq2) * A * A);
   #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
   addpointssgn(< 1/2  , 1/2  ,  C/2>, <1,1,0>)
@@ -667,7 +678,7 @@
 #end
 
 #macro sphenocoronae(n) // J86, J87
-  #local k = (6 + sqrt(6) + 2 * sqrt(213 - 57*sqrt(6))) / 30; // Minimal polynomial 60x^4 - 48x^3 - 100x^2 + 56x + 23
+  #local k = (6 + sqrt(6) + 2 * sqrt(213 - 57*sqrt(6))) / 30; // Minimal polynomial: 60x^4 - 48x^3 - 100x^2 + 56x + 23
   addpointssgn(<0, 1/2, sqrt(1-k*k)>, <0,1,0>)
   addpointssgn(<k, 1/2, 0>, <1,1,0>)
   addpointssgn(<0, 1/2 + sqrt((3-4*k*k)/(1-k*k))/2, (1-2*k*k)/(2*sqrt(1-k*k))>, <0,1,0>)
@@ -699,6 +710,7 @@
 
 #macro hebesphenomegacorona() // J89
   #local k = 0.18377570557055179182109963;
+  // k is the smallest positive root of
   // 26880x^10 + 35328x^9 - 25600x^8 - 39680x^7 + 6112x^6 + 13696x^5 + 2128x^4 - 1808x^3 - 1119x^2 + 494x - 47
   #local a = sqrt(1 - k*k);
   #local b = sqrt(2 - 2*k - 4*k*k);
