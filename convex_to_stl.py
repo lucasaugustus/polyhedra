@@ -36,13 +36,19 @@ class Vec3:
         self.y = float(y)
         self.z = float(z)
     def __add__(self, other):
+        if isinstance(other, (int, float)):
+            return Vec3(self.x+other, self.y+other, self.z+other)
         o = to_vec3(other)
         return Vec3(self.x+o.x, self.y+o.y, self.z+o.z)
     __radd__ = __add__
     def __sub__(self, other):
+        if isinstance(other, (int, float)):
+            return Vec3(self.x-other, self.y-other, self.z-other)
         o = to_vec3(other)
         return Vec3(self.x-o.x, self.y-o.y, self.z-o.z)
     def __rsub__(self, other):
+        if isinstance(other, (int, float)):
+            return Vec3(other-self.x, other-self.y, other-self.z)
         o = to_vec3(other)
         return Vec3(o.x-self.x, o.y-self.y, o.z-self.z)
     def __mul__(self, other):
@@ -193,6 +199,10 @@ class SwitchStmt:
 @dataclass
 class BreakStmt:
     pass
+
+@dataclass
+class ExprStmt:
+    expr: str
 
 class BreakSignal(Exception):
     pass
@@ -425,8 +435,19 @@ class Interpreter:
                     arg, i = read_paren_expr(s, i)
                     tokens.append(Token('call', (name, split_args(arg))))
                     continue
-                raise RuntimeError(f"Unexpected identifier statement {name}")
-            i += 1
+                j = find_stmt_end(s, i)
+                txt = (name + s[i:j]).strip()
+                if txt:
+                    tokens.append(Token('expr', txt))
+                i = j
+                if i < len(s) and s[i] == ';': i += 1
+                continue
+            j = find_stmt_end(s, i)
+            txt = s[i:j].strip()
+            if txt:
+                tokens.append(Token('expr', txt))
+            i = j
+            if i < len(s) and s[i] == ';': i += 1
         return tokens
     def parse_body(self, body):
         tokens = self.tokenize(body)
@@ -523,10 +544,14 @@ class Interpreter:
             elif tk.kind == 'break':
                 out.append(BreakStmt())
                 pos += 1
+            elif tk.kind == 'expr':
+                out.append(ExprStmt(tk.value))
+                pos += 1
             else:
                 raise RuntimeError(f'Unhandled token kind {tk.kind}')
         return out, pos
     def exec_stmts(self, stmts, env):
+        result = None
         for st in stmts:
             if isinstance(st, AssignStmt):
                 val = self.eval_expr(st.rhs, env)
@@ -539,13 +564,17 @@ class Interpreter:
                 self.call_macro(st.name, args, env)
             elif isinstance(st, IfStmt):
                 if self.eval_expr(st.cond, env):
-                    self.exec_stmts(st.then_body, env)
+                    sub = self.exec_stmts(st.then_body, env)
                 else:
-                    self.exec_stmts(st.else_body, env)
+                    sub = self.exec_stmts(st.else_body, env)
+                if sub is not None:
+                    result = sub
             elif isinstance(st, WhileStmt):
                 guard = 0
                 while self.eval_expr(st.cond, env):
-                    self.exec_stmts(st.body, env)
+                    sub = self.exec_stmts(st.body, env)
+                    if sub is not None:
+                        result = sub
                     guard += 1
                     if guard > 200000:
                         raise RuntimeError(f'Loop guard triggered in while({st.cond}) with locals={env.locals}')
@@ -561,7 +590,9 @@ class Interpreter:
                     return cur <= end + EPS if step > 0 else cur >= end - EPS
                 while cont(i):
                     env.set_local(st.var, i)
-                    self.exec_stmts(st.body, env)
+                    sub = self.exec_stmts(st.body, env)
+                    if sub is not None:
+                        result = sub
                     i = i + step
                     guard += 1
                     if guard > 200000:
@@ -581,11 +612,16 @@ class Interpreter:
                     if hit or matched:
                         matched = True
                         try:
-                            self.exec_stmts(case.body, env)
+                            sub = self.exec_stmts(case.body, env)
+                            if sub is not None:
+                                result = sub
                         except BreakSignal:
                             break
             elif isinstance(st, BreakStmt):
                 raise BreakSignal()
+            elif isinstance(st, ExprStmt):
+                result = self.eval_expr(st.expr, env)
+        return result
     def assign_lhs(self, env, lhs, val, local=False):
         lhs = lhs.strip()
         m = re.match(r'^([A-Za-z_][A-Za-z0-9_]*)(.*)$', lhs)
@@ -637,8 +673,7 @@ class Interpreter:
             return self.eval_expr(macro.expr_body, env)
         if not hasattr(macro, 'ast'):
             macro.ast = self.parse_body(macro.body)
-        self.exec_stmts(macro.ast, env)
-        return None
+        return self.exec_stmts(macro.ast, env)
     def list_shapes(self):
         helpers = {
             'addpoint','addevenperms','addperms','addpointssgn','addevenpermssgn','addpermssgn','addpointsevensgn',
