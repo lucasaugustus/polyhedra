@@ -133,14 +133,66 @@ def pov_seed(_):
 def pov_rand(_):
     return 0.5
 
+def _find_matching_brace(s, start):
+    depth = 0
+    in_string = False
+    for j in range(start, len(s)):
+        ch = s[j]
+        if ch == '"' and (j == 0 or s[j-1] != '\\'):
+            in_string = not in_string
+        elif not in_string:
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    return j
+    raise RuntimeError('Unterminated array initializer')
+
+
+def _convert_array_braces(body):
+    out = []
+    i = 0
+    while i < len(body):
+        if body[i] == '{':
+            j = _find_matching_brace(body, i)
+            inner = body[i+1:j]
+            out.append('PovArray([' + _convert_array_braces(inner) + '])')
+            i = j + 1
+        else:
+            out.append(body[i])
+            i += 1
+    return ''.join(out)
+
+
 def translate_array_syntax(expr):
     s = expr
-    # Handle POV-Ray array initializers such as: array[4] {a,b,c,d}
-    s = re.sub(
-        r'\barray\s*(?:\[\s*[^\[\]]+\s*\])+\s*\{([^{}]*)\}',
-        lambda m: 'PovArray([' + m.group(1).strip() + '])',
-        s
-    )
+    array_dims_re = re.compile(r'\barray\s*((?:\[\s*[^\[\]]+\s*\])+)', re.S)
+
+    # Handle POV-Ray array initializers, including nested forms such as
+    # array[20][7] { {..}, {..}, ... }
+    out = []
+    i = 0
+    while True:
+        m = array_dims_re.search(s, i)
+        if not m:
+            out.append(s[i:])
+            break
+        start, end = m.span()
+        out.append(s[i:start])
+        j = end
+        while j < len(s) and s[j].isspace():
+            j += 1
+        if j < len(s) and s[j] == '{':
+            k = _find_matching_brace(s, j)
+            body = s[j+1:k]
+            out.append('PovArray([' + _convert_array_braces(body) + '])')
+            i = k + 1
+        else:
+            out.append(s[start:end])
+            i = end
+    s = ''.join(out)
+
     while True:
         new = re.sub(r'\barray\s*((?:\[\s*[^\[\]]+\s*\])+)',
                      lambda m: 'array(' + ','.join(part.strip()[1:-1].strip() for part in re.findall(r'\[\s*[^\[\]]+\s*\]', m.group(1))) + ')',
