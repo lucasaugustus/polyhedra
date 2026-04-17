@@ -22,7 +22,7 @@
 
 #macro dodecahedron()
   addpointssgn(<1,1,1>, <1,1,1>)
-  addevenpermssgn(<0, 1/phi, phi>, <0,1,1>)
+  addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
   convex_hull()
 #end
 
@@ -398,10 +398,12 @@
   convex_hull()
 #end
 
-#macro gyroelongated_pentagonal_pyramid() // J11
-  // Drop 1 vertex from an icosahedron
-  addevenpermssgn(<0,1,phi>, <0,1,1>)
+#macro icosahedron_mod(j) // J11, J62, J63, J64
+  addevenpermssgn(<0,1,phi>, <0,1,1>) // The icosahedral vertices
   drop_vtx(99)
+  #if (j >= 62) drop_vtx(6) #end
+  #if (j >= 63) drop_vtx(0) #end
+  #if (j  = 64) augment(3, points[1], points[7], points[8]) #end
   convex_hull()
 #end
 
@@ -550,77 +552,31 @@
   convex_hull()
 #end
 
-#macro augmented_dodecahedron() // J58
+#macro dodecahedron_mod(j) // J58, J59, J60, J61
   addpointssgn(<1,1,1>, <1,1,1>)
   addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
   augment(5, points[4], points[13], points[12])
-  showvtxs()
+  #if (j = 59)
+    addpoint(-points[npoints-1])
+  #end
+  #if (j >= 60)
+    #local a = points[npoints-1];
+    #if (j = 60)
+      addpoint(<a.y,a.z,a.x>)
+    #else
+      drop_vtx(999)
+      addevenperms(a)
+    #end
+  #end
   autobalance()
-  convex_hull()
-#end
-
-#macro parabiaugmented_dodecahedron() // J59
-  addpointssgn(<1,1,1>, <1,1,1>)
-  addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
-  augment(5, points[4], points[13], points[12])
-  addpoint(-points[npoints-1])
-  showvtxs()
-  autobalance()
-  convex_hull()
-#end
-
-#macro metabiaugmented_dodecahedron() // J60
-  addpointssgn(<1,1,1>, <1,1,1>)
-  addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
-  augment(5, points[4], points[13], points[12])
-  #local a = points[npoints-1];
-  addpoint(<a.y,a.z,a.x>)
-  showvtxs()
-  autobalance()
-  convex_hull()
-#end
-
-#macro triaugmented_dodecahedron() // J61
-  addpointssgn(<1,1,1>, <1,1,1>)
-  addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
-  augment(5, points[4], points[13], points[12])
-  #local a = points[npoints-1];
-  drop_vtx(999)
-  addevenperms(a)
-  showvtxs()
-  autobalance()
-  convex_hull()
-#end
-
-#macro metabidiminished_icosahedron() // J62
-  addevenpermssgn(<0,1,phi>, <0,1,1>)
-  drop_vtx(99)
-  drop_vtx(6)
-  convex_hull()
-#end
-
-#macro tridiminished_icosahedron() // J63
-  addevenpermssgn(<0,1,phi>, <0,1,1>)
-  drop_vtx(99)
-  drop_vtx(6)
-  drop_vtx(0)
-  convex_hull()
-#end
-
-#macro augmented_tridiminished_icosahedron() // J64
-  addevenpermssgn(<0,1,phi>, <0,1,1>)
-  drop_vtx(99)
-  drop_vtx(6)
-  drop_vtx(0)
-  augment(3, points[1], points[7], points[8])
   convex_hull()
 #end
 
 #macro rhombicosidodecahedron_mod(mods) // J72, J73, J74, J75, J76, J77, J78, J79, J80, J81, J82, J83
   // mods is a 4-character string of D (drop), G (gyrate), and other (leave alone)
-  addevenpermssgn(<1, 1, 1+2*phi>, <1,1,1>)
-  addevenpermssgn(<phi, 2*phi, 1+phi>, <1,1,1>)
-  addevenpermssgn(<2+phi, 0, 1+phi>, <1,0,1>)
+  addevenpermssgn(<1    , 1    , 1+2*phi>, <1,1,1>)
+  addevenpermssgn(<  phi, 2*phi, 1+  phi>, <1,1,1>)
+  addevenpermssgn(<2+phi, 0    , 1+  phi>, <1,0,1>)
   #local raxis = array[5];
   #local raxis[1] = vnormalize(<phi,-1,0>);
   #local raxis[2] = vnormalize(<-1,0,phi>);
@@ -650,42 +606,38 @@
   #local a = sqrt(q);                           // 0.411120420...
   #local b = sqrt((1-q) / (2*q));               // 1.567874291...
   #local c = 2*a*b;                             // 1.289170275...
-  addpoint(< c,  0, -a>)
-  addpoint(< 0,  c,  a>)
-  addpoint(<-c,  0, -a>)
-  addpoint(< 0, -c,  a>)
-  addpoint(< 1,  0,  b>)
-  addpoint(<-1,  0,  b>)
-  addpoint(< 0,  1, -b>)
-  addpoint(< 0, -1, -b>)
+  addpointssgn(<c, 0, -a>, <1,0,0>)
+  addpointssgn(<0, c,  a>, <0,1,0>)
+  addpointssgn(<1, 0,  b>, <1,0,0>)
+  addpointssgn(<0, 1, -b>, <0,1,0>)
   autobalance()
   convex_hull()
 #end
 
 #macro snub_square_antiprism() // J85
-  #local Roots = casus_irreducibilis(1, sq2-1, 2*sq2-6, 2-2*sq2);
-  #local A = Roots.z;   // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
+  #local A = casus_irreducibilis(1,sq2-1,2*sq2-6,2-2*sq2).z; // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
   #local B = sqrt(1 - (1-1/sq2) * A * A);
   #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
-  addpointssgn(< 1/2  , 1/2  ,  C/2>, <1,1,0>)
-  addpointssgn(< A/sq2, 0    ,  B/2>, <1,0,0>)
-  addpointssgn(< 0    , A/sq2,  B/2>, <0,1,0>)
-  addpointssgn(< A/2  , A/2  , -B/2>, <1,1,0>)
-  addpointssgn(< 1/sq2, 0    , -C/2>, <1,0,0>)
-  addpointssgn(< 0    , 1/sq2, -C/2>, <0,1,0>)
+  addpointssgn(<  1  ,   1  ,  C>, <1,1,0>)
+  addpointssgn(<A*sq2,   0  ,  B>, <1,0,0>)
+  addpointssgn(<  0  , A*sq2,  B>, <0,1,0>)
+  addpointssgn(<  A  ,   A  , -B>, <1,1,0>)
+  addpointssgn(< sq2 ,   0  , -C>, <1,0,0>)
+  addpointssgn(<  0  ,  sq2 , -C>, <0,1,0>)
   autobalance()
   convex_hull()
 #end
 
 #macro sphenocoronae(n) // J86, J87
   #local k = (6 + sqrt(6) + 2 * sqrt(213 - 57*sqrt(6))) / 30; // Minimal polynomial: 60x^4 - 48x^3 - 100x^2 + 56x + 23
-  addpointssgn(<0, 1/2, sqrt(1-k*k)>, <0,1,0>)
-  addpointssgn(<k, 1/2, 0>, <1,1,0>)
-  addpointssgn(<0, 1/2 + sqrt((3-4*k*k)/(1-k*k))/2, (1-2*k*k)/(2*sqrt(1-k*k))>, <0,1,0>)
-  addpointssgn(<1/2, 0, -sqrt(1/2 + k - k*k)>, <1,0,0>)
+  #local j = sqrt(1 - k*k);
+  addpointssgn(< 0 , 1, 2*j>, <0,1,0>)
+  addpointssgn(<2*k, 1, 0>, <1,1,0>)
+  addpointssgn(< 1 , 0, -2*sqrt(1/2 + k - k*k)>, <1,0,0>)
+  addpointssgn(< 0 , 1 + sqrt((3-4*k*k)/(j*j)), (1-2*k*k)/j>, <0,1,0>)
   #if(n=87)
-    #local a = (k - sqrt(2-2*k*k))/2;
-    addpoint(<k - a, 0, sqrt(3/4 - a*a)>)
+    #local a = k - sqrt(2-2*k*k);
+    addpoint(<2*k - a, 0, sqrt(3 - a*a)>)
   #end
   showvtxs()
   autobalance()
@@ -715,11 +667,11 @@
   #local a = sqrt(1 - k*k);
   #local b = sqrt(2 - 2*k - 4*k*k);
   #local c = sqrt(3 - 4*k*k);
-  addpointssgn(<1, 1, 2*a>/2, <1,1,0>)
-  addpointssgn(<1+2*k, 1, 0>/2, <1,1,0>)
-  addpointssgn(<1, 0, -c>/2, <1,0,0>)
-  addpointssgn(<0, 1 + b/a, b*b/(2*a)>/2, <0,1,0>)
-  addpointssgn(<0, (b*c + k + 1) / (2*a*a), (2*k-1)*c / (2 - 2*k) - b / (2*a*a)>/2, <0,1,0>)
+  addpointssgn(<1, 1, 2*a>, <1,1,0>)
+  addpointssgn(<1+2*k, 1, 0>, <1,1,0>)
+  addpointssgn(<1, 0, -c>, <1,0,0>)
+  addpointssgn(<0, 1 + b/a, b*b/(2*a)>, <0,1,0>)
+  addpointssgn(<0, (b*c + k + 1) / (2*a*a), (2*k-1)*c / (2 - 2*k) - b / (2*a*a)>, <0,1,0>)
   autobalance()
   showvtxs()
   convex_hull()
@@ -825,7 +777,6 @@
   convex_hull()
 #end
 
- 
 #macro trapezo_rhombic_dodecahedron()
   triangular_orthobicupola()
   dual()
@@ -958,30 +909,21 @@
 #end
 
 #macro rhombic_enneacontahedron()
-  #local C0 = (-1 + sqrt(5)) / sqrt(12);
-  #local C1 =   1            / sqrt( 3);
-  #local C2 = ( 1 + sqrt(5)) / sqrt(12);
-  #local C3 =       sqrt(5)  / sqrt( 3);
-  #local C4 = ( 3 + sqrt(5)) / sqrt(12);
-  #local C5 = ( 1 + sqrt(5)) / sqrt( 3);
-  #local C6 = ( 5 + sqrt(5)) / sqrt(12);
-  #local C7 = ( 2 + sqrt(5)) / sqrt( 3);
-  
-  addevenpermssgn(< 0, C7, C0>, <0,1,1>)
-  addevenpermssgn(< 0, C2, C7>, <0,1,1>)
-  addevenpermssgn(< 0, C6, C3>, <0,1,1>)
-  addevenpermssgn(<C2, C2, C6>, <1,1,1>)
-  addevenpermssgn(<C1, C4, C5>, <1,1,1>)
-  addpointssgn(   <C4, C4, C4>, <1,1,1>)
+  addevenpermssgn(<  0  , 2*phi+1,   phi-1>, <0,1,1>)
+  addevenpermssgn(<  0  ,   phi  , 2*phi+1>, <0,1,1>)
+  addevenpermssgn(<  0  ,   phi+2, 2*phi-1>, <0,1,1>)
+  addevenpermssgn(<phi  ,   phi  ,   phi+2>, <1,1,1>)
+  addevenpermssgn(<  1  ,   phi+1, 2*phi  >, <1,1,1>)
+  addpointssgn(   <phi+1,   phi+1,   phi+1>, <1,1,1>)
   
   autobalance()
   convex_hull()
 #end
 
 #macro elongated_gyrobifastigium()
-  addpointssgn(<1,1,1/2>, <1,1,1>)
-  addpointssgn(<1,0, 1>, <1,0,0>)
-  addpointssgn(<0,1,-1>, <0,1,0>)
+  addpointssgn(<2,2, 1>, <1,1,1>)
+  addpointssgn(<2,0, 2>, <1,0,0>)
+  addpointssgn(<0,2,-2>, <0,1,0>)
   autobalance()
   convex_hull()
 #end
@@ -1004,9 +946,9 @@
 #end
 
 #macro BilinskiDodecahedron()
-  #local C0 = sqrt(( 5 -     sqrt(5)) / 10);
-  #local C1 = sqrt(( 5 +     sqrt(5)) / 10);
-  #local C2 = sqrt((10 + 4 * sqrt(5)) / 10);
+  #local C0 = sqrt( 5 -   sqrt(5));
+  #local C1 = sqrt( 5 +   sqrt(5));
+  #local C2 = sqrt(10 + 4*sqrt(5));
   addpointssgn(< 0,  0, C2>, <0,0,1>)
   addpointssgn(<C1, C0,  0>, <1,1,0>)
   addpointssgn(<C1,  0, C1>, <1,0,1>)
@@ -1148,7 +1090,7 @@
   // We now select a new point P and expand the hull to it.
   // We do this by finding those faces that P can see, deleting them, figuring out what the new faces are, and adding those.
   
-  #local MFD = 0;   // The number of points that get marked for deletion.  This will return to zero during each deletion pass.
+  #local MFD = 0;   // The number of faces that get marked for deletion.  This will return to zero during each deletion pass.
   #for (p, 0, N-1)
     #if ((p != i0) & (p != i1) & (p != i2) & (p != i3))
       #local P = points[p];
