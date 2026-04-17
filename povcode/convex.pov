@@ -282,36 +282,9 @@
   convex_hull()
 #end
 
-#macro rhombicuboctahedron_mod(j_number) // J4, J19, J23
-  addevenpermssgn(<1+sq2,1,1>, <1,1,1>)
-  #local raxis = <1,0,0>;
-  #local edgelen = 2;
-  #local oct_radius = sqrt(2*sq2 + 4);
-  #if (j_number = 4) drop_halfspace(raxis, 1) #end
-  drop_halfspace(raxis,-1)
-  // stretch and twist
-  #local stretch=0;
-  #local twist=0;
-  #if (j_number = 23)
-    #local twist = 22.5;
-    #local stretch = oct_radius * 2 * sqrt((cos(pi/8)-cos(2*pi/8))/2) - edgelen; // borrowed from antiprism_vtx
-  #end
-  #if (stretch != 0)    // lower northern hemisphere
-    #local i=0;
-    #while (i<npoints-.5)
-      #if ((stretch = -2) & (vdot(points[i],raxis) = 1))
-        drop_vtx(i)
-      #else
-        #if (vdot(points[i],raxis) > 0)
-          #declare points[i] = points[i] + stretch*raxis;
-        #end
-        #local i = i + 1;
-      #end
-    #end // while
-  #end // if
-  #if (twist != 0)  // rotate southern hemisphere (incl equator)
-    rotate_vtxs(raxis, twist, -1)
-  #end
+#macro square_cupola() // J4
+  polygon_vtx(8)
+  augment(8, points[0], points[1], points[2])
   autobalance()
   convex_hull()
 #end
@@ -432,6 +405,13 @@
   convex_hull()
 #end
 
+#macro elongated_square_cupola() // J19
+  rprism_vtx(8)
+  augment(8, points[1], points[3], points[5])
+  autobalance()
+  convex_hull()
+#end
+
 #macro elongated_pentagonal_cupola() // J20
   rprism_vtx(10)
   augment(10, points[4], points[2], points[0])
@@ -442,6 +422,13 @@
 #macro gyroelongated_triangular_cupola() // J22
   antiprism_vtx(6)
   augment(6, points[1], points[3], points[5])
+  autobalance()
+  convex_hull()
+#end
+
+#macro gyroelongated_square_cupola() // J23
+  antiprism_vtx(8)
+  augment(8, points[1], points[3], points[5])
   autobalance()
   convex_hull()
 #end
