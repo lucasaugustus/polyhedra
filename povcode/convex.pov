@@ -467,75 +467,41 @@
   convex_hull()
 #end
 
-#macro triangular_orthobicupola() // J27
-  polygon_vtx(6)
-  augment(6, points[0], points[1], points[2])
-  augment(6, points[3], points[2], points[1])
-  autobalance()
-  convex_hull()
-#end
-
-#macro pentagonal_orthobicupola()  // J30
-  polygon_vtx(10)
-  augment(10, points[0], points[1], points[2])
-  augment(10, points[3], points[2], points[1])
-  autobalance()
-  convex_hull()
-#end
-
-#macro pentagonal_gyrobicupola()   // J31
-  polygon_vtx(10)
-  augment(10, points[0], points[1], points[2])
-  augment(10, points[2], points[1], points[0])
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_triangular_orthobicupola() // J35
-  rprism_vtx(6)
-  augment(6, points[1], points[3], points[5])
-  augment(6, points[6], points[4], points[2])
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_triangular_gyrobicupola() // J36
-  rprism_vtx(6)
-  augment(6, points[1], points[3], points[5])
-  augment(6, points[4], points[2], points[0])
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_pentagonal_orthobicupola() // J38
-  rprism_vtx(10)
-  augment(10, points[4], points[2], points[0])
-  augment(10, points[3], points[5], points[7])
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_pentagonal_gyrobicupola() // J39
-  rprism_vtx(10)
-  augment(10, points[4], points[2], points[0])
-  augment(10, points[1], points[3], points[5])
-  showvtxs()
-  autobalance()
-  convex_hull()
-#end
-
-#macro gyroelongated_triangular_bicupola() // J44
-  antiprism_vtx(6)
-  augment(6, points[1], points[3], points[5])
-  augment(6, points[4], points[2], points[0])
-  autobalance()
-  convex_hull()
-#end
-
-#macro gyroelongated_pentagonal_bicupola() // J46
-  antiprism_vtx(10)
-  augment(10, points[4], points[2], points[0])
-  augment(10, points[1], points[3], points[5])
+#macro bicupolae(j) // J27, J30, J31, J35, J36, J38, J39, J44, J46
+  #local data = array[20][7] {
+    { 6,0,1,2,3,2,1}, // 27
+    { 0,0,0,0,0,0,0}, // 28
+    { 0,0,0,0,0,0,0}, // 29
+    {10,0,1,2,3,2,1}, // 30
+    {10,0,1,2,2,1,0}, // 31
+    { 0,0,0,0,0,0,0}, // 32
+    { 0,0,0,0,0,0,0}, // 33
+    { 0,0,0,0,0,0,0}, // 34
+    { 6,1,3,5,6,4,2}, // 35
+    { 6,1,3,5,4,2,0}, // 36
+    { 0,0,0,0,0,0,0}, // 37
+    {10,4,2,0,3,5,7}, // 38
+    {10,4,2,0,1,3,5}, // 39
+    { 0,0,0,0,0,0,0}, // 40
+    { 0,0,0,0,0,0,0}, // 41
+    { 0,0,0,0,0,0,0}, // 42
+    { 0,0,0,0,0,0,0}, // 43
+    { 6,1,3,5,4,2,0}, // 44
+    { 0,0,0,0,0,0,0}, // 45
+    {10,4,2,0,1,3,5}  // 46
+  };
+  #if ((j = 27) | (j = 30) | (j = 31))
+    polygon_vtx(data[j-27][0])
+  #end
+  #if ((j = 35) | (j = 36) | (j = 38) | (j = 39))
+    rprism_vtx(data[j-27][0])
+  #end
+  #if ((j = 44) | (j = 46))
+    antiprism_vtx(data[j-27][0])
+  #end
+  #local j = j - 27;
+  augment(data[j][0], points[data[j][1]], points[data[j][2]], points[data[j][3]])
+  augment(data[j][0], points[data[j][4]], points[data[j][5]], points[data[j][6]])
   autobalance()
   convex_hull()
 #end
