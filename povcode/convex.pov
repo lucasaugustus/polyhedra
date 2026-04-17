@@ -282,25 +282,19 @@
   convex_hull()
 #end
 
-#macro rhombicuboctahedron_mod(j_number) // J4, J19, J23, J28, J29, J37, and J45
+#macro rhombicuboctahedron_mod(j_number) // J4, J19, J23
   addevenpermssgn(<1+sq2,1,1>, <1,1,1>)
   #local raxis = <1,0,0>;
   #local edgelen = 2;
   #local oct_radius = sqrt(2*sq2 + 4);
-  // drop hemisphere for 6, 21, 25 (have single rotunda)
   #if (j_number = 4) drop_halfspace(raxis, 1) #end
-  #if (j_number<=23) drop_halfspace(raxis,-1) #end
+  drop_halfspace(raxis,-1)
   // stretch and twist
   #local stretch=0;
   #local twist=0;
-  #switch(j_number)
-    #case(29) #local twist = 45;
-    #case(28) #local stretch = -edgelen; #break
-    #case(37) #local twist = 45; #break
-    #case(23)
-    #case(45)
-      #local twist = 22.5;
-      #local stretch = oct_radius * 2 * sqrt((cos(pi/8)-cos(2*pi/8))/2) - edgelen; // borrowed from antiprism_vtx
+  #if (j_number = 23)
+    #local twist = 22.5;
+    #local stretch = oct_radius * 2 * sqrt((cos(pi/8)-cos(2*pi/8))/2) - edgelen; // borrowed from antiprism_vtx
   #end
   #if (stretch != 0)    // lower northern hemisphere
     #local i=0;
@@ -467,11 +461,11 @@
   convex_hull()
 #end
 
-#macro bicupolae(j) // J27, J30, J31, J35, J36, J38, J39, J44, J46
+#macro bicupolae(j) // J27, J28, J29, J30, J31, J35, J36, J37, J38, J39, J44, J45, J46
   #local data = array[20][7] {
     { 6,0,1,2,3,2,1}, // 27
-    { 0,0,0,0,0,0,0}, // 28
-    { 0,0,0,0,0,0,0}, // 29
+    { 8,0,1,2,3,2,1}, // 28
+    { 8,0,1,2,2,1,0}, // 29
     {10,0,1,2,3,2,1}, // 30
     {10,0,1,2,2,1,0}, // 31
     { 0,0,0,0,0,0,0}, // 32
@@ -479,7 +473,7 @@
     { 0,0,0,0,0,0,0}, // 34
     { 6,1,3,5,6,4,2}, // 35
     { 6,1,3,5,4,2,0}, // 36
-    { 0,0,0,0,0,0,0}, // 37
+    { 8,1,3,5,4,2,0}, // 37
     {10,4,2,0,3,5,7}, // 38
     {10,4,2,0,1,3,5}, // 39
     { 0,0,0,0,0,0,0}, // 40
@@ -487,16 +481,16 @@
     { 0,0,0,0,0,0,0}, // 42
     { 0,0,0,0,0,0,0}, // 43
     { 6,1,3,5,4,2,0}, // 44
-    { 0,0,0,0,0,0,0}, // 45
+    { 8,1,3,5,4,2,0}, // 45
     {10,4,2,0,1,3,5}  // 46
   };
-  #if ((j = 27) | (j = 30) | (j = 31))
+  #if ((j = 27) | (j = 28) | (j = 29) | (j = 30) | (j = 31))
     polygon_vtx(data[j-27][0])
   #end
-  #if ((j = 35) | (j = 36) | (j = 38) | (j = 39))
+  #if ((j = 35) | (j = 36) | (j = 37) | (j = 38) | (j = 39))
     rprism_vtx(data[j-27][0])
   #end
-  #if ((j = 44) | (j = 46))
+  #if ((j = 44) | (j = 45) | (j = 46))
     antiprism_vtx(data[j-27][0])
   #end
   #local j = j - 27;
@@ -923,7 +917,7 @@
   convex_hull()
 #end
 
-#macro gyrate_deltoidal_icositetrahedron()
+#macro gyrate_deltoidal_icositetra()
   rhombicuboctahedron_mod(37) // elongated square gyrobicupola
   dual()
 #end
