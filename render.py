@@ -87,7 +87,7 @@ data = [
 [    'elongated     square   pyramid'          , 'elongated_pyramid(4)'                 , (444,4,13)],               # J8
 [    'elongated pentagonal   pyramid'          , 'elongated_pyramid(5)'                 , (444,4,13)],               # J9
 ['gyroelongated     square   pyramid'          , 'gyroelongated_square_pyramid()'       , (6621,0,7,38,95)],         # J10
-['gyroelongated pentagonal   pyramid'          , 'gyroelongated_pentagonal_pyramid()'   , (6621,4,30,36,63)],        # J11
+['gyroelongated pentagonal   pyramid'          , 'icosahedron_mod(11)'                  , (6621,4,30,36,63)],        # J11
 [              'triangular bipyramid'          , 'bipyramid_j(3)'                       , (654,6,23)],               # J12
 [              'pentagonal bipyramid'          , 'bipyramid_j(5)'                       , (654,6,23)],               # J13
 [    'elongated triangular bipyramid'          , 'elongated_bipyramid(3)'               , (654,13,27)],              # J14
@@ -134,13 +134,13 @@ data = [
 ['parabiaugmented  hexagonal prism'            , 'augmented_prisms(6,"03" )'            , (5555,29)],                # J55
 ['metabiaugmented  hexagonal prism'            , 'augmented_prisms(6,"02" )'            , (5555,29)],                # J56
 [   'triaugmented  hexagonal prism'            , 'augmented_prisms(6,"024")'            , (5555,29)],                # J57
-[      'augmented dodecahedron'                , 'augmented_dodecahedron()'             , (4412,5,17,22,80)],        # J58
-['parabiaugmented dodecahedron'                , 'parabiaugmented_dodecahedron()'       , (4412,5,17,22,80)],        # J59
-['metabiaugmented dodecahedron'                , 'metabiaugmented_dodecahedron()'       , (4412,5,17,22,80)],        # J60
-[   'triaugmented dodecahedron'                , 'triaugmented_dodecahedron()'          , (4412,5,17,22,80)],        # J61
-[             'metabidiminished icosahedron'   , 'metabidiminished_icosahedron()'       , (6621,4,6,8,14,15,36)],    # J62
-[                'tridiminished icosahedron'   , 'tridiminished_icosahedron()'          , (6621,4,6,8,14,15,36)],    # J63
-[      'augmented tridiminished icosahedron'   , 'augmented_tridiminished_icosahedron()', (6621,24,26,57)],          # J64
+[      'augmented dodecahedron'                , 'dodecahedron_mod(58)'                 , (4412,5,17,22,80)],        # J58
+['parabiaugmented dodecahedron'                , 'dodecahedron_mod(59)'                 , (4412,5,17,22,80)],        # J59
+['metabiaugmented dodecahedron'                , 'dodecahedron_mod(60)'                 , (4412,5,17,22,80)],        # J60
+[   'triaugmented dodecahedron'                , 'dodecahedron_mod(61)'                 , (4412,5,17,22,80)],        # J61
+[             'metabidiminished icosahedron'   , 'icosahedron_mod(62)'                  , (6621,4,6,8,14,15,36)],    # J62
+[                'tridiminished icosahedron'   , 'icosahedron_mod(63)'                  , (6621,4,6,8,14,15,36)],    # J63
+[      'augmented tridiminished icosahedron'   , 'icosahedron_mod(64)'                  , (6621,24,26,57)],          # J64
 [      'augmented    truncated  tetrahedron'   , 'truncatedtetrahedron(1)'              , (13,3,30,42,47,51)],       # J65
 [      'augmented    truncated         cube'   , 'truncatedhexahedron(1)'               , (1345,6,10,51,58)],        # J66
 [    'biaugmented    truncated         cube'   , 'truncatedhexahedron(2)'               , (1345,6,10,51,58)],        # J67
