@@ -380,6 +380,15 @@ class Parser:
             left = Expr('num', float(tok))
         elif tok.startswith('"'):
             left = Expr('str', bytes(tok[1:-1], 'utf-8').decode('unicode_escape'))
+        elif tok == '{':
+            items = []
+            if self.peek() != '}':
+                while True:
+                    items.append(self.parse_expr(stop_tokens={',','}'}))
+                    if not self.maybe(','):
+                        break
+            self.pop('}')
+            left = Expr('list', args=items)
         elif tok == 'array' and self.peek() == '[':
             dims = []
             while self.maybe('['):
@@ -507,16 +516,36 @@ class Env:
                     return [None for _ in range(ds[0])]
                 return [make(ds[1:]) for _ in range(ds[0])]
             return make(dims)
+        if k == 'list':
+            return [self.eval_expr(a) for a in e.args]
         if k == 'array_init':
             dims_exprs, items_exprs = e.args
             dims = [int(round(float(self.eval_expr(a)))) for a in dims_exprs]
             items = [self.eval_expr(a) for a in items_exprs]
-            if len(dims) != 1:
-                raise NotImplementedError('Only one-dimensional array initializers are supported')
-            n = dims[0]
-            arr = [None for _ in range(n)]
-            for i, item in enumerate(items[:n]):
-                arr[i] = item
+
+            def make(ds):
+                if len(ds) == 1:
+                    return [None for _ in range(ds[0])]
+                return [make(ds[1:]) for _ in range(ds[0])]
+
+            def assign(dst, src):
+                if not isinstance(dst, list):
+                    return src
+                if not isinstance(src, list):
+                    return src
+                for i in range(min(len(dst), len(src))):
+                    if isinstance(dst[i], list):
+                        assign(dst[i], src[i])
+                    else:
+                        dst[i] = src[i]
+                return dst
+
+            arr = make(dims)
+            for i, item in enumerate(items[:len(arr)]):
+                if isinstance(arr[i], list):
+                    assign(arr[i], item)
+                else:
+                    arr[i] = item
             return arr
         if k == 'neg':
             return -self.eval_expr(e.value)
