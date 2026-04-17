@@ -47,7 +47,7 @@
 #macro truncatedtetrahedron(augmentation)
   addevenpermsevensgn(<1,1,3>)
   #if (augmentation)
-    augment(6, points[0], points[1], points[4])
+    augment(6, 0, 1, 4)
   #end
   convex_hull()
 #end
@@ -55,8 +55,8 @@
 #macro truncatedhexahedron(augmentation) // Truncated cube (n=0), J66 (n=1), J67 (n=2)
   addevenpermssgn(<sq2-1, 1, 1>, <1,1,1>)
   #switch (augmentation)
-    #case(2) augment(8, points[ 7], points[23], points[22])
-    #case(1) augment(8, points[16], points[ 0], points[ 1])
+    #case(2) augment(8,  7, 23, 22)
+    #case(1) augment(8, 16,  0,  1)
   #end
   convex_hull()
 #end
@@ -71,12 +71,12 @@
   addevenpermssgn(<phi-1, phi, 2*phi>, <1,1,1>)
   addevenpermssgn(<phi, 2, 1+phi>, <1,1,1>)
   #if (augmentation)
-    augment(10, points[50], points[58], points[34])     // towards (phi,-1,0) -- common to all
+    augment(10, 50, 58, 34)     // towards (phi,-1,0) -- common to all
     #switch (augmentation)
-      #case( 3) augment(10, points[54], points[38], points[14])   // towards (-1,0,phi) -- on tri
-      #case( 2) augment(10, points[40], points[48], points[24])   // towards (0,phi,-1) -- on metadi and tri
+      #case( 3) augment(10, 54, 38, 14)   // towards (-1,0,phi) -- on tri
+      #case( 2) augment(10, 40, 48, 24)   // towards (0,phi,-1) -- on metadi and tri
       #break
-      #case(-2) augment(10, points[32], points[10], points[ 9])   // towards (-phi,1,0) -- on paradi
+      #case(-2) augment(10, 32, 10,  9)   // towards (-phi,1,0) -- on paradi
     #end
   #end
   convex_hull()
@@ -183,7 +183,10 @@
 
 // Helper macros for the Johnson solids:
 
-#macro augment(n, va, vb, vc) // On an n-face with 3 adjacent vertices, add a pyramid or a cupola
+#macro augment(n, a, b, c) // On an n-face with 3 adjacent vertices, add a pyramid or a cupola
+  #local va = points[a];
+  #local vb = points[b];
+  #local vc = points[c];
   #local veci = va-vb;
   #local vecj = vc-vb;
   #local veck = vlength(vc-vb) * vnormalize(vcross(vc-vb, va-vb));
@@ -277,14 +280,14 @@
 
 #macro triangular_cupola() // J3 (9 vertices of a cuboctahedron)
   polygon_vtx(6)
-  augment(6, points[0], points[1], points[2])
+  augment(6, 0, 1, 2)
   autobalance()
   convex_hull()
 #end
 
 #macro square_cupola() // J4
   polygon_vtx(8)
-  augment(8, points[0], points[1], points[2])
+  augment(8, 0, 1, 2)
   autobalance()
   convex_hull()
 #end
@@ -309,7 +312,7 @@
   #if((j_number<=33) | (j_number=40) | (j_number=41) | (j_number=47))
     drop_halfspace(raxis, 0)
     #if (j_number >= 32) // form a cupolarotunda
-      augment(10, points[0], points[7], points[15])
+      augment(10, 0, 7, 15)
     #end
   #end
   // stretch and twist
@@ -353,7 +356,7 @@
 
 #macro elongated_pyramid(n) // J7, J8, J9 (n = 3,4,5)
   rprism_vtx(n)
-  augment(n, points[4], points[2], points[0])
+  augment(n, 4, 2, 0)
   autobalance()
   convex_hull()
 #end
@@ -370,22 +373,22 @@
   drop_vtx(99)
   #if (j >= 62) drop_vtx(6) #end
   #if (j >= 63) drop_vtx(0) #end
-  #if (j  = 64) augment(3, points[1], points[7], points[8]) #end
+  #if (j  = 64) augment(3, 1, 7, 8) #end
   convex_hull()
 #end
 
 #macro bipyramid_j(n) // J12, J13 (n = 3,5)
   polygon_vtx(n)
-  augment(n, points[0], points[1], points[2])
-  augment(n, points[2], points[1], points[0])
+  augment(n, 0, 1, 2)
+  augment(n, 2, 1, 0)
   autobalance()
   convex_hull()
 #end
 
 #macro elongated_bipyramid(n) // J14, J15, J16 (n = 3,4,5)
   rprism_vtx(n)
-  augment(n, points[4], points[2], points[0])
-  augment(n, points[1], points[3], points[5])
+  augment(n, 4, 2, 0)
+  augment(n, 1, 3, 5)
   autobalance()
   convex_hull()
 #end
@@ -400,42 +403,42 @@
 
 #macro elongated_triangular_cupola() // J18
   rprism_vtx(6)
-  augment(6, points[1], points[3], points[5])
+  augment(6, 1, 3, 5)
   autobalance()
   convex_hull()
 #end
 
 #macro elongated_square_cupola() // J19
   rprism_vtx(8)
-  augment(8, points[1], points[3], points[5])
+  augment(8, 1, 3, 5)
   autobalance()
   convex_hull()
 #end
 
 #macro elongated_pentagonal_cupola() // J20
   rprism_vtx(10)
-  augment(10, points[4], points[2], points[0])
+  augment(10, 4, 2, 0)
   autobalance()
   convex_hull()
 #end
 
 #macro gyroelongated_triangular_cupola() // J22
   antiprism_vtx(6)
-  augment(6, points[1], points[3], points[5])
+  augment(6, 1, 3, 5)
   autobalance()
   convex_hull()
 #end
 
 #macro gyroelongated_square_cupola() // J23
   antiprism_vtx(8)
-  augment(8, points[1], points[3], points[5])
+  augment(8, 1, 3, 5)
   autobalance()
   convex_hull()
 #end
 
 #macro gyroelongated_pentagonal_cupola() // J24
   antiprism_vtx(10)
-  augment(10, points[4], points[2], points[0])
+  augment(10, 4, 2, 0)
   autobalance()
   convex_hull()
 #end
@@ -481,8 +484,8 @@
     antiprism_vtx(data[j-27][0])
   #end
   #local j = j - 27;
-  augment(data[j][0], points[data[j][1]], points[data[j][2]], points[data[j][3]])
-  augment(data[j][0], points[data[j][4]], points[data[j][5]], points[data[j][6]])
+  augment(data[j][0], data[j][1], data[j][2], data[j][3])
+  augment(data[j][0], data[j][4], data[j][5], data[j][6])
   autobalance()
   convex_hull()
 #end
@@ -492,7 +495,7 @@
   rprism_vtx(n)
   #for (i, 1, strlen(facelist))
     #local facenum = mod(val(substr(facelist,i,1)), n); // convert ith char given to a number 0..(n-1)
-    augment(4, points[2*facenum+1], points[2*facenum], points[mod(2*facenum+2, 2*n)])
+    augment(4, 2*facenum+1, 2*facenum, mod(2*facenum+2, 2*n))
     //#debug concat("Augment face ",str(facenum,0,0)," of ",str(n,0,0), " <",str(points[npoints-1].x,0,3),",",str(points[npoints-1].y,0,3),",",str(points[npoints-1].z,0,3),"> \n")
   #end
   autobalance()
@@ -502,7 +505,7 @@
 #macro dodecahedron_mod(j) // J58, J59, J60, J61
   addpointssgn(<1,1,1>, <1,1,1>)
   addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
-  augment(5, points[4], points[13], points[12])
+  augment(5, 4, 13, 12)
   #if (j = 59)
     addpoint(-points[npoints-1])
   #end
@@ -725,7 +728,7 @@
 #end
 
 #macro trapezo_rhombic_dodecahedron()
-  triangular_orthobicupola()
+  bicupolae(27) // triangular orthobicupola
   dual()
 #end
 
@@ -905,7 +908,7 @@
 #end
 
 #macro gyrate_deltoidal_icositetra()
-  rhombicuboctahedron_mod(37) // elongated square gyrobicupola
+  bicupolae(37) // elongated square gyrobicupola
   dual()
 #end
 
