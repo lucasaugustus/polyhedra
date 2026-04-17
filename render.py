@@ -103,26 +103,26 @@ data = [
 ['gyroelongated pentagonal cupola'             , 'gyroelongated_pentagonal_cupola()'    , (333,6,11,13,18,20,41)],   # J24
 ['gyroelongated pentagonal rotunda'            , 'icosidodecahedron_mod(25)'            , (4,3,36)],                 # J25
 ['gyrobifastigium'                             , 'gyrobifastigium()'                    , (112358,1,7,31)],          # J26
-[          'triangular orthobicupola'          , 'triangular_orthobicupola()'           , (112358,1,5,8,11)],        # J27
+[          'triangular orthobicupola'          , 'bicupolae(27)'                        , (112358,1,5,8,11)],        # J27
 [              'square orthobicupola'          , 'rhombicuboctahedron_mod(28)'          , (333,3,6,12,17,28)],       # J28
 [              'square  gyrobicupola'          , 'rhombicuboctahedron_mod(29)'          , (333,1,2,3,5,10)],         # J29
-[          'pentagonal orthobicupola'          , 'pentagonal_orthobicupola()'           , (333,11,18)],              # J30
-[          'pentagonal  gyrobicupola'          , 'pentagonal_gyrobicupola()'            , (333,11,13,18)],           # J31
+[          'pentagonal orthobicupola'          , 'bicupolae(30)'                        , (333,11,18)],              # J30
+[          'pentagonal  gyrobicupola'          , 'bicupolae(31)'                        , (333,11,13,18)],           # J31
 [          'pentagonal orthocupolarotunda'     , 'icosidodecahedron_mod(32)'            , (4,2,9)],                  # J32
 [          'pentagonal  gyrocupolarotunda'     , 'icosidodecahedron_mod(33)'            , (4,2,9)],                  # J33
 [          'pentagonal orthobirotunda'         , 'icosidodecahedron_mod(34)'            , (4,2,9)],                  # J34
-['elongated triangular orthobicupola'          , 'elongated_triangular_orthobicupola()' , (112358,0,6,8,10,14)],     # J35
-['elongated triangular  gyrobicupola'          , 'elongated_triangular_gyrobicupola()'  , (112358,0,4,6,7,8,10,14)], # J36
+['elongated triangular orthobicupola'          , 'bicupolae(35)'                        , (112358,0,6,8,10,14)],     # J35
+['elongated triangular  gyrobicupola'          , 'bicupolae(36)'                        , (112358,0,4,6,7,8,10,14)], # J36
 ['elongated     square  gyrobicupola'          , 'rhombicuboctahedron_mod(37)'          , (333,3,4,5,10)],           # J37
-['elongated pentagonal orthobicupola'          , 'elongated_pentagonal_orthobicupola()' , (333,6,38,45,81)],         # J38
-['elongated pentagonal  gyrobicupola'          , 'elongated_pentagonal_gyrobicupola()'  , (333,6,38,45,81)],         # J39
+['elongated pentagonal orthobicupola'          , 'bicupolae(38)'                        , (333,6,38,45,81)],         # J38
+['elongated pentagonal  gyrobicupola'          , 'bicupolae(39)'                        , (333,6,38,45,81)],         # J39
 ['elongated pentagonal orthocupolarotunda'     , 'icosidodecahedron_mod(40)'            , (4,2,9,34,36,41,46,48)],   # J40
 ['elongated pentagonal  gyrocupolarotunda'     , 'icosidodecahedron_mod(41)'            , (4,2,9,34,36,41,46,48)],   # J41
 ['elongated pentagonal orthobirotunda'         , 'icosidodecahedron_mod(42)'            , (4,2,9,34,36,41,46,48)],   # J42
 ['elongated pentagonal  gyrobirotunda'         , 'icosidodecahedron_mod(43)'            , (4,2,9,34,36,41,46,48)],   # J43
-['gyroelongated triangular  bicupola'          , 'gyroelongated_triangular_bicupola()'  , (112358,0,6,38,45,46,333)],# J44
+['gyroelongated triangular  bicupola'          , 'bicupolae(44)'                        , (112358,0,6,38,45,46,333)],# J44
 ['gyroelongated     square  bicupola'          , 'rhombicuboctahedron_mod(45)'          , (333,2,3,4,10,45,48,54)],  # J45
-['gyroelongated pentagonal  bicupola'          , 'gyroelongated_pentagonal_bicupola()'  , (333,0,6,38,45,46)],       # J46
+['gyroelongated pentagonal  bicupola'          , 'bicupolae(46)'                        , (333,0,6,38,45,46)],       # J46
 ['gyroelongated pentagonal  cupolarotunda'     , 'icosidodecahedron_mod(47)'            , (4,2,9,29,34,48)],         # J47
 ['gyroelongated pentagonal  birotunda'         , 'icosidodecahedron_mod(48)'            , (4,2,9,29,34,48)],         # J48
 [      'augmented triangular prism'            , 'augmented_prisms(3,"0"  )'            , (88,29)],                  # J49
