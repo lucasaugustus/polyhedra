@@ -77,54 +77,54 @@ data = [
 [ 'octagonal trapezohedron'                    , 'trapezohedron(8)'                  , (6620,)],      # Infinite family
 [ 'nonagonal trapezohedron'                    , 'trapezohedron(9)'                  , (6620,)],      # Infinite family
 [ 'decagonal trapezohedron'                    , 'trapezohedron(10)'                 , (6620,)],      # Infinite family
-[    'square pyramid'                          , 'square_pyramid()'                  , (84,75)],                  # J1
-['pentagonal pyramid'                          , 'pentagonal_pyramid()'              , (11,129)],                 # J2
-['triangular cupola'                           , 'triangular_cupola()'               , (11,91,191)],              # J3
-[    'square cupola'                           , 'square_cupola()'                   , (19,143,202)],             # J4
-['pentagonal cupola'                           , 'pentagonal_cupola()'               , (19,)],                    # J5
-['pentagonal rotunda'                          , 'icosidodecahedron_mod(6)'          , (4,31,131)],               # J6
-[    'elongated triangular   pyramid'          , 'elongated_pyramid(3)'              , (444,4,13)],               # J7
-[    'elongated     square   pyramid'          , 'elongated_pyramid(4)'              , (444,4,13)],               # J8
-[    'elongated pentagonal   pyramid'          , 'elongated_pyramid(5)'              , (444,4,13)],               # J9
-['gyroelongated     square   pyramid'          , 'gyroelongated_square_pyramid()'    , (6621,0,7,38,95)],         # J10
-['gyroelongated pentagonal   pyramid'          , 'icosahedron_mod(11)'               , (6621,4,30,36,63)],        # J11
-[              'triangular bipyramid'          , 'bipyramid_j(3)'                    , (654,6,23)],               # J12
-[              'pentagonal bipyramid'          , 'bipyramid_j(5)'                    , (654,6,23)],               # J13
-[    'elongated triangular bipyramid'          , 'elongated_bipyramid(3)'            , (654,13,27)],              # J14
-[    'elongated     square bipyramid'          , 'elongated_bipyramid(4)'            , (654,13,27)],              # J15
-[    'elongated pentagonal bipyramid'          , 'elongated_bipyramid(5)'            , (654,13,27)],              # J16
-['gyroelongated     square bipyramid'          , 'gyroelongated_square_bipyramid()'  , (6621,13,38,46,50)],       # J17
-[    'elongated triangular cupola'             , 'elongated_triangular_cupola()'     , (112358,0,88,102,114)],    # J18
-[    'elongated     square cupola'             , 'elongated_square_cupola()'         , (333,1,3,10)],             # J19
-[    'elongated pentagonal cupola'             , 'elongated_pentagonal_cupola()'     , (333,6,18,48,49,58)],      # J20
-[    'elongated pentagonal rotunda'            , 'icosidodecahedron_mod(21)'         , (4,1,3,5,34,36,93)],       # J21
-['gyroelongated triangular cupola'             , 'gyroelongated_triangular_cupola()' , (112358,0,38,83)],         # J22
-['gyroelongated     square cupola'             , 'gyroelongated_square_cupola()'     , (333,3,8,10,48,55)],       # J23
-['gyroelongated pentagonal cupola'             , 'gyroelongated_pentagonal_cupola()' , (333,6,11,13,18,20,41)],   # J24
-['gyroelongated pentagonal rotunda'            , 'icosidodecahedron_mod(25)'         , (4,3,36)],                 # J25
+[    'square pyramid'                          , 'pyracupolarotunda( 4,0,0,1,0)'     , (84,75)],                  # J1
+['pentagonal pyramid'                          , 'pyracupolarotunda( 5,0,0,1,0)'     , (11,129)],                 # J2
+['triangular cupola'                           , 'pyracupolarotunda( 6,0,0,1,0)'     , (11,91,191)],              # J3
+[    'square cupola'                           , 'pyracupolarotunda( 8,0,0,1,0)'     , (19,143,202)],             # J4
+['pentagonal cupola'                           , 'pyracupolarotunda(10,0,0,1,0)'     , (19,)],                    # J5
+['pentagonal rotunda'                          , 'pyracupolarotunda(10,0,0,2,0)'     , (4,31,131)],               # J6
+[    'elongated triangular   pyramid'          , 'pyracupolarotunda( 3,1,0,1,0)'     , (444,4,13)],               # J7
+[    'elongated     square   pyramid'          , 'pyracupolarotunda( 4,1,0,1,0)'     , (444,4,13)],               # J8
+[    'elongated pentagonal   pyramid'          , 'pyracupolarotunda( 5,1,0,1,0)'     , (444,4,13)],               # J9
+['gyroelongated     square   pyramid'          , 'pyracupolarotunda( 4,2,0,1,0)'     , (6621,0,7,38,95)],         # J10
+['gyroelongated pentagonal   pyramid'          , 'pyracupolarotunda( 5,2,0,1,0)'     , (6621,4,30,36,63)],        # J11
+[              'triangular bipyramid'          , 'pyracupolarotunda( 3,0,1,1,0)'     , (654,6,23)],               # J12
+[              'pentagonal bipyramid'          , 'pyracupolarotunda( 5,0,1,1,0)'     , (654,6,23)],               # J13
+[    'elongated triangular bipyramid'          , 'pyracupolarotunda( 3,1,1,1,0)'     , (654,13,27)],              # J14
+[    'elongated     square bipyramid'          , 'pyracupolarotunda( 4,1,1,1,0)'     , (654,13,27)],              # J15
+[    'elongated pentagonal bipyramid'          , 'pyracupolarotunda( 5,1,1,1,0)'     , (654,13,27)],              # J16
+['gyroelongated     square bipyramid'          , 'pyracupolarotunda( 4,2,1,1,0)'     , (6621,13,38,46,50)],       # J17
+[    'elongated triangular cupola'             , 'pyracupolarotunda( 6,1,0,1,0)'     , (112358,0,88,102,114)],    # J18
+[    'elongated     square cupola'             , 'pyracupolarotunda( 8,1,0,1,0)'     , (333,1,3,10)],             # J19
+[    'elongated pentagonal cupola'             , 'pyracupolarotunda(10,1,0,1,0)'     , (333,6,18,48,49,58)],      # J20
+[    'elongated pentagonal rotunda'            , 'pyracupolarotunda(10,1,0,2,0)'     , (4,1,3,5,34,36,93)],       # J21
+['gyroelongated triangular cupola'             , 'pyracupolarotunda( 6,2,0,1,0)'     , (112358,0,38,83)],         # J22
+['gyroelongated     square cupola'             , 'pyracupolarotunda( 8,2,0,1,0)'     , (333,3,8,10,48,55)],       # J23
+['gyroelongated pentagonal cupola'             , 'pyracupolarotunda(10,2,0,1,0)'     , (333,6,11,13,18,20,41)],   # J24
+['gyroelongated pentagonal rotunda'            , 'pyracupolarotunda(10,2,0,2,0)'     , (4,3,36)],                 # J25
 ['gyrobifastigium'                             , 'gyrobifastigium()'                 , (112358,1,7,31)],          # J26
-[          'triangular orthobicupola'          , 'bicupolae(27)'                     , (112358,1,5,8,11)],        # J27
-[              'square orthobicupola'          , 'bicupolae(28)'                     , (333,3,6,12,17,28)],       # J28
-[              'square  gyrobicupola'          , 'bicupolae(29)'                     , (333,1,2,3,5,10)],         # J29
-[          'pentagonal orthobicupola'          , 'bicupolae(30)'                     , (333,11,18)],              # J30
-[          'pentagonal  gyrobicupola'          , 'bicupolae(31)'                     , (333,11,13,18)],           # J31
-[          'pentagonal orthocupolarotunda'     , 'icosidodecahedron_mod(32)'         , (4,2,9)],                  # J32
-[          'pentagonal  gyrocupolarotunda'     , 'icosidodecahedron_mod(33)'         , (4,2,9)],                  # J33
-[          'pentagonal orthobirotunda'         , 'icosidodecahedron_mod(34)'         , (4,2,9)],                  # J34
-['elongated triangular orthobicupola'          , 'bicupolae(35)'                     , (112358,0,6,8,10,14)],     # J35
-['elongated triangular  gyrobicupola'          , 'bicupolae(36)'                     , (112358,0,4,6,7,8,10,14)], # J36
-['elongated     square  gyrobicupola'          , 'bicupolae(37)'                     , (333,3,4,5,10)],           # J37
-['elongated pentagonal orthobicupola'          , 'bicupolae(38)'                     , (333,6,38,45,81)],         # J38
-['elongated pentagonal  gyrobicupola'          , 'bicupolae(39)'                     , (333,6,38,45,81)],         # J39
-['elongated pentagonal orthocupolarotunda'     , 'icosidodecahedron_mod(40)'         , (4,2,9,34,36,41,46,48)],   # J40
-['elongated pentagonal  gyrocupolarotunda'     , 'icosidodecahedron_mod(41)'         , (4,2,9,34,36,41,46,48)],   # J41
-['elongated pentagonal orthobirotunda'         , 'icosidodecahedron_mod(42)'         , (4,2,9,34,36,41,46,48)],   # J42
-['elongated pentagonal  gyrobirotunda'         , 'icosidodecahedron_mod(43)'         , (4,2,9,34,36,41,46,48)],   # J43
-['gyroelongated triangular  bicupola'          , 'bicupolae(44)'                     , (112358,0,6,38,45,46,333)],# J44
-['gyroelongated     square  bicupola'          , 'bicupolae(45)'                     , (333,2,3,4,10,45,48,54)],  # J45
-['gyroelongated pentagonal  bicupola'          , 'bicupolae(46)'                     , (333,0,6,38,45,46)],       # J46
-['gyroelongated pentagonal  cupolarotunda'     , 'icosidodecahedron_mod(47)'         , (4,2,9,29,34,48)],         # J47
-['gyroelongated pentagonal  birotunda'         , 'icosidodecahedron_mod(48)'         , (4,2,9,29,34,48)],         # J48
+[          'triangular orthobicupola'          , 'pyracupolarotunda( 6,0,1,1,0)'     , (112358,1,5,8,11)],        # J27
+[              'square orthobicupola'          , 'pyracupolarotunda( 8,0,1,1,0)'     , (333,3,6,12,17,28)],       # J28
+[              'square  gyrobicupola'          , 'pyracupolarotunda( 8,0,1,1,1)'     , (333,1,2,3,5,10)],         # J29
+[          'pentagonal orthobicupola'          , 'pyracupolarotunda(10,0,1,1,0)'     , (333,11,18)],              # J30
+[          'pentagonal  gyrobicupola'          , 'pyracupolarotunda(10,0,1,1,1)'     , (333,11,13,18)],           # J31
+[          'pentagonal orthocupolarotunda'     , 'pyracupolarotunda(10,0,1,2,0)'     , (4,2,9)],                  # J32
+[          'pentagonal  gyrocupolarotunda'     , 'pyracupolarotunda(10,0,1,2,1)'     , (4,2,9)],                  # J33
+[          'pentagonal orthobirotunda'         , 'pyracupolarotunda(10,0,2,2,0)'     , (4,2,9)],                  # J34
+['elongated triangular orthobicupola'          , 'pyracupolarotunda( 6,1,1,1,0)'     , (112358,0,6,8,10,14)],     # J35
+['elongated triangular  gyrobicupola'          , 'pyracupolarotunda( 6,1,1,1,1)'     , (112358,0,4,6,7,8,10,14)], # J36
+['elongated     square  gyrobicupola'          , 'pyracupolarotunda( 8,1,1,1,1)'     , (333,3,4,5,10)],           # J37
+['elongated pentagonal orthobicupola'          , 'pyracupolarotunda(10,1,1,1,0)'     , (333,6,38,45,81)],         # J38
+['elongated pentagonal  gyrobicupola'          , 'pyracupolarotunda(10,1,1,1,1)'     , (333,6,38,45,81)],         # J39
+['elongated pentagonal orthocupolarotunda'     , 'pyracupolarotunda(10,1,1,2,0)'     , (4,2,9,34,36,41,46,48)],   # J40
+['elongated pentagonal  gyrocupolarotunda'     , 'pyracupolarotunda(10,1,1,2,1)'     , (4,2,9,34,36,41,46,48)],   # J41
+['elongated pentagonal orthobirotunda'         , 'pyracupolarotunda(10,1,2,2,0)'     , (4,2,9,34,36,41,46,48)],   # J42
+['elongated pentagonal  gyrobirotunda'         , 'pyracupolarotunda(10,1,2,2,1)'     , (4,2,9,34,36,41,46,48)],   # J43
+['gyroelongated triangular  bicupola'          , 'pyracupolarotunda( 6,2,1,1,0)'     , (112358,0,6,38,45,46,333)],# J44
+['gyroelongated     square  bicupola'          , 'pyracupolarotunda( 8,2,1,1,0)'     , (333,2,3,4,10,45,48,54)],  # J45
+['gyroelongated pentagonal  bicupola'          , 'pyracupolarotunda(10,2,1,1,0)'     , (333,0,6,38,45,46)],       # J46
+['gyroelongated pentagonal  cupolarotunda'     , 'pyracupolarotunda(10,2,1,2,0)'     , (4,2,9,29,34,48)],         # J47
+['gyroelongated pentagonal  birotunda'         , 'pyracupolarotunda(10,2,2,2,0)'     , (4,2,9,29,34,48)],         # J48
 [      'augmented triangular prism'            , 'augmented_prisms(3,"0"  )'         , (88,29)],                  # J49
 [    'biaugmented triangular prism'            , 'augmented_prisms(3,"01" )'         , (88,29)],                  # J50
 [   'triaugmented triangular prism'            , 'augmented_prisms(3,"012")'         , (88,29)],                  # J51
