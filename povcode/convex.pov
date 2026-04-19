@@ -262,183 +262,73 @@
   #end
 #end
 
+#macro rotundify(a, b, c)
+  #local A = points[a];
+  #local B = points[b];
+  #local C = points[c];
+  #local S = vlength(A-B); // side length
+  #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
+  #local O = B + phi * S * vnormalize((A+C)/2 - B); // center of decagon
+  #local U = vnormalize(A-O);
+  #local V = vcross(N, U);
+  #local alfa = sqrt((5+2*sqrt(5))/ 5);
+  #local beta = sqrt((5+  sqrt(5))/10);
+  #for (i, 0, 4)
+    addpoint(O + S * (alfa * cos((4*i+1)*pi/10) * U + alfa * sin((4*i+1)*pi/10) * V + beta * N));
+    addpoint(O + S * (beta * cos((4*i+3)*pi/10) * U + beta * sin((4*i+3)*pi/10) * V + alfa * N));
+  #end
+#end
+
 // Johnson:
 
-#macro square_pyramid() // J1
-  addevenpermssgn(<1,0,0>, <1,0,0>)
-  drop_vtx(99)
-  autobalance()
-  convex_hull()
-#end
-
-#macro pentagonal_pyramid() // J2
-  addevenpermssgn(<0,1,phi>, <0,1,1>)
-  drop_halfspace(points[0], 0)
-  autobalance()
-  convex_hull()
-#end
-
-#macro triangular_cupola() // J3 (9 vertices of a cuboctahedron)
-  polygon_vtx(6)
-  augment(6, 0, 1, 2)
-  autobalance()
-  convex_hull()
-#end
-
-#macro square_cupola() // J4
-  polygon_vtx(8)
-  augment(8, 0, 1, 2)
-  autobalance()
-  convex_hull()
-#end
-
-#macro pentagonal_cupola() // J5
-  addevenpermssgn(<1, 1, 1+2*phi>, <1,1,1>)
-  addevenpermssgn(<phi, 2*phi, 1+phi>, <1,1,1>)
-  addevenpermssgn(<2+phi, 0, 1+phi>, <1,0,1>)
-  #local raxis = vnormalize(<phi,-1,0>);
-  drop_halfspace(raxis, 3.077)
-  autobalance()
-  convex_hull()
-#end
-
-#macro icosidodecahedron_mod(j_number) // J6, J21, J25, J32, J33, J34, J40, J41, J42, J43, J47, J48
-  addevenpermssgn(<0,0,2*phi>, <0,0,1>)
-  addevenpermssgn(<1,phi,1+phi>, <1,1,1>)
-  #local raxis = vnormalize(<phi,1,0>);
-  #local edgelen = vlength(<0,0,2*phi> - <1,phi,1+phi>);
-  #local id_radius = 2*phi;
-  // drop hemisphere for 6, 21, 25 (have single rotunda)
-  #if((j_number<=33) | (j_number=40) | (j_number=41) | (j_number=47))
-    drop_halfspace(raxis, 0)
-    #if (j_number >= 32) // form a cupolarotunda
-      augment(10, 0, 7, 15)
+#macro pyracupolarotunda(N, E, A, B, G) // J1-25 and J27-48
+  // The ((gyro)elongated) N-gonal (ortho,gyro)(bi)(pyramid,cupola,rotunda).
+  // N: the number of sides for the "core".  For the cupolae and rotundae, this is twice the number implied by the English name.
+  // E: Elongation type.  0: No elongation.  1: Ordinary elongation.  2: Gyroelongation.
+  // A,B: cap type for each side of the elongation.  0: Flat.  1: Pyramid or cupola.  2: Rotunda.
+  // G: Gyration type.  0: No gyration.  1: Gyrate.
+  // Examples:
+  // * Calling cupolarotunda( 8, 2, 1, 1, 0) makes the gyroelongated square bicupola.
+  // * Calling cupolarotunda( 8, 1, 1, 1, 1) makes the elongated square gyrobicupola.
+  // * Calling cupolarotunda( 3, 0, 1, 1, 0) makes the triangular bipyramid.
+  // * Calling cupolarotunda(10, 0, 1, 2, 1) makes the pentagonal gyrocupolarotunda.
+  
+  // The core.
+  // We could use polygon_vtx, rprism_vtx, and antiprism_vtx for this, but I want a different point numbering.
+  #for (i, 0, N-1)
+    addpoint(<cos(2*pi*i/N), sin(2*pi*i/N), 0>)
+  #end
+  #if (E > 0)
+    #local H = sqrt(2 - 2*cos(2*pi/N));
+    #local J = 0;
+    #if (E = 2)
+      #local J = 1/2;
+      #local H = sqrt(2*cos(pi/N) - 2*cos(2*pi/N));
+    #end
+    #for (i, 0, N-1)
+      addpoint(<cos(2*pi*(i+J)/N), sin(2*pi*(i+J)/N), H>)
     #end
   #end
-  // stretch and twist
-  #local stretch = 0;
-  #local twist = 0;
-  #switch(j_number)
-    #case(41) #case(42)
-      #local stretch = edgelen;
-    #case(33) #case(34)
-      #local twist = 36;
-      #break
-    #case(21) #case(40) #case(43)
-      #local stretch = edgelen;
-      #break
-    #case(25) #case(47) #case(48)
-      #local twist = 18;
-      #local stretch = id_radius * 2 * sqrt((cos(pi/10)-cos(2*pi/10))/2); // borrowed from antiprism_vtx
-  #end // switch
-  #if (stretch > 0) // raise northern hemisphere, duplicate equator
-    #local np = npoints;
-    #for (i, 0, np-1)
-      #switch (vdot(points[i], raxis))
-        #range(-0.01, 0.01)
-          //#debug concat("Dupl. vtx ",str(i,0,0)," of ",str(npoints,0,0)," <",str(points[i].x,0,3),",",str(points[i].y,0,3),",",str(points[i].z,0,3),">\n")
-          addpoint(points[i] + stretch*raxis)
-          #break
-        #range(0.01, 999)
-        //#debug concat("Raise vtx ",str(i,0,0)," of ",str(npoints,0,0)," <",str(points[i].x,0,3),",",str(points[i].y,0,3),",",str(points[i].z,0,3),">\n")
-          #declare points[i] = points[i] + stretch*raxis;
-          #break
-      #end // switch
-    #end // while
-  #end  // if
-  #if (twist != 0) // rotate southern hemisphere (incl equator)
-    rotate_vtxs(raxis, twist, 0)
+  
+  // Cap A
+  #if (N < 10)
+    #if (A != 0) augment(N, 2, 1, 0) #end
+  #else
+    #if (A  = 1) augment(N, 2, 1, 0) #end
+    #if (A  = 2) rotundify( 2, 1, 0) #end
   #end
-  showvtxs()
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_pyramid(n) // J7, J8, J9 (n = 3,4,5)
-  rprism_vtx(n)
-  augment(n, 4, 2, 0)
-  autobalance()
-  convex_hull()
-#end
-
-#macro gyroelongated_square_pyramid() // J10
-  antiprism_vtx(4)
-  #local va = points[1];
-  addpoint(<0, 0, -1 - abs(va.z)>)
-  convex_hull()
-#end
-
-#macro icosahedron_mod(j) // J11, J62, J63, J64
-  addevenpermssgn(<0,1,phi>, <0,1,1>) // The icosahedral vertices
-  drop_vtx(99)
-  #if (j >= 62) drop_vtx(6) #end
-  #if (j >= 63) drop_vtx(0) #end
-  #if (j  = 64) augment(3, 1, 7, 8) #end
-  convex_hull()
-#end
-
-#macro bipyramid_j(n) // J12, J13 (n = 3,5)
-  polygon_vtx(n)
-  augment(n, 0, 1, 2)
-  augment(n, 2, 1, 0)
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_bipyramid(n) // J14, J15, J16 (n = 3,4,5)
-  rprism_vtx(n)
-  augment(n, 4, 2, 0)
-  augment(n, 1, 3, 5)
-  autobalance()
-  convex_hull()
-#end
-
-#macro gyroelongated_square_bipyramid() // J17
-  antiprism_vtx(4)
-  #local va = points[1];
-  addpoint(<0, 0,  1 + abs(va.z)>)
-  addpoint(<0, 0, -1 - abs(va.z)>)
-  convex_hull()
-#end
-
-#macro elongated_triangular_cupola() // J18
-  rprism_vtx(6)
-  augment(6, 1, 3, 5)
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_square_cupola() // J19
-  rprism_vtx(8)
-  augment(8, 1, 3, 5)
-  autobalance()
-  convex_hull()
-#end
-
-#macro elongated_pentagonal_cupola() // J20
-  rprism_vtx(10)
-  augment(10, 4, 2, 0)
-  autobalance()
-  convex_hull()
-#end
-
-#macro gyroelongated_triangular_cupola() // J22
-  antiprism_vtx(6)
-  augment(6, 1, 3, 5)
-  autobalance()
-  convex_hull()
-#end
-
-#macro gyroelongated_square_cupola() // J23
-  antiprism_vtx(8)
-  augment(8, 1, 3, 5)
-  autobalance()
-  convex_hull()
-#end
-
-#macro gyroelongated_pentagonal_cupola() // J24
-  antiprism_vtx(10)
-  augment(10, 4, 2, 0)
+  
+  // Cap B
+  #local J = 1 - G;
+  #if (N = 3) #local J = 0    ; #end
+  #if (E > 0) #local J = J + N; #end
+  #if (N < 10)
+    #if (B != 0) augment(N, J, J+1, J+2) #end
+  #else
+    #if (B  = 1) augment(N, J, J+1, J+2) #end
+    #if (B  = 2) rotundify( J, J+1, J+2) #end
+  #end
+  
   autobalance()
   convex_hull()
 #end
@@ -451,46 +341,7 @@
   convex_hull()
 #end
 
-#macro bicupolae(j) // J27, J28, J29, J30, J31, J35, J36, J37, J38, J39, J44, J45, J46
-  #local data = array[20][7] {
-    { 6,0,1,2,3,2,1}, // 27
-    { 8,0,1,2,3,2,1}, // 28
-    { 8,0,1,2,2,1,0}, // 29
-    {10,0,1,2,3,2,1}, // 30
-    {10,0,1,2,2,1,0}, // 31
-    { 0,0,0,0,0,0,0}, // 32
-    { 0,0,0,0,0,0,0}, // 33
-    { 0,0,0,0,0,0,0}, // 34
-    { 6,1,3,5,6,4,2}, // 35
-    { 6,1,3,5,4,2,0}, // 36
-    { 8,1,3,5,4,2,0}, // 37
-    {10,4,2,0,3,5,7}, // 38
-    {10,4,2,0,1,3,5}, // 39
-    { 0,0,0,0,0,0,0}, // 40
-    { 0,0,0,0,0,0,0}, // 41
-    { 0,0,0,0,0,0,0}, // 42
-    { 0,0,0,0,0,0,0}, // 43
-    { 6,1,3,5,4,2,0}, // 44
-    { 8,1,3,5,4,2,0}, // 45
-    {10,4,2,0,1,3,5}  // 46
-  };
-  #if ((j = 27) | (j = 28) | (j = 29) | (j = 30) | (j = 31))
-    polygon_vtx(data[j-27][0])
-  #end
-  #if ((j = 35) | (j = 36) | (j = 37) | (j = 38) | (j = 39))
-    rprism_vtx(data[j-27][0])
-  #end
-  #if ((j = 44) | (j = 45) | (j = 46))
-    antiprism_vtx(data[j-27][0])
-  #end
-  #local j = j - 27;
-  augment(data[j][0], data[j][1], data[j][2], data[j][3])
-  augment(data[j][0], data[j][4], data[j][5], data[j][6])
-  autobalance()
-  convex_hull()
-#end
-
-#macro augmented_prisms(n, facelist) // J49, J50, J51, J52, J53, J54, J55, J56, J57
+#macro augmented_prisms(n, facelist) // J49-57
   // n = prism base, facelist = string with faces to cap
   rprism_vtx(n)
   #for (i, 1, strlen(facelist))
@@ -502,7 +353,7 @@
   convex_hull()
 #end
 
-#macro dodecahedron_mod(j) // J58, J59, J60, J61
+#macro dodecahedron_mod(j) // J58-61
   addpointssgn(<1,1,1>, <1,1,1>)
   addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
   augment(5, 4, 13, 12)
@@ -522,7 +373,16 @@
   convex_hull()
 #end
 
-#macro rhombicosidodecahedron_mod(mods) // J72, J73, J74, J75, J76, J77, J78, J79, J80, J81, J82, J83
+#macro icosahedron_mod(j) // J62-64
+  addevenpermssgn(<0,1,phi>, <0,1,1>) // The icosahedral vertices
+  drop_vtx(99)
+  #if (j >= 62) drop_vtx(6) #end
+  #if (j >= 63) drop_vtx(0) #end
+  #if (j  = 64) augment(3, 1, 7, 8) #end
+  convex_hull()
+#end
+
+#macro rhombicosidodecahedron_mod(mods) // J72-83
   // mods is a 4-character string of D (drop), G (gyrate), and other (leave alone)
   addevenpermssgn(<1    , 1    , 1+2*phi>, <1,1,1>)
   addevenpermssgn(<  phi, 2*phi, 1+  phi>, <1,1,1>)
@@ -728,7 +588,7 @@
 #end
 
 #macro trapezo_rhombic_dodecahedron()
-  bicupolae(27) // triangular orthobicupola
+  pyracupolarotunda(6,0,1,1,0) // triangular orthobicupola
   dual()
 #end
 
@@ -908,7 +768,7 @@
 #end
 
 #macro gyrate_deltoidal_icositetra()
-  bicupolae(37) // elongated square gyrobicupola
+  pyracupolarotunda(8,1,1,1,1) // elongated square gyrobicupola
   dual()
 #end
 
