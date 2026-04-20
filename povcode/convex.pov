@@ -184,38 +184,38 @@
 // Helper macros for the Johnson solids:
 
 #macro augment(n, a, b, c) // On an n-face with 3 adjacent vertices, add a pyramid or a cupola
-  #local va = points[a];
-  #local vb = points[b];
-  #local vc = points[c];
-  #local veci = va-vb;
-  #local vecj = vc-vb;
-  #local veck = vlength(vc-vb) * vnormalize(vcross(vc-vb, va-vb));
+  #local A = points[a];
+  #local B = points[b];
+  #local C = points[c];
+  #local I = A - B;
+  #local J = C - B;
+  #local K = vlength(C-B) * vnormalize(vcross(C-B, A-B));
   #switch(n)
-    #case (3) addpoint( (va+vb+vc)/3 + sqrt(2/3) * veck ) #break
-    #case (4) addpoint( (va +  vc)/2 + sqrt(1/2) * veck ) #break
-    #case (5) addpoint( vb + (2+phi)*(veci+vecj)/5 + sqrt((3-phi)/5) * veck ) #break
+    #case (3) addpoint( (A+B+C)/3 + sqrt(2/3) * K ) #break
+    #case (4) addpoint( (A + C)/2 + sqrt(1/2) * K ) #break
+    #case (5) addpoint( B + (2+phi)*(I+J)/5 + sqrt((3-phi)/5) * K ) #break
     #case (6)
-      addpoint( vb +   veci/3 + 2*vecj/3 + sqrt(2/3) * veck )
-      addpoint( vb + 4*veci/3 + 2*vecj/3 + sqrt(2/3) * veck )
-      addpoint( vb + 4*veci/3 + 5*vecj/3 + sqrt(2/3) * veck )
+      addpoint( B +   I/3 + 2*J/3 + sqrt(2/3) * K )
+      addpoint( B + 4*I/3 + 2*J/3 + sqrt(2/3) * K )
+      addpoint( B + 4*I/3 + 5*J/3 + sqrt(2/3) * K )
       #break
     #case (8)
-      addpoint( vb + (  1/sq2)*veci +         vecj + sqrt(1/2)*veck )
-      addpoint( vb + (1+1/sq2)*veci +         vecj + sqrt(1/2)*veck )
-      addpoint( vb + (1+1/sq2)*veci + (1+sq2)*vecj + sqrt(1/2)*veck )
-      addpoint( vb + (2+1/sq2)*veci + (1+sq2)*vecj + sqrt(1/2)*veck )
+      addpoint( B + (  1/sq2)*I +         J + K/sq2 )
+      addpoint( B + (1+1/sq2)*I +         J + K/sq2 )
+      addpoint( B + (1+1/sq2)*I + (1+sq2)*J + K/sq2 )
+      addpoint( B + (2+1/sq2)*I + (1+sq2)*J + K/sq2 )
       #break
     #case (10)
-      addpoint( vb+(1+3*phi)*veci/5 + (4+2*phi)*vecj/5 + sqrt((3-phi)/5)*veck )
-      addpoint( vb+(6+3*phi)*veci/5 + (4+2*phi)*vecj/5 + sqrt((3-phi)/5)*veck )
-      addpoint( vb+(6+8*phi)*veci/5 + (4+7*phi)*vecj/5 + sqrt((3-phi)/5)*veck )
-      addpoint( vb+(6+8*phi)*veci/5 + (9+7*phi)*vecj/5 + sqrt((3-phi)/5)*veck )
-      addpoint( vb+(6+3*phi)*veci/5 + (4+7*phi)*vecj/5 + sqrt((3-phi)/5)*veck )
+      addpoint( B + (1+3*phi)*I/5 + (4+2*phi)*J/5 + sqrt((3-phi)/5)*K )
+      addpoint( B + (6+3*phi)*I/5 + (4+2*phi)*J/5 + sqrt((3-phi)/5)*K )
+      addpoint( B + (6+8*phi)*I/5 + (4+7*phi)*J/5 + sqrt((3-phi)/5)*K )
+      addpoint( B + (6+8*phi)*I/5 + (9+7*phi)*J/5 + sqrt((3-phi)/5)*K )
+      addpoint( B + (6+3*phi)*I/5 + (4+7*phi)*J/5 + sqrt((3-phi)/5)*K )
       #break
   #end
 #end
-#macro rotateabout(raxis, rangle, va)   // raxis must be a unit vector
-  (  vdot(raxis,va)*raxis  +  cos(rangle)*(va-vdot(raxis,va)*raxis)  +  sin(rangle)*(vcross(raxis,va))  )
+#macro rotateabout(raxis, rangle, A)   // raxis must be a unit vector
+  (  vdot(raxis,A)*raxis  +  cos(rangle)*(A-vdot(raxis,A)*raxis)  +  sin(rangle)*(vcross(raxis,A))  )
 #end
 #macro rotate_vtxs(raxis, rangle, thresh)   // all points in the halfspace v.raxis <= thresh.  rangle is in degrees.
   #for (i, 0, npoints-1)
@@ -263,19 +263,21 @@
 #end
 
 #macro rotundify(a, b, c)
+  // Construct the non-decagonal vertices of a rotunda.  Three consecutive vertices of its decagon are points[a,b,c],
+  // and AB x BC points from the decagon's center to the rotunda's interior.
   #local A = points[a];
   #local B = points[b];
   #local C = points[c];
   #local S = vlength(A-B); // side length
-  #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
   #local O = B + phi * S * vnormalize((A+C)/2 - B); // center of decagon
+  #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
   #local U = vnormalize(A-O);
   #local V = vcross(N, U);
-  #local alfa = sqrt((5+2*sqrt(5))/ 5);
-  #local beta = sqrt((5+  sqrt(5))/10);
+  #local alfa = S * sqrt((5+2*sqrt(5))/ 5);
+  #local beta = S * sqrt((5+  sqrt(5))/10);
   #for (i, 0, 4)
-    addpoint(O + S * (alfa * cos((4*i+1)*pi/10) * U + alfa * sin((4*i+1)*pi/10) * V + beta * N));
-    addpoint(O + S * (beta * cos((4*i+3)*pi/10) * U + beta * sin((4*i+3)*pi/10) * V + alfa * N));
+    addpoint(O + beta*N + alfa * (cos((4*i+1)*pi/10) * U + sin((4*i+1)*pi/10) * V));
+    addpoint(O + alfa*N + beta * (cos((4*i+3)*pi/10) * U + sin((4*i+3)*pi/10) * V));
   #end
 #end
 
@@ -283,15 +285,15 @@
 
 #macro pyracupolarotunda(N, E, A, B, G) // J1-25 and J27-48
   // The ((gyro)elongated) N-gonal (ortho,gyro)(bi)(pyramid,cupola,rotunda).
-  // N: the number of sides for the "core".  For the cupolae and rotundae, this is twice the number implied by the English name.
-  // E: Elongation type.  0: No elongation.  1: Ordinary elongation.  2: Gyroelongation.
+  // N: the number of sides for the "core".  For cupolae and rotundae, this is twice the number implied by the English name.
+  // E: Elongation type.  0: None.  1: Ordinary.  2: Gyroelongation.
   // A,B: cap type for each side of the elongation.  0: Flat.  1: Pyramid or cupola.  2: Rotunda.
-  // G: Gyration type.  0: No gyration.  1: Gyrate.
+  // G: Gyration type.  0: None.  1: Gyrate.
   // Examples:
-  // * Calling cupolarotunda( 8, 2, 1, 1, 0) makes the gyroelongated square bicupola.
-  // * Calling cupolarotunda( 8, 1, 1, 1, 1) makes the elongated square gyrobicupola.
-  // * Calling cupolarotunda( 3, 0, 1, 1, 0) makes the triangular bipyramid.
-  // * Calling cupolarotunda(10, 0, 1, 2, 1) makes the pentagonal gyrocupolarotunda.
+  // * pyracupolarotunda( 8, 2, 1, 1, 0) makes the gyroelongated square bicupola.
+  // * pyracupolarotunda( 8, 1, 1, 1, 1) makes the elongated square gyrobicupola.
+  // * pyracupolarotunda( 3, 0, 1, 1, 0) makes the triangular bipyramid.
+  // * pyracupolarotunda(10, 0, 1, 2, 1) makes the pentagonal gyrocupolarotunda.
   
   // The core.
   // We could use polygon_vtx, rprism_vtx, and antiprism_vtx for this, but I want a different point numbering.
@@ -311,23 +313,17 @@
   #end
   
   // Cap A
-  #if (N < 10)
-    #if (A != 0) augment(N, 2, 1, 0) #end
-  #else
-    #if (A  = 1) augment(N, 2, 1, 0) #end
-    #if (A  = 2) rotundify( 2, 1, 0) #end
-  #end
+  #if ((N < 10) & (A != 0)) augment(N, 2, 1, 0) #end
+  #if ((N = 10) & (A  = 1)) augment(N, 2, 1, 0) #end
+  #if ((N = 10) & (A  = 2)) rotundify( 2, 1, 0) #end
   
   // Cap B
   #local J = 1 - G;
   #if (N = 3) #local J = 0    ; #end
   #if (E > 0) #local J = J + N; #end
-  #if (N < 10)
-    #if (B != 0) augment(N, J, J+1, J+2) #end
-  #else
-    #if (B  = 1) augment(N, J, J+1, J+2) #end
-    #if (B  = 2) rotundify( J, J+1, J+2) #end
-  #end
+  #if ((N < 10) & (B != 0)) augment(N, J, J+1, J+2) #end
+  #if ((N = 10) & (B  = 1)) augment(N, J, J+1, J+2) #end
+  #if ((N = 10) & (B  = 2)) rotundify( J, J+1, J+2) #end
   
   autobalance()
   convex_hull()
@@ -546,43 +542,24 @@
 #macro herschel_enneahedron()
   // https://aperiodical.com/2013/10/an-enneahedron-for-herschel/
   #local c = sqrt(3);
-  addpoint(< 6, 0  , -6>)
-  addpoint(< 0, 0  ,  0>)
-  addpoint(< 6, 0  ,  6>)
-  addpoint(<12, 0  ,  0>)
-  addpoint(< 6, 2*c, -8>)
-  addpoint(< 3, 3*c, -6>)
-  addpoint(< 3, 3*c,  6>)
-  addpoint(< 6, 2*c,  8>)
-  addpoint(< 9, 3*c,  6>)
-  addpoint(< 9, 3*c, -6>)
-  addpoint(< 6, 6*c,  0>)
+  addpoint(    < 0, 0  , 0>)
+  addpoint(    < 6, 6*c, 0>)
+  addpoint(    <12, 0  , 0>)
+  addpointssgn(< 3, 3*c, 6>, <0,0,1>)
+  addpointssgn(< 6, 0  , 6>, <0,0,1>)
+  addpointssgn(< 6, 2*c, 8>, <0,0,1>)
+  addpointssgn(< 9, 3*c, 6>, <0,0,1>)
   autobalance()
   convex_hull()
 #end
 
 #macro triakistruncatedtetrahedron()
-  addpoint(< 8, 1, 5/sq2>)
-  addpoint(< 8, 2, 4/sq2>)
-  addpoint(< 8, 3, 5/sq2>)
-  
-  addpoint(< 9, 0, 7/sq2>)
-  addpoint(< 9, 2, 3/sq2>)
-  addpoint(< 9, 4, 7/sq2>)
-  
-  addpoint(<10, 0, 8/sq2>)
-  addpoint(<10, 1, 9/sq2>)
-  addpoint(<10, 3, 9/sq2>)
-  addpoint(<10, 4, 8/sq2>)
-  
-  addpoint(<11, 0, 7/sq2>)
-  addpoint(<11, 2, 3/sq2>)
-  addpoint(<11, 4, 7/sq2>)
-  
-  addpoint(<12, 1, 5/sq2>)
-  addpoint(<12, 2, 4/sq2>)
-  addpoint(<12, 3, 5/sq2>)
-  
+  addpointssgn(<4,2,  -sq2>, <1,1,0>)
+  addpointssgn(<2,4,   sq2>, <1,1,0>)
+  addpointssgn(<4,0,-2*sq2>, <1,0,0>)
+  addpointssgn(<0,4, 2*sq2>, <0,1,0>)
+  addpointssgn(<2,0,-3*sq2>, <1,0,0>)
+  addpointssgn(<0,2, 3*sq2>, <0,1,0>)
   autobalance()
   convex_hull()
 #end
@@ -593,11 +570,11 @@
 #end
 
 #macro elongated_dodecahedron()
-  #local c = sqrt(3) / 2;
-  addpointssgn(<1, 1, c+1>, <1,1,1>)
-  addpointssgn(<2, 0, c  >, <1,0,1>)
-  addpointssgn(<0, 2, c  >, <0,1,1>)
-  addpointssgn(<0, 0, c+2>, <0,0,1>)
+  #local c = sqrt(3);
+  addpointssgn(<2, 2, c+2>, <1,1,1>)
+  addpointssgn(<4, 0, c  >, <1,0,1>)
+  addpointssgn(<0, 4, c  >, <0,1,1>)
+  addpointssgn(<0, 0, c+4>, <0,0,1>)
   autobalance()
   convex_hull()
 #end
@@ -617,14 +594,9 @@
 #end
 
 #macro trunc_triakis_tet()
-  #local C0 =  1 / sqrt(243);
-  #local C1 =  1 / sqrt( 27);
-  #local C2 = -1 / sqrt(  3);
-  #local C3 = 11 / sqrt(243);
-  #local C4 =  5 / sqrt( 27);
-  addevenpermsevensgn(<C1,  C1, C4>)
-  addevenpermsevensgn(<C3, -C0, C3>)
-  addpointsevensgn(   <C2,  C2, C2>)
+  addevenpermsevensgn(< 3,  3, 15>)
+  addevenpermsevensgn(<11, -1, 11>)
+  addpointsevensgn(   <-9, -9, -9>)
   autobalance()
   convex_hull()
 #end
@@ -756,13 +728,10 @@
 #end
 
 #macro BilinskiDodecahedron()
-  #local C0 = sqrt( 5 -   sqrt(5));
-  #local C1 = sqrt( 5 +   sqrt(5));
-  #local C2 = sqrt(10 + 4*sqrt(5));
-  addpointssgn(< 0,  0, C2>, <0,0,1>)
-  addpointssgn(<C1, C0,  0>, <1,1,0>)
-  addpointssgn(<C1,  0, C1>, <1,0,1>)
-  addpointssgn(< 0, C0, C0>, <0,1,1>)
+  addpointssgn(< 0 , 0, phi+1>, <0,0,1>)
+  addpointssgn(<phi, 1,  0   >, <1,1,0>)
+  addpointssgn(<phi, 0, phi  >, <1,0,1>)
+  addpointssgn(< 0 , 1,  1   >, <0,1,1>)
   autobalance()
   convex_hull()
 #end
@@ -823,7 +792,7 @@
   #end
   
   // TODO: For the octahedral and especially tetrahedral variants, we have rather poor spacing of points.
-  // Maybe add an iterative-optimization-type step, where we treat them as like charges?
+  // Maybe add an iterative-optimization-type step, where we treat them as electrons?
   // We would have to ensure that the topology does not change.
   
   showvtxs()
