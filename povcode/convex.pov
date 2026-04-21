@@ -1,5 +1,6 @@
 #declare phi = (1 + sqrt(5)) / 2;
 #declare sq2 = sqrt(2);
+#declare tau = 2 * pi;
 
 #declare MaximumVerticesPerFace = 20;   // If a solid has a face with > 20 vertices, include a #declare to override this.
 
@@ -107,9 +108,9 @@
 #end
 
 #macro truncatedicosidodecahedron()
-  addevenpermssgn(<1/phi  , 1/phi, 3+  phi>, <1,1,1>)
-  addevenpermssgn(<2/phi  ,   phi, 1+2*phi>, <1,1,1>)
-  addevenpermssgn(<1/phi  , 1+phi, 3*phi-1>, <1,1,1>)
+  addevenpermssgn(<  phi-1, phi-1, 3+  phi>, <1,1,1>)
+  addevenpermssgn(<2*phi-2, phi  , 1+2*phi>, <1,1,1>)
+  addevenpermssgn(<  phi-1, phi+1, 3*phi-1>, <1,1,1>)
   addevenpermssgn(<2*phi-1,   2  , 2+phi  >, <1,1,1>)
   addevenpermssgn(<  phi  ,   3  , 2*phi  >, <1,1,1>)
   convex_hull()
@@ -133,8 +134,8 @@
   //    alfa: x^6 + 2x^5 -  2x^4         -   x^2 - 2x + 1
   //    beta: x^6 - 5x^5 - 11x^4 + 12x^3 + 24x^2 + 9x + 1
   addevenpermsevensgn(<2*alfa, 2, 2*beta> * s)
-  addevenpermsevensgn(< beta/phi+alfa+phi  , -alfa*phi+beta+1/phi, alfa/phi+beta*phi-1> * s)
-  addevenpermsevensgn(< beta/phi+alfa-phi  ,  alfa*phi-beta+1/phi, alfa/phi+beta*phi+1> * s)
+  addevenpermsevensgn(< beta/phi+alfa+phi  , -alfa*phi+beta+phi-1, alfa/phi+beta*phi-1> * s)
+  addevenpermsevensgn(< beta/phi+alfa-phi  ,  alfa*phi-beta+phi-1, alfa/phi+beta*phi+1> * s)
   addevenpermsevensgn(<-alfa/phi+beta*phi+1, -alfa+beta/phi-phi  , alfa*phi+beta-phi+1> * s)
   addevenpermsevensgn(<-alfa/phi+beta*phi-1,  alfa-beta/phi-phi  , alfa*phi+beta+phi-1> * s)
   convex_hull()
@@ -160,17 +161,17 @@
 
 #macro polygon_vtx(n)
   #for (i, 0, n-1)
-    addpoint(<cos(i*2*pi/n), sin(i*2*pi/n), 0>)
+    addpoint(<cos(i*tau/n), sin(i*tau/n), 0>)
   #end
 #end
 #macro rprism_vtx(n)
-  #local a = sqrt((1 - cos(2*pi/n)) / 2);
+  #local a = sqrt((1 - cos(tau/n)) / 2);
   #for (b, 0, n-1)
-    addpointssgn(<sin(2*pi*b/n), cos(2*pi*b/n), a>, <0,0,1>)
+    addpointssgn(<sin(tau*b/n), cos(tau*b/n), a>, <0,0,1>)
   #end
 #end
 #macro antiprism_vtx(n)
-  #local a = sqrt((cos(pi/n) - cos(2*pi/n)) / 2);
+  #local a = sqrt((cos(pi/n) - cos(tau/n)) / 2);
   #for (b, 0, 2*n-1)
     addpoint(<sin(pi*b/n), cos(pi*b/n), a>)
     #local a = -a;
@@ -273,8 +274,8 @@
   #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
   #local U = vnormalize(A-O);
   #local V = vcross(N, U);
-  #local alfa = S * sqrt((5+2*sqrt(5))/ 5);
-  #local beta = S * sqrt((5+  sqrt(5))/10);
+  #local alfa = S * sqrt((3+4*phi)/5);
+  #local beta = S * sqrt((2+  phi)/5);
   #for (i, 0, 4)
     addpoint(O + beta*N + alfa * (cos((4*i+1)*pi/10) * U + sin((4*i+1)*pi/10) * V));
     addpoint(O + alfa*N + beta * (cos((4*i+3)*pi/10) * U + sin((4*i+3)*pi/10) * V));
@@ -298,17 +299,17 @@
   // The core.
   // We could use polygon_vtx, rprism_vtx, and antiprism_vtx for this, but I want a different point numbering.
   #for (i, 0, N-1)
-    addpoint(<cos(2*pi*i/N), sin(2*pi*i/N), 0>)
+    addpoint(<cos(tau*i/N), sin(tau*i/N), 0>)
   #end
   #if (E > 0)
-    #local H = sqrt(2 - 2*cos(2*pi/N));
+    #local H = sqrt(2 - 2*cos(tau/N));
     #local J = 0;
     #if (E = 2)
       #local J = 1/2;
-      #local H = sqrt(2*cos(pi/N) - 2*cos(2*pi/N));
+      #local H = sqrt(2*cos(pi/N) - 2*cos(tau/N));
     #end
     #for (i, 0, N-1)
-      addpoint(<cos(2*pi*(i+J)/N), sin(2*pi*(i+J)/N), H>)
+      addpoint(<cos(tau*(i+J)/N), sin(tau*(i+J)/N), H>)
     #end
   #end
   
@@ -333,7 +334,6 @@
   addpointssgn(<1,1,0>, <1,1,0>)
   addpointssgn(<1,0, sqrt(3)>, <1,0,0>)
   addpointssgn(<0,1,-sqrt(3)>, <0,1,0>)
-  autobalance()
   convex_hull()
 #end
 
@@ -402,9 +402,9 @@
   // return a 3-vector whose components are the roots of the polynomial, in ascending order.
   #local P = (3*A*C - B*B) / (3*A*A);
   #local Q = (2*B*B*B - 9*A*B*C + 27*A*A*D) / (27*A*A*A);
-  #local R = sqrt(-P/3);
-  #local S = acos( (3*Q) / (2*P*R) ) / 3;
-  (2 * R * <cos(S - 4*pi/3), cos(S - 2*pi/3), cos(S)> - B/(3*A))
+  #local R = 2*sqrt(-P/3);
+  #local S = acos( (3*Q) / (P*R) ) / 3;
+  (R * <cos(S - 2*tau/3), cos(S - tau/3), cos(S)> - B/(3*A))
 #end
 
 #macro snub_disphenoid() // J84
@@ -560,7 +560,6 @@
   addpointssgn(<0,4, 2*sq2>, <0,1,0>)
   addpointssgn(<2,0,-3*sq2>, <1,0,0>)
   addpointssgn(<0,2, 3*sq2>, <0,1,0>)
-  autobalance()
   convex_hull()
 #end
 
@@ -575,21 +574,19 @@
   addpointssgn(<4, 0, c  >, <1,0,1>)
   addpointssgn(<0, 4, c  >, <0,1,1>)
   addpointssgn(<0, 0, c+4>, <0,0,1>)
-  autobalance()
   convex_hull()
 #end
 
 #macro rhombic_icosahedron()
   addpointssgn(<0,0,5>, <0,0,1>)
   #local P = <4, 0, 3>;
-  #local Q = <2 + 2 * phi, sqrt(10 + 2*sqrt(5)), 1>;
+  #local Q = <2 + 2*phi, 2*sqrt(2+phi), 1>;
   #for (i, 1, 5)
-    #local P = rotateabout(<0,0,1>, 2*pi/5, P);
-    #local Q = rotateabout(<0,0,1>, 2*pi/5, Q);
+    #local P = rotateabout(<0,0,1>, tau/5, P);
+    #local Q = rotateabout(<0,0,1>, tau/5, Q);
     addpoint(P) addpoint(-P)
     addpoint(Q) addpoint(-Q)
   #end
-  autobalance()
   convex_hull()
 #end
 
@@ -597,7 +594,6 @@
   addevenpermsevensgn(< 3,  3, 15>)
   addevenpermsevensgn(<11, -1, 11>)
   addpointsevensgn(   <-9, -9, -9>)
-  autobalance()
   convex_hull()
 #end
 
@@ -605,8 +601,8 @@
   #declare MaximumVerticesPerFace = max(5,N);
   
   // A pair of nearest-neighbour points on the middle rings is
-  //    A == <     1    ,     0    ,  c >    and    C == < cos(pi/N), sin(pi/N), -c >,
-  // using the labels that we will give them below.  The distance between these points is
+  //    A == < 1, 0, c >    and    C == < cos(pi/N), sin(pi/N), -c >,
+  // The distance between them is
   // sqrt((1 - cos(pi/N))^2 + sin(pi/N)^2 + 4c^2)
   // == sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                       (1)
   // The apex will be at z == c * cot(pi/(2*N))^2.
@@ -620,16 +616,15 @@
   // sqrt( 4c^2 + 2 - 2 * cos(pi/N) )    ==    sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )
   // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
   
-  // As below, let A == <1, 0, c> be a point on the upper middle ring.
-  // Then C == <cos(pi/N), sin(pi/N), -c> (as below) and D == <cos(pi/N), -sin(pi/N), -c>
-  // are its nearest neighbours in the lower middle ring.  For aesthetics, I want angle CAD to be 90 degrees.
+  // In the lower middle ring, the nearest neighbours to A are C and D == <cos(pi/N), -sin(pi/N), -c>.
+  // For aesthetics, I want angle CAD to be 90 degrees.
   // AC  ==  < 1 - cos(pi/N) , -sin(pi/N) , 2c >
   // AD  ==  < 1 - cos(pi/N) ,  sin(pi/N) , 2c >
   // For the angle to be right, we need AC (dot) AD == 0:
   // 0 == (1 - cos(pi/N))^2 - sin(pi/N)^2 + 4c^2
-  // c == sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2
+  // c == sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2
   
-  #local c = sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2;
+  #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;
   #local p = 1 / tan(pi/(2*N));
   // I actually want the upper and lower rings to be a bit closer than I described above.
   #local q = 1 - sqrt( 4*c*c + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c*c * p*p*p*p ) * 0.75;
@@ -638,16 +633,8 @@
     addpoint(<cos(I * pi/N), sin(I * pi/N),  c * cos(I * pi)>)
   #end
   
-  #local A = points[0];
-  #local B = points[1];
-  #local C = points[2];
-  #local ABxAC = vcross(B-A, C-A);
-  
-  // Face ABC is embedded in the plane
-  // ABxAC.x * (x -  1 )  +  ABxAC.y * (y -  0 )  +  ABxAC.z * (z -  c )  == 0.
-  // The +z apex of the solid is this plane's z-intercept, c + ABxAC.x / ABxAC.z.
-  
-  #local Apex = <0, 0, c + ABxAC.x / ABxAC.z>;
+  #local V = vcross(points[0] - points[1], points[1] - points[2]); // Normal vector to an upper face
+  #local Apex = <0, 0, c + V.x / V.z>;
   // The upper upper ring will be the weighted average of the upper middle ring and Apex,
   // with the ring weighted by q and Apex weighted by 1-q, and similarly for the lower lower ring.
   
@@ -664,28 +651,16 @@
   // TODO: This c is copied from truncated_tetrahedron.
   // Since we are reducing the radius of the upper ring, is that really the best c to use here?
   
-  #local c = sqrt(2 * cos(pi/N) - cos(2*pi/N) - 1) / 2;
-  #local r1 = 0.66;
-  #local r2 = 1;
+  #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;
   
-  // Points 0 through  N-1 are the upper ring.
-  #for (I, 0, 2*N-2, 2)
-    addpoint(<r1 * cos(I * pi/N), r1 * sin(I * pi/N),  c>)
+  // Even-I points are the upper ring; odd-I points are the lower.
+  #for (I, 0, 2*N-1)
+    #local R = (5 - cos(I*pi)) / 6; // R=1 for even I; R=2/3 for odd
+    addpoint(<R * cos(I * pi/N), R * sin(I * pi/N), c * cos(I*pi)>)
   #end
   
-  // Points N through 2N-1 are the lower ring.
-  #for (I, 1, 2*N-1, 2)
-    addpoint(<r2 * cos(I * pi/N), r2 * sin(I * pi/N), -c>)
-  #end
-  
-  #local A = points[0]; // <r1, 0, c>
-  #local B = points[1];
-  #local C = points[N];
-  #local ABxAC = vcross(B-A, C-A);
-  
-  // As with truncated_trapezohedron, the apex of the solid is z == c + ABxAC.x * r1 / ABxAC.z.
-  
-  addpoint(<0, 0, c + ABxAC.x * r1 / ABxAC.z>)
+  #local V = vcross(points[0] - points[1], points[1] - points[2]); // Normal vector to an upper face
+  addpoint(<0, 0, c + V.x * r1 / V.z>) // The apex of the solid
   
   convex_hull()
 #end
@@ -697,8 +672,6 @@
   addevenpermssgn(<phi  ,   phi  ,   phi+2>, <1,1,1>)
   addevenpermssgn(<  1  ,   phi+1, 2*phi  >, <1,1,1>)
   addpointssgn(   <phi+1,   phi+1,   phi+1>, <1,1,1>)
-  
-  autobalance()
   convex_hull()
 #end
 
@@ -706,7 +679,6 @@
   addpointssgn(<2,2, 1>, <1,1,1>)
   addpointssgn(<2,0, 2>, <1,0,0>)
   addpointssgn(<0,2,-2>, <0,1,0>)
-  autobalance()
   convex_hull()
 #end
 
@@ -716,14 +688,13 @@
   #local Q = <6632738028, 6106948881, 3980949609> / 1e10;
   #local R = <8193990033, 5298215096, 1230614493> / 1e10;
   #for (i, 1, 15)
-    #local P = rotateabout(<0,0,1>, 2*pi/15, P);
-    #local Q = rotateabout(<0,0,1>, 2*pi/15, Q);
-    #local R = rotateabout(<0,0,1>, 2*pi/15, R);
+    #local P = rotateabout(<0,0,1>, tau/15, P);
+    #local Q = rotateabout(<0,0,1>, tau/15, Q);
+    #local R = rotateabout(<0,0,1>, tau/15, R);
     addpoint(P)  addpoint(-P)
     addpoint(Q)  addpoint(-Q)
     addpoint(R)  addpoint(-R)
   #end
-  autobalance()
   convex_hull()
 #end
 
@@ -732,7 +703,6 @@
   addpointssgn(<phi, 1,  0   >, <1,1,0>)
   addpointssgn(<phi, 0, phi  >, <1,0,1>)
   addpointssgn(< 0 , 1,  1   >, <0,1,1>)
-  autobalance()
   convex_hull()
 #end
 
@@ -786,7 +756,6 @@
   #end // for a
  
   // Finally, project all points onto the unit sphere.
-  autobalance()
   #for (i, 0, npoints-1)
     #declare points[i] = vnormalize(points[i]);
   #end
@@ -795,7 +764,6 @@
   // Maybe add an iterative-optimization-type step, where we treat them as electrons?
   // We would have to ensure that the topology does not change.
   
-  showvtxs()
   convex_hull()
 #end
 
@@ -1046,9 +1014,9 @@
 This_shape_will_be_drawn()
 
 //Random rotations are (hopefully) equally distributed...
-#declare rot1 = rand(rotation) * pi * 2;
+#declare rot1 = rand(rotation) * tau;
 #declare rot2 = acos(1 - 2*rand(rotation));
-#declare rot3 = (rand(rotation) + clock) * pi * 2;
+#declare rot3 = (rand(rotation) + clock) * tau;
 #macro dorot()
   rotate rot1 * 180 / pi * y
   rotate rot2 * 180 / pi * x
@@ -1127,8 +1095,8 @@ intersection {
 
 #for (a, 0, 11)
   light_source {
-    <4*sin(a*pi*2/11), 5*cos(a*pi*6/11), -4*cos(a*pi*2/11)>
-    colour (1 + <sin(a*pi*2/11), sin(a*pi*2/11+pi*2/3), sin(a*pi*2/11+pi*4/3)>) * 2 / 11
+    <4*sin(a*tau/11), 5*cos(a*tau*3/11), -4*cos(a*tau/11)>
+    colour (1 + <sin(a*tau/11), sin(a*tau/11+tau/3), sin(a*tau/11+tau*2/3)>) * 2 / 11
   }
 #end
 
