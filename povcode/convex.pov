@@ -1,25 +1,11 @@
 #declare phi = (1 + sqrt(5)) / 2;
 #declare sq2 = sqrt(2);
+#declare sq3 = sqrt(3);
 #declare tau = 2 * pi;
 
 #declare MaximumVerticesPerFace = 20;   // If a solid has a face with > 20 vertices, include a #declare to override this.
 
 // Platonic:
-
-#macro tetrahedron()
-  addpointsevensgn(<1,1,1>)
-  convex_hull()
-#end
-
-#macro hexahedron() // "cube" is a keyword.
-  addpointssgn(<1,1,1>, <1,1,1>)
-  convex_hull()
-#end
-
-#macro octahedron()
-  addevenpermssgn(<1,0,0>, <1,0,0>)
-  convex_hull()
-#end
 
 #macro dodecahedron()
   addpointssgn(<1,1,1>, <1,1,1>)
@@ -27,23 +13,9 @@
   convex_hull()
 #end
 
-#macro icosahedron()
-  addevenpermssgn(<0,1,phi>, <0,1,1>)
-  convex_hull()
-#end
+// The other four Platonics are handled by pyracupolarotunda().
 
 // Archimedean:
-
-#macro cuboctahedron()
-  addevenpermssgn(<0,1,1>, <0,1,1>)
-  convex_hull()
-#end
-
-#macro icosidodecahedron()
-  addevenpermssgn(<0,0,2*phi>, <0,0,1>)
-  addevenpermssgn(<1, phi, 1+phi>, <1,1,1>)
-  convex_hull()
-#end
 
 #macro truncatedtetrahedron(augmentation)
   addevenpermsevensgn(<1,1,3>)
@@ -87,11 +59,6 @@
   addevenpermssgn(<0, 1      , 3*phi>, <0,1,1>)
   addevenpermssgn(<2, 1+2*phi,   phi>, <1,1,1>)
   addevenpermssgn(<1, 2+  phi, 2*phi>, <1,1,1>)
-  convex_hull()
-#end
-
-#macro rhombicuboctahedron()
-  addevenpermssgn(<1+sq2, 1, 1>, <1,1,1>)
   convex_hull()
 #end
 
@@ -141,21 +108,23 @@
   convex_hull()
 #end
 
+// The other three Archimedeans are handled by pyracupolarotunda().
+
 // Catalan:
 
-#macro        rhombicdodecahedron( )              cuboctahedron( ) dual() #end
-#macro     rhombictriacontahedron( )          icosidodecahedron( ) dual() #end
-#macro         triakistetrahedron( )       truncatedtetrahedron(0) dual() #end
-#macro          triakisoctahedron( )        truncatedhexahedron(0) dual() #end
-#macro         tetrakishexahedron( )        truncatedoctahedron( ) dual() #end
-#macro         triakisicosahedron( )      truncateddodecahedron(0) dual() #end
-#macro       pentakisdodecahedron( )       truncatedicosahedron( ) dual() #end
-#macro  deltoidalicositetrahedron( )        rhombicuboctahedron( ) dual() #end
-#macro      disdyakisdodecahedron( )     truncatedcuboctahedron( ) dual() #end
-#macro   deltoidalhexecontahedron( )     rhombicosidodecahedron( ) dual() #end
-#macro   disdyakistriacontahedron( ) truncatedicosidodecahedron( ) dual() #end
+#macro        rhombicdodecahedron( ) pyracupolarotunda(0, 6,1,1,1) dual() #end // dual of cuboctahedron
+#macro     rhombictriacontahedron( ) pyracupolarotunda(0,10,1,2,2) dual() #end // dual of icosidodecahedron
+#macro  deltoidalicositetrahedron( ) pyracupolarotunda(1, 8,0,1,1) dual() #end // dual of rhombicuboctahedron
 #macro pentagonalicositetrahedron(s)                  snub_cube(s) dual() #end
 #macro  pentagonalhexecontahedron(s)           snubdodecahedron(s) dual() #end
+#macro   disdyakistriacontahedron( ) truncatedicosidodecahedron( ) dual() #end
+#macro   deltoidalhexecontahedron( )     rhombicosidodecahedron( ) dual() #end
+#macro      disdyakisdodecahedron( )     truncatedcuboctahedron( ) dual() #end
+#macro       pentakisdodecahedron( )       truncatedicosahedron( ) dual() #end
+#macro         triakisicosahedron( )      truncateddodecahedron(0) dual() #end
+#macro         triakistetrahedron( )       truncatedtetrahedron(0) dual() #end
+#macro         tetrakishexahedron( )        truncatedoctahedron( ) dual() #end
+#macro          triakisoctahedron( )        truncatedhexahedron(0) dual() #end
 
 // Prisms, biprisms, antiprisms, and trapezohedra:
 
@@ -165,16 +134,13 @@
   #end
 #end
 #macro rprism_vtx(n)
-  #local a = sqrt((1 - cos(tau/n)) / 2);
   #for (b, 0, n-1)
-    addpointssgn(<sin(tau*b/n), cos(tau*b/n), a>, <0,0,1>)
+    addpointssgn(<sin(tau*b/n), cos(tau*b/n), sqrt((1 - cos(tau/n)) / 2)>, <0,0,1>)
   #end
 #end
 #macro antiprism_vtx(n)
-  #local a = sqrt((cos(pi/n) - cos(tau/n)) / 2);
   #for (b, 0, 2*n-1)
-    addpoint(<sin(pi*b/n), cos(pi*b/n), a>)
-    #local a = -a;
+    addpoint(<sin(pi*b/n), cos(pi*b/n), sqrt((cos(pi/n) - cos(tau/n)) / 2) * cos(b*pi)>)
   #end
 #end
 #macro        rprism(n)    rprism_vtx(n) convex_hull() #end
@@ -192,13 +158,13 @@
   #local J = C - B;
   #local K = vlength(C-B) * vnormalize(vcross(C-B, A-B));
   #switch(n)
-    #case (3) addpoint( (A+B+C)/3 + sqrt(2/3) * K ) #break
-    #case (4) addpoint( (A + C)/2 + sqrt(1/2) * K ) #break
+    #case (3) addpoint( (A+B+C)/3 + K*sq2/sq3 ) #break
+    #case (4) addpoint( (A + C)/2 + K    /sq2 ) #break
     #case (5) addpoint( B + (2+phi)*(I+J)/5 + sqrt((3-phi)/5) * K ) #break
     #case (6)
-      addpoint( B +   I/3 + 2*J/3 + sqrt(2/3) * K )
-      addpoint( B + 4*I/3 + 2*J/3 + sqrt(2/3) * K )
-      addpoint( B + 4*I/3 + 5*J/3 + sqrt(2/3) * K )
+      addpoint( B +   I/3 + 2*J/3 + K*sq2/sq3 )
+      addpoint( B + 4*I/3 + 2*J/3 + K*sq2/sq3 )
+      addpoint( B + 4*I/3 + 5*J/3 + K*sq2/sq3 )
       #break
     #case (8)
       addpoint( B + (  1/sq2)*I +         J + K/sq2 )
@@ -284,17 +250,17 @@
 
 // Johnson:
 
-#macro pyracupolarotunda(N, E, A, B, G) // J1-25 and J27-48
+#macro pyracupolarotunda(E, N, G, A, B) // J1-25 and J27-48
   // The ((gyro)elongated) N-gonal (ortho,gyro)(bi)(pyramid,cupola,rotunda).
-  // N: the number of sides for the "core".  For cupolae and rotundae, this is twice the number implied by the English name.
   // E: Elongation type.  0: None.  1: Ordinary.  2: Gyroelongation.
-  // A,B: cap type for each side of the elongation.  0: Flat.  1: Pyramid or cupola.  2: Rotunda.
+  // N: the number of sides for the "core".  For cupolae and rotundae, this is twice the number implied by the English name.
   // G: Gyration type.  0: None.  1: Gyrate.
+  // A,B: cap type for each side of the elongation.  0: Flat.  1: Pyramid or cupola.  2: Rotunda.
   // Examples:
-  // * pyracupolarotunda( 8, 2, 1, 1, 0) makes the gyroelongated square bicupola.
-  // * pyracupolarotunda( 8, 1, 1, 1, 1) makes the elongated square gyrobicupola.
-  // * pyracupolarotunda( 3, 0, 1, 1, 0) makes the triangular bipyramid.
-  // * pyracupolarotunda(10, 0, 1, 2, 1) makes the pentagonal gyrocupolarotunda.
+  // * pyracupolarotunda(2,  8, 0, 1, 1) makes the gyroelongated square bicupola.
+  // * pyracupolarotunda(1,  8, 1, 1, 1) makes the elongated square gyrobicupola.
+  // * pyracupolarotunda(0,  3, 0, 1, 1) makes the triangular bipyramid.
+  // * pyracupolarotunda(0, 10, 1, 1, 2) makes the pentagonal gyrocupolarotunda.
   
   // The core.
   // We could use polygon_vtx, rprism_vtx, and antiprism_vtx for this, but I want a different point numbering.
@@ -327,13 +293,14 @@
   #if ((N = 10) & (B  = 2)) rotundify( J, J+1, J+2) #end
   
   autobalance()
+  showvtxs()
   convex_hull()
 #end
 
 #macro gyrobifastigium() // J26
   addpointssgn(<1,1,0>, <1,1,0>)
-  addpointssgn(<1,0, sqrt(3)>, <1,0,0>)
-  addpointssgn(<0,1,-sqrt(3)>, <0,1,0>)
+  addpointssgn(<1,0, sq3>, <1,0,0>)
+  addpointssgn(<0,1,-sq3>, <0,1,0>)
   convex_hull()
 #end
 
@@ -541,14 +508,13 @@
 
 #macro herschel_enneahedron()
   // https://aperiodical.com/2013/10/an-enneahedron-for-herschel/
-  #local c = sqrt(3);
-  addpoint(    < 0, 0  , 0>)
-  addpoint(    < 6, 6*c, 0>)
-  addpoint(    <12, 0  , 0>)
-  addpointssgn(< 3, 3*c, 6>, <0,0,1>)
-  addpointssgn(< 6, 0  , 6>, <0,0,1>)
-  addpointssgn(< 6, 2*c, 8>, <0,0,1>)
-  addpointssgn(< 9, 3*c, 6>, <0,0,1>)
+  addpoint(    < 0, 0    , 0>)
+  addpoint(    < 6, 6*sq3, 0>)
+  addpoint(    <12, 0    , 0>)
+  addpointssgn(< 3, 3*sq3, 6>, <0,0,1>)
+  addpointssgn(< 6, 0    , 6>, <0,0,1>)
+  addpointssgn(< 6, 2*sq3, 8>, <0,0,1>)
+  addpointssgn(< 9, 3*sq3, 6>, <0,0,1>)
   autobalance()
   convex_hull()
 #end
@@ -564,16 +530,15 @@
 #end
 
 #macro trapezo_rhombic_dodecahedron()
-  pyracupolarotunda(6,0,1,1,0) // triangular orthobicupola
+  pyracupolarotunda(0,6,0,1,1) // triangular orthobicupola
   dual()
 #end
 
 #macro elongated_dodecahedron()
-  #local c = sqrt(3);
-  addpointssgn(<2, 2, c+2>, <1,1,1>)
-  addpointssgn(<4, 0, c  >, <1,0,1>)
-  addpointssgn(<0, 4, c  >, <0,1,1>)
-  addpointssgn(<0, 0, c+4>, <0,0,1>)
+  addpointssgn(<2, 2, sq3+2>, <1,1,1>)
+  addpointssgn(<4, 0, sq3  >, <1,0,1>)
+  addpointssgn(<0, 4, sq3  >, <0,1,1>)
+  addpointssgn(<0, 0, sq3+4>, <0,0,1>)
   convex_hull()
 #end
 
@@ -707,7 +672,7 @@
 #end
 
 #macro gyrate_deltoidal_icositetra()
-  pyracupolarotunda(8,1,1,1,1) // elongated square gyrobicupola
+  pyracupolarotunda(1,8,1,1,1) // elongated square gyrobicupola
   dual()
 #end
 
