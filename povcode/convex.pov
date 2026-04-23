@@ -625,7 +625,7 @@
   #end
   
   #local V = vcross(points[0] - points[1], points[1] - points[2]); // Normal vector to an upper face
-  addpoint(<0, 0, c + V.x * r1 / V.z>) // The apex of the solid
+  addpoint(<0, 0, c + (2 * V.x) / (3 * V.z)>) // The apex of the solid
   
   convex_hull()
 #end
