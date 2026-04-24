@@ -268,29 +268,25 @@
     addpoint(<cos(tau*i/N), sin(tau*i/N), 0>)
   #end
   #if (E > 0)
-    #local H = sqrt(2 - 2*cos(tau/N));
-    #local J = 0;
-    #if (E = 2)
-      #local J = 1/2;
-      #local H = sqrt(2*cos(pi/N) - 2*cos(tau/N));
-    #end
+    #local J = E/2 - 1/2;
+    #local H = sqrt(2*cos(J*tau/N) - 2*cos(tau/N));
     #for (i, 0, N-1)
       addpoint(<cos(tau*(i+J)/N), sin(tau*(i+J)/N), H>)
     #end
   #end
   
   // Cap A
-  #if ((N < 10) & (A != 0)) augment(N, 2, 1, 0) #end
-  #if ((N = 10) & (A  = 1)) augment(N, 2, 1, 0) #end
-  #if ((N = 10) & (A  = 2)) rotundify( 2, 1, 0) #end
+  #if ((N < 10) & (A = 1)) augment(N, 2, 1, 0) #end
+  #if ((N = 10) & (A = 1)) augment(N, 2, 1, 0) #end
+  #if ((N = 10) & (A = 2)) rotundify( 2, 1, 0) #end
   
   // Cap B
   #local J = 1 - G;
   #if (N = 3) #local J = 0    ; #end
   #if (E > 0) #local J = J + N; #end
-  #if ((N < 10) & (B != 0)) augment(N, J, J+1, J+2) #end
-  #if ((N = 10) & (B  = 1)) augment(N, J, J+1, J+2) #end
-  #if ((N = 10) & (B  = 2)) rotundify( J, J+1, J+2) #end
+  #if ((N < 10) & (B = 1)) augment(N, J, J+1, J+2) #end
+  #if ((N = 10) & (B = 1)) augment(N, J, J+1, J+2) #end
+  #if ((N = 10) & (B = 2)) rotundify( J, J+1, J+2) #end
   
   autobalance()
   showvtxs()
@@ -364,21 +360,21 @@
   convex_hull()
 #end
 
-#macro casus_irreducibilis(A,B,C,D)
-  // Given the cubic polynomial Ax^3 + Bx^2 + Cx + D in the casus irreducibilis,
+#macro casus_irreducibilis(B,C,D)
+  // Given the cubic polynomial x^3 + Bx^2 + Cx + D in the casus irreducibilis,
   // return a 3-vector whose components are the roots of the polynomial, in ascending order.
-  #local P = (3*A*C - B*B) / (3*A*A);
-  #local Q = (2*B*B*B - 9*A*B*C + 27*A*A*D) / (27*A*A*A);
+  #local P = (3*C - B*B) / 3;
+  #local Q = (2*B*B*B - 9*B*C + 27*D) / 27;
   #local R = 2*sqrt(-P/3);
   #local S = acos( (3*Q) / (P*R) ) / 3;
-  (R * <cos(S - 2*tau/3), cos(S - tau/3), cos(S)> - B/(3*A))
+  (R * <cos(S - 2*tau/3), cos(S - tau/3), cos(S)> - B/3)
 #end
 
 #macro snub_disphenoid() // J84
-  #local q = casus_irreducibilis(2,11,4,-1).z;  // 0.169022229...
-  #local a = sqrt(q);                           // 0.411120420...
-  #local b = sqrt((1-q) / (2*q));               // 1.567874291...
-  #local c = 2*a*b;                             // 1.289170275...
+  #local q = casus_irreducibilis(11/2,2,-1/2).z;
+  #local a = sqrt(q);
+  #local b = sqrt((1-q) / (2*q));
+  #local c = 2*a*b;
   addpointssgn(<c, 0, -a>, <1,0,0>)
   addpointssgn(<0, c,  a>, <0,1,0>)
   addpointssgn(<1, 0,  b>, <1,0,0>)
@@ -388,7 +384,7 @@
 #end
 
 #macro snub_square_antiprism() // J85
-  #local A = casus_irreducibilis(1,sq2-1,2*sq2-6,2-2*sq2).z; // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
+  #local A = casus_irreducibilis(sq2-1,2*sq2-6,2-2*sq2).z; // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
   #local B = sqrt(1 - (1-1/sq2) * A * A);
   #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
   addpointssgn(<  1  ,   1  ,  C>, <1,1,0>)
@@ -407,11 +403,8 @@
   addpointssgn(< 0 , 1, 2*j>, <0,1,0>)
   addpointssgn(<2*k, 1, 0>, <1,1,0>)
   addpointssgn(< 1 , 0, -2*sqrt(1/2 + k - k*k)>, <1,0,0>)
-  addpointssgn(< 0 , 1 + sqrt((3-4*k*k)/(j*j)), (1-2*k*k)/j>, <0,1,0>)
-  #if(n=87)
-    #local a = k - sqrt(2-2*k*k);
-    addpoint(<2*k - a, 0, sqrt(3 - a*a)>)
-  #end
+  addpointssgn(< 0 , j + sqrt(3-4*k*k), 1-2*k*k> / j, <0,1,0>)
+  #if (n=87) augment(4, 0, 1, 5) #end
   showvtxs()
   autobalance()
   convex_hull()
@@ -425,9 +418,9 @@
   #local j = sqrt(1-k*k);
   addpointssgn(<1, 0, 2*j>, <1,0,0>)
   addpointssgn(<1, 2*k, 0>, <1,1,0>)
-  addpointssgn(<sqrt(3-4*k*k)/j + 1, 0, (1-2*k*k) / j>, <1,0,0>)
+  addpointssgn(<sqrt(3-4*k*k) + j, 0, 1-2*k*k> / j, <1,0,0>)
   addpointssgn(<0, 1, -sqrt(2+4*k-4*k*k)>, <0,1,0>)
-  addpointssgn(<1 - sqrt(3-4*k*k)*(2*k*k-1) / (j*j*j), 0, (2*k*k*k*k-1) / (j*j*j)>, <1,0,0>)
+  addpointssgn(<j*j*j - sqrt(3-4*k*k)*(2*k*k-1), 0, 2*k*k*k*k-1> / (j*j*j), <1,0,0>)
   autobalance()
   showvtxs()
   convex_hull()
@@ -443,8 +436,8 @@
   addpointssgn(<1, 1, 2*a>, <1,1,0>)
   addpointssgn(<1+2*k, 1, 0>, <1,1,0>)
   addpointssgn(<1, 0, -c>, <1,0,0>)
-  addpointssgn(<0, 1 + b/a, b*b/(2*a)>, <0,1,0>)
-  addpointssgn(<0, (b*c + k + 1) / (2*a*a), (2*k-1)*c / (2 - 2*k) - b / (2*a*a)>, <0,1,0>)
+  addpointssgn(<0, a + b, b*b/2> / a, <0,1,0>)
+  addpointssgn(<0, b*c + k + 1, (2*k-1)*c*a*a / (1 - k) - b> / (2*a*a), <0,1,0>)
   autobalance()
   showvtxs()
   convex_hull()
@@ -456,7 +449,7 @@
   // x^12 - 4x^11 - 26x^10 + 116x^9 + 97x^8 - 824x^7 + 312x^6 + 2176x^5 - 2024x^4 - 1888x^3 + 2688x^2 - 192x - 368
   #local C = sqrt((1 + 2*B - B*B) / 2);
   #local A = C + sqrt(4 - B*B);
-  #local E = (A*A - B*B - C*C) / (2 * sqrt(4 - B*B));
+  #local E = (A*A - B*B - C*C) / (2 * (A - C));
   #local D = 1 + sqrt(4 - (A-E)*(A-E));
   addpointssgn(<0, 1,  A>, <0,1,0>)
   addpointssgn(<B, 1,  C>, <1,1,0>)
@@ -494,12 +487,13 @@
 #macro triangular_hebesphenorotunda() // J92
   // Coords found by taking 7 vtxs of an icosahedron, placing one vtx
   // at origin, which is centre of the one hexagonal face.
-  addevenperms(<  1 , phi,  0 > - <phi,0,1>)
-  addevenperms(<  0 ,  1 , phi> - <phi,0,1>)
-  addevenperms(< -1 , phi,  0 > - <phi,0,1>)
-  addevenperms(<-phi,  0 ,  1 > - <phi,0,1>)
-  addevenperms(<  0 ,  1 ,-phi> - <phi,0,1>)
-  addevenperms(< -1 ,-phi,  0 > - <phi,0,1>)
+  #local A = <phi,0,1>;
+  addevenperms(<  1 , phi,  0 > - A)
+  addevenperms(<  0 ,  1 , phi> - A)
+  addevenperms(< -1 , phi,  0 > - A)
+  addevenperms(<-phi,  0 ,  1 > - A)
+  addevenperms(<  0 ,  1 ,-phi> - A)
+  addevenperms(< -1 ,-phi,  0 > - A)
   autobalance()
   convex_hull()
 #end
@@ -508,13 +502,11 @@
 
 #macro herschel_enneahedron()
   // https://aperiodical.com/2013/10/an-enneahedron-for-herschel/
-  addpoint(    < 0, 0    , 0>)
-  addpoint(    < 6, 6*sq3, 0>)
-  addpoint(    <12, 0    , 0>)
-  addpointssgn(< 3, 3*sq3, 6>, <0,0,1>)
-  addpointssgn(< 6, 0    , 6>, <0,0,1>)
-  addpointssgn(< 6, 2*sq3, 8>, <0,0,1>)
-  addpointssgn(< 9, 3*sq3, 6>, <0,0,1>)
+  addpoint(    < 0, 6*sq3, 0>)
+  addpointssgn(< 3, 3*sq3, 6>, <1,0,1>)
+  addpointssgn(< 0, 2*sq3, 8>, <0,0,1>)
+  addpointssgn(< 6, 0    , 0>, <1,0,0>)
+  addpointssgn(< 0, 0    , 6>, <0,0,1>)
   autobalance()
   convex_hull()
 #end
