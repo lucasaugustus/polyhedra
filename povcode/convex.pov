@@ -17,17 +17,17 @@
 
 // Archimedean:
 
-#macro truncatedtetrahedron(augmentation)
+#macro truncatedtetrahedron(aug)
   addevenpermsevensgn(<1,1,3>)
-  #if (augmentation)
+  #if (aug)
     augment(6, 0, 1, 4)
   #end
   convex_hull()
 #end
 
-#macro truncatedhexahedron(augmentation) // Truncated cube (n=0), J66 (n=1), J67 (n=2)
+#macro truncatedhexahedron(aug) // Truncated cube (n=0), J66 (n=1), J67 (n=2)
   addevenpermssgn(<sq2-1, 1, 1>, <1,1,1>)
-  #switch (augmentation)
+  #switch (aug)
     #case(2) augment(8,  7, 23, 22)
     #case(1) augment(8, 16,  0,  1)
   #end
@@ -39,13 +39,13 @@
   convex_hull()
 #end
 
-#macro truncateddodecahedron(augmentation) // Truncated dodecahedron (n=0), J68 (n=1), J69 (n=-2), J70 (n=2), J71 (n=3)
+#macro truncateddodecahedron(aug) // Truncated dodecahedron (n=0), J68 (n=1), J69 (n=-2), J70 (n=2), J71 (n=3)
   addevenpermssgn(<0, phi-1, 2+phi>, <0,1,1>)
   addevenpermssgn(<phi-1, phi, 2*phi>, <1,1,1>)
   addevenpermssgn(<phi, 2, 1+phi>, <1,1,1>)
-  #if (augmentation)
+  #if (aug)
     augment(10, 50, 58, 34)     // towards (phi,-1,0) -- common to all
-    #switch (augmentation)
+    #switch (aug)
       #case( 3) augment(10, 54, 38, 14)   // towards (-1,0,phi) -- on tri
       #case( 2) augment(10, 40, 48, 24)   // towards (0,phi,-1) -- on metadi and tri
       #break
@@ -75,10 +75,10 @@
 #end
 
 #macro truncatedicosidodecahedron()
-  addevenpermssgn(<  phi-1, phi-1, 3+  phi>, <1,1,1>)
-  addevenpermssgn(<2*phi-2, phi  , 1+2*phi>, <1,1,1>)
+  addevenpermssgn(<  phi-1, phi-1,   phi+3>, <1,1,1>)
+  addevenpermssgn(<2*phi-2, phi  , 2*phi+1>, <1,1,1>)
   addevenpermssgn(<  phi-1, phi+1, 3*phi-1>, <1,1,1>)
-  addevenpermssgn(<2*phi-1,   2  , 2+phi  >, <1,1,1>)
+  addevenpermssgn(<2*phi-1,   2  ,   phi+2>, <1,1,1>)
   addevenpermssgn(<  phi  ,   3  , 2*phi  >, <1,1,1>)
   convex_hull()
 #end
@@ -91,20 +91,20 @@
 #end
 
 #macro snubdodecahedron(s)
-  #local sqweird = sqrt(phi - 5/27);
-  #local ouch = pow((phi+sqweird)/2, 1/3) + pow((phi-sqweird)/2, 1/3);
-  #local alfa = ouch - 1/ouch; // "alpha" is a keyword.
-  #local beta = (ouch + phi + 1/ouch) * phi;
-  // These constants are the greatest real roots of:
-  // sqweird: 729x^4 - 459x^2 - 839
-  //    ouch: x^6        -  4x^4 -   x^3 +  4x^2 + 2x - 1
-  //    alfa: x^6 + 2x^5 -  2x^4         -   x^2 - 2x + 1
-  //    beta: x^6 - 5x^5 - 11x^4 + 12x^3 + 24x^2 + 9x + 1
-  addevenpermsevensgn(<2*alfa, 2, 2*beta> * s)
-  addevenpermsevensgn(< beta/phi+alfa+phi  , -alfa*phi+beta+phi-1, alfa/phi+beta*phi-1> * s)
-  addevenpermsevensgn(< beta/phi+alfa-phi  ,  alfa*phi-beta+phi-1, alfa/phi+beta*phi+1> * s)
-  addevenpermsevensgn(<-alfa/phi+beta*phi+1, -alfa+beta/phi-phi  , alfa*phi+beta-phi+1> * s)
-  addevenpermsevensgn(<-alfa/phi+beta*phi-1,  alfa-beta/phi-phi  , alfa*phi+beta+phi-1> * s)
+  #local A = sqrt(phi - 5/27);
+  #local B = pow((phi+A)/2, 1/3) + pow((phi-A)/2, 1/3);
+  #local C = B - 1/B; // real root of x^3 - 2x^2/phi + x - 1
+  #local D = (B + phi + 1/B) * phi; // real root of x^3 - (3phi+1)x^2 - 3x + phi - 2
+  // Minimal polynomials:
+  // A: 729x^4 - 459x^2 - 839
+  // B: x^6        -  4x^4 -   x^3 +  4x^2 + 2x - 1
+  // C: x^6 + 2x^5 -  2x^4         -   x^2 - 2x + 1
+  // D: x^6 - 5x^5 - 11x^4 + 12x^3 + 24x^2 + 9x + 1
+  addevenpermsevensgn(<C,1,D>*2 * s)
+  addevenpermsevensgn(< D/phi+C+phi  , -C*phi+D+phi-1, C/phi+D*phi-1> * s)
+  addevenpermsevensgn(< D/phi+C-phi  ,  C*phi-D+phi-1, C/phi+D*phi+1> * s)
+  addevenpermsevensgn(<-C/phi+D*phi+1, -C+D/phi-phi  , C*phi+D-phi+1> * s)
+  addevenpermsevensgn(<-C/phi+D*phi-1,  C-D/phi-phi  , C*phi+D+phi-1> * s)
   convex_hull()
 #end
 
@@ -128,25 +128,20 @@
 
 // Prisms, biprisms, antiprisms, and trapezohedra:
 
-#macro polygon_vtx(n)
-  #for (i, 0, n-1)
-    addpoint(<cos(i*tau/n), sin(i*tau/n), 0>)
-  #end
-#end
 #macro rprism_vtx(n)
   #for (b, 0, n-1)
     addpointssgn(<sin(tau*b/n), cos(tau*b/n), sqrt((1 - cos(tau/n)) / 2)>, <0,0,1>)
   #end
 #end
-#macro antiprism_vtx(n)
+#macro rprism(n) rprism_vtx(n) convex_hull() #end
+#macro antiprism(n)
   #for (b, 0, 2*n-1)
     addpoint(<sin(pi*b/n), cos(pi*b/n), sqrt((cos(pi/n) - cos(tau/n)) / 2) * cos(b*pi)>)
   #end
+  convex_hull()
 #end
-#macro        rprism(n)    rprism_vtx(n) convex_hull() #end
-#macro     antiprism(n) antiprism_vtx(n) convex_hull() #end
-#macro     bipyramid(n)        rprism(n)        dual() #end
-#macro trapezohedron(n)     antiprism(n)        dual() #end
+#macro     bipyramid(n)    rprism(n) dual() #end
+#macro trapezohedron(n) antiprism(n) dual() #end
 
 // Helper macros for the Johnson solids:
 
@@ -263,7 +258,6 @@
   // * pyracupolarotunda(0, 10, 1, 1, 2) makes the pentagonal gyrocupolarotunda.
   
   // The core.
-  // We could use polygon_vtx, rprism_vtx, and antiprism_vtx for this, but I want a different point numbering.
   #for (i, 0, N-1)
     addpoint(<cos(tau*i/N), sin(tau*i/N), 0>)
   #end
