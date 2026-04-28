@@ -162,17 +162,14 @@
       addpoint( B + 4*I/3 + 5*J/3 + K*sq2/sq3 )
       #break
     #case (8)
-      addpoint( B + (  1/sq2)*I +         J + K/sq2 )
-      addpoint( B + (1+1/sq2)*I +         J + K/sq2 )
-      addpoint( B + (1+1/sq2)*I + (1+sq2)*J + K/sq2 )
-      addpoint( B + (2+1/sq2)*I + (1+sq2)*J + K/sq2 )
+      #for (T, 0, 6, 2)
+        addpoint( B + (I+J)*(1+1/sq2) + K/sq2 + I*cos(T*pi/4) + J*cos((T-1)*pi/4) )
+      #end
       #break
     #case (10)
-      addpoint( B + (1+3*phi)*I/5 + (4+2*phi)*J/5 + sqrt((3-phi)/5)*K )
-      addpoint( B + (6+3*phi)*I/5 + (4+2*phi)*J/5 + sqrt((3-phi)/5)*K )
-      addpoint( B + (6+8*phi)*I/5 + (4+7*phi)*J/5 + sqrt((3-phi)/5)*K )
-      addpoint( B + (6+8*phi)*I/5 + (9+7*phi)*J/5 + sqrt((3-phi)/5)*K )
-      addpoint( B + (6+3*phi)*I/5 + (4+7*phi)*J/5 + sqrt((3-phi)/5)*K )
+      #for (T, 0, 8, 2)
+        addpoint( B + (I+J)*(1+phi) + K*sqrt((3-phi)/5) + (I*cos((T+1)*pi/5) + J*cos(T*pi/5)) * (4+2*phi)/5 )
+      #end
       #break
   #end
 #end
