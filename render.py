@@ -287,9 +287,6 @@ for (name, code, angles, file) in data_reduced:
         imgfilename = fileprefix + '.png'
         with open(srcfilename, 'w') as srcfile, open('povcode/' + file, 'r') as tail:
             srcfile.write(code + '#declare rotation=seed(%d);\n' % rotation)
-            srcfile.write('#declare notwireframe=1;\n')
-            srcfile.write('#declare withreflection=0;\n')
-            srcfile.write('#ifndef (flashiness)\n  #declare flashiness=1;\n#end\n')
             srcfile.write(tail.read())
         
         if 'png' in filetypes:
