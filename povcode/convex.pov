@@ -8,9 +8,8 @@
 // Platonic:
 
 #macro dodecahedron()
-  addpointssgn(<1,1,1>, <1,1,1>)
-  addevenpermssgn(<0, phi-1, phi>, <0,1,1>)
-  convex_hull()
+  pyracupolarotunda(2,5,0,1,1)
+  dual()
 #end
 
 // The other four Platonics are handled by pyracupolarotunda().
@@ -19,9 +18,7 @@
 
 #macro truncatedtetrahedron(aug)
   addevenpermsevensgn(<1,1,3>)
-  #if (aug)
-    augment(6, 0, 1, 4)
-  #end
+  #if (aug) augment(6,0,1,4) #end
   convex_hull()
 #end
 
@@ -40,9 +37,9 @@
 #end
 
 #macro truncateddodecahedron(aug) // Truncated dodecahedron (n=0), J68 (n=1), J69 (n=-2), J70 (n=2), J71 (n=3)
-  addevenpermssgn(<0, phi-1, 2+phi>, <0,1,1>)
-  addevenpermssgn(<phi-1, phi, 2*phi>, <1,1,1>)
-  addevenpermssgn(<phi, 2, 1+phi>, <1,1,1>)
+  addevenpermssgn(< 0   , phi-1, 2+phi>, <0,1,1>)
+  addevenpermssgn(<phi-1, phi  , 2*phi>, <1,1,1>)
+  addevenpermssgn(<phi  ,  2   , 1+phi>, <1,1,1>)
   #if (aug)
     augment(10, 50, 58, 34)     // towards (phi,-1,0) -- common to all
     #switch (aug)
@@ -84,9 +81,8 @@
 #end
 
 #macro snub_cube(s)
-  #local xi = (pow(sqrt(297)+17, 1/3) - pow(sqrt(297)-17, 1/3) - 1)/3;
-  // xi is the real root of x^3 + x^2 + x - 1.
-  addpermsaltsgn(<1, 1/xi, xi> * s)
+  #local X = (pow(sqrt(297)+17, 1/3) - pow(sqrt(297)-17, 1/3) - 1) / 3; // real root of x^3 + x^2 + x - 1
+  addpermsaltsgn(<s, s/X, s*X>)
   convex_hull()
 #end
 
@@ -100,7 +96,7 @@
   // B: x^6        -  4x^4 -   x^3 +  4x^2 + 2x - 1
   // C: x^6 + 2x^5 -  2x^4         -   x^2 - 2x + 1
   // D: x^6 - 5x^5 - 11x^4 + 12x^3 + 24x^2 + 9x + 1
-  addevenpermsevensgn(<C,1,D>*2 * s)
+  addevenpermsevensgn(<C,1,D> * 2*s)
   addevenpermsevensgn(< D/phi+C+phi  , -C*phi+D+phi-1, C/phi+D*phi-1> * s)
   addevenpermsevensgn(< D/phi+C-phi  ,  C*phi-D+phi-1, C/phi+D*phi+1> * s)
   addevenpermsevensgn(<-C/phi+D*phi+1, -C+D/phi-phi  , C*phi+D-phi+1> * s)
@@ -149,28 +145,19 @@
   #local A = points[a];
   #local B = points[b];
   #local C = points[c];
-  #local I = A - B;
-  #local J = C - B;
   #local K = vlength(C-B) * vnormalize(vcross(C-B, A-B));
   #switch(n)
-    #case (3) addpoint( (A+B+C)/3 + K*sq2/sq3 ) #break
-    #case (4) addpoint( (A + C)/2 + K    /sq2 ) #break
-    #case (5) addpoint( B + (2+phi)*(I+J)/5 + sqrt((3-phi)/5) * K ) #break
-    #case (6)
-      addpoint( B +   I/3 + 2*J/3 + K*sq2/sq3 )
-      addpoint( B + 4*I/3 + 2*J/3 + K*sq2/sq3 )
-      addpoint( B + 4*I/3 + 5*J/3 + K*sq2/sq3 )
-      #break
-    #case (8)
-      #for (T, 0, 6, 2)
-        addpoint( B + (I+J)*(1+1/sq2) + K/sq2 + I*cos(T*pi/4) + J*cos((T-1)*pi/4) )
-      #end
-      #break
-    #case (10)
-      #for (T, 0, 8, 2)
-        addpoint( B + (I+J)*(1+phi) + K*sqrt((3-phi)/5) + (I*cos((T+1)*pi/5) + J*cos(T*pi/5)) * (4+2*phi)/5 )
-      #end
-      #break
+    #case ( 3) addpoint( (A+B+C)/3 + K*sq2/sq3 ) #break
+    #case ( 4) addpoint( (A + C)/2 + K    /sq2 ) #break
+    #case ( 5) addpoint( B + (2+phi)*(A-2*B+C)/5 + sqrt((3-phi)/5) * K ) #break
+    #case ( 6) #local P = 1      ; #local Q = sq2/sq3        ; #local R = -2/3       ; #break
+    #case ( 8) #local P = 1+1/sq2; #local Q = 1/sq2          ; #local R =  1         ; #break
+    #case (10) #local P = 1+ phi ; #local Q = sqrt((3-phi)/5); #local R = (4+2*phi)/5; #break
+  #end
+  #if (n > 5)
+    #for (T, 0, n-2, 2)
+      addpoint( B + (A-2*B+C)*P + K*Q + ((A-B)*cos(T*tau/n) + (C-B)*cos((T-1)*tau/n)) * R )
+    #end
   #end
 #end
 #macro rotateabout(raxis, rangle, A)   // raxis must be a unit vector
@@ -179,15 +166,13 @@
 #macro rotate_vtxs(raxis, rangle, thresh)   // all points in the halfspace v.raxis <= thresh.  rangle is in degrees.
   #for (i, 0, npoints-1)
     #if (vdot(points[i], raxis) < thresh + 1e-6)
-      #declare points[i] = rotateabout(raxis, pi*rangle/180, points[i]);
+      #declare points[i] = rotateabout(raxis, rangle*pi/180, points[i]);
     #end
   #end
 #end
 #macro drop_vtx(n)
-  #declare npoints=npoints-1;
-  #if (n < npoints)
-    #declare points[n] = points[npoints];
-  #end
+  #declare npoints = npoints - 1;
+  #declare points[n] = points[npoints];
 #end
 #macro drop_halfspace(normalvector, thresh) // all points in the halfspace v.raxis < thresh
   #local i = 0;
@@ -228,15 +213,14 @@
   #local B = points[b];
   #local C = points[c];
   #local S = vlength(A-B); // side length
-  #local O = B + phi * S * vnormalize((A+C)/2 - B); // center of decagon
+  #local O = B + phi * S * vnormalize(A - 2*B + C); // center of decagon
   #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
   #local U = vnormalize(A-O);
   #local V = vcross(N, U);
-  #local alfa = S * sqrt((3+4*phi)/5);
-  #local beta = S * sqrt((2+  phi)/5);
+  #local P = S * sqrt((2+  phi)/5);
   #for (i, 0, 4)
-    addpoint(O + beta*N + alfa * (cos((4*i+1)*pi/10) * U + sin((4*i+1)*pi/10) * V));
-    addpoint(O + alfa*N + beta * (cos((4*i+3)*pi/10) * U + sin((4*i+3)*pi/10) * V));
+    addpoint(O + P    *N + P*phi * (cos((4*i-1)*pi/10) * U + sin((4*i-1)*pi/10) * V));
+    addpoint(O + P*phi*N + P     * (cos((4*i+1)*pi/10) * U + sin((4*i+1)*pi/10) * V));
   #end
 #end
 
@@ -267,20 +251,17 @@
   #end
   
   // Cap A
-  #if ((N < 10) & (A = 1)) augment(N, 2, 1, 0) #end
-  #if ((N = 10) & (A = 1)) augment(N, 2, 1, 0) #end
-  #if ((N = 10) & (A = 2)) rotundify( 2, 1, 0) #end
+  #if (A = 1) augment(N, 2, 1, 0) #end
+  #if (A = 2) rotundify( 2, 1, 0) #end
   
   // Cap B
   #local J = 1 - G;
   #if (N = 3) #local J = 0    ; #end
   #if (E > 0) #local J = J + N; #end
-  #if ((N < 10) & (B = 1)) augment(N, J, J+1, J+2) #end
-  #if ((N = 10) & (B = 1)) augment(N, J, J+1, J+2) #end
-  #if ((N = 10) & (B = 2)) rotundify( J, J+1, J+2) #end
+  #if (B = 1) augment(N, J, J+1, J+2) #end
+  #if (B = 2) rotundify( J, J+1, J+2) #end
   
   autobalance()
-  showvtxs()
   convex_hull()
 #end
 
@@ -354,10 +335,10 @@
 #macro casus_irreducibilis(B,C,D)
   // Given the cubic polynomial x^3 + Bx^2 + Cx + D in the casus irreducibilis,
   // return a 3-vector whose components are the roots of the polynomial, in ascending order.
-  #local P = (3*C - B*B) / 3;
-  #local Q = (2*B*B*B - 9*B*C + 27*D) / 27;
-  #local R = 2*sqrt(-P/3);
-  #local S = acos( (3*Q) / (P*R) ) / 3;
+  #local P = B*B/3 - C;
+  #local Q = B*C - 2*B*B*B/9 - 3*D;
+  #local R = 2*sqrt(P/3);
+  #local S = acos(Q/(P*R)) / 3;
   (R * <cos(S - 2*tau/3), cos(S - tau/3), cos(S)> - B/3)
 #end
 
@@ -376,7 +357,7 @@
 
 #macro snub_square_antiprism() // J85
   #local A = casus_irreducibilis(sq2-1,2*sq2-6,2-2*sq2).z; // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
-  #local B = sqrt(1 - (1-1/sq2) * A * A);
+  #local B = sqrt(1 - (1-1/sq2) * A*A);
   #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
   addpointssgn(<  1  ,   1  ,  C>, <1,1,0>)
   addpointssgn(<A*sq2,   0  ,  B>, <1,0,0>)
@@ -391,12 +372,11 @@
 #macro sphenocoronae(n) // J86, J87
   #local k = (6 + sqrt(6) + 2 * sqrt(213 - 57*sqrt(6))) / 30; // Minimal polynomial: 60x^4 - 48x^3 - 100x^2 + 56x + 23
   #local j = sqrt(1 - k*k);
-  addpointssgn(< 0 , 1, 2*j>, <0,1,0>)
+  addpointssgn(<0, 1, 2*j>, <0,1,0>)
   addpointssgn(<2*k, 1, 0>, <1,1,0>)
-  addpointssgn(< 1 , 0, -2*sqrt(1/2 + k - k*k)>, <1,0,0>)
-  addpointssgn(< 0 , j + sqrt(3-4*k*k), 1-2*k*k> / j, <0,1,0>)
+  addpointssgn(<1, 0, -2*sqrt(1/2 + k - k*k)>, <1,0,0>)
+  addpointssgn(<0, j + sqrt(3-4*k*k), 1-2*k*k> / j, <0,1,0>)
   #if (n=87) augment(4, 0, 1, 5) #end
-  showvtxs()
   autobalance()
   convex_hull()
 #end
@@ -413,7 +393,6 @@
   addpointssgn(<0, 1, -sqrt(2+4*k-4*k*k)>, <0,1,0>)
   addpointssgn(<j*j*j - sqrt(3-4*k*k)*(2*k*k-1), 0, 2*k*k*k*k-1> / (j*j*j), <1,0,0>)
   autobalance()
-  showvtxs()
   convex_hull()
 #end
 
@@ -430,7 +409,6 @@
   addpointssgn(<0, a + b, b*b/2> / a, <0,1,0>)
   addpointssgn(<0, b*c + k + 1, (2*k-1)*c*a*a / (1 - k) - b> / (2*a*a), <0,1,0>)
   autobalance()
-  showvtxs()
   convex_hull()
 #end
 
@@ -449,14 +427,12 @@
   addpointssgn(<1, B, -C>, <1,1,0>)
   addpointssgn(<1, 0, -A>, <1,0,0>)
   autobalance()
-  showvtxs()
   convex_hull()
 #end
 
 #macro bilunabirotunda() // J91
   // start with icosahedron
   addevenpermssgn(<0,1,phi>, <0,1,1>)
-  //showvtxs()
   // trim back to 8 vertices
   drop_halfspace(<-1,-phi,0>, -phi)
   drop_halfspace(<-1, phi,0>, -phi)
@@ -493,11 +469,11 @@
 
 #macro herschel_enneahedron()
   // https://aperiodical.com/2013/10/an-enneahedron-for-herschel/
-  addpoint(    < 0, 6*sq3, 0>)
-  addpointssgn(< 3, 3*sq3, 6>, <1,0,1>)
-  addpointssgn(< 0, 2*sq3, 8>, <0,0,1>)
-  addpointssgn(< 6, 0    , 0>, <1,0,0>)
-  addpointssgn(< 0, 0    , 6>, <0,0,1>)
+  addpoint(    <0, 6*sq3, 0>)
+  addpointssgn(<3, 3*sq3, 6>, <1,0,1>)
+  addpointssgn(<0, 2*sq3, 8>, <0,0,1>)
+  addpointssgn(<6, 0    , 0>, <1,0,0>)
+  addpointssgn(<0, 0    , 6>, <0,0,1>)
   autobalance()
   convex_hull()
 #end
@@ -558,8 +534,7 @@
   // A * q + (0,0,z) * (1-q)
   // == < q , 0 , c + z - z*q >.
   // The distance bewteen these points is
-  // sqrt( (q-1)^2 + (0-0)^2 + (c + z - z*q - c)^2 )
-  // == sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )         (2)
+  // sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )            (2)
   // For aesthetics, I want (1) and (2) to be equal:
   // sqrt( 4c^2 + 2 - 2 * cos(pi/N) )    ==    sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )
   // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
@@ -598,11 +573,9 @@
   
   // TODO: This c is copied from truncated_tetrahedron.
   // Since we are reducing the radius of the upper ring, is that really the best c to use here?
-  
   #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;
   
-  // Even-I points are the upper ring; odd-I points are the lower.
-  #for (I, 0, 2*N-1)
+  #for (I, 0, 2*N-1)  // Even-I points are the upper ring; odd-I points are the lower.
     #local R = (5 - cos(I*pi)) / 6; // R=1 for even I; R=2/3 for odd
     addpoint(<R * cos(I * pi/N), R * sin(I * pi/N), c * cos(I*pi)>)
   #end
@@ -660,18 +633,11 @@
 #end
 
 #macro class1_geodesic(F, N)
-  #if (F = 4)
-    addpointsevensgn(<1/sq2,1/sq2,1/sq2>)   // The tetrahedral vertices, with edge length 2
-    #local V = 4;
-  #end
-  #if (F = 8)
-    addevenpermssgn(<sq2,0,0>, <1,0,0>)     // The  octahedral vertices, with edge length 2
-    #local V = 6;
-  #end
-  #if (F = 20)
-    addevenpermssgn(<0,1,phi>, <0,1,1>)     // The icosahedral vertices, with edge length 2
-    #local V = 12;
-  #end
+  // The F-hedra vertices with edge length 2:
+  #if (F =  4) addpointsevensgn(<1/sq2,1/sq2,1/sq2>) #end
+  #if (F =  8) addevenpermssgn(<sq2,0,0>, <1,0,0>) #end
+  #if (F = 20) addevenpermssgn(<0,1,phi>, <0,1,1>) #end
+  #local V = F/2 + 2;
   #for (a, 0, V-2)
     #local A = points[a];
     #for (b, a+1, V-1)
@@ -715,8 +681,8 @@
   convex_hull()
 #end
 
-#macro class1_goldberg(V, N)
-  class1_geodesic(V, N)
+#macro class1_goldberg(F, N)
+  class1_geodesic(F, N)
   dual()
 #end
 
@@ -738,7 +704,7 @@
   #local MarkedForDeletion = array[2*N];
   #local EdgeMarks         = array[N][N];   // The contents will be 0s and 1s.
   
-  // Initialize Mark[][] to all zeros.  Only elements with first index < second index will be used.
+  // Initialize EdgeMarks to all zeros.  Only elements with first index < second will be used.
   #for (i, 0, N-1)
     #for (j, i+1, N-1)
       #local EdgeMarks[i][j] = 0;
@@ -815,7 +781,7 @@
       #local MarkedEdges = 0;
       #while (MFD > 0)
         #local f = MarkedForDeletion[MFD-1];
-        // Face f needs to be removed.  It suffices to overwrite Face[f] with Face[F-1], and then decrement F.
+        // Face f needs to be removed.  It suffices to overwrite Face[f] with Face[F-1], and then decrement f.
         
         // Before removing face f, record which edges are affected.
         // For each affected edge ab, toggle EdgeMarks[a][b] between 0 and 1.
@@ -935,11 +901,8 @@
   #if(s.z) addevenperms(   a*< 1, 1,-1>           ) #end
 #end*/
 #macro addplane(a,b,c)
-  #local n = vnormalize(vcross(points[b]-points[a], points[c]-points[a]));
-  #local d = vdot(n, points[a]);
-  addface(n,d)
-#end
-#macro addface(d,l)
+  #local d = vnormalize(vcross(points[b]-points[a], points[c]-points[a]));
+  #local l = vdot(d, points[a]);
   #local a = vnormalize(d) / l;
   #local f=1;
   #for (n, 0, nfaces-1)
@@ -986,21 +949,20 @@ This_shape_will_be_drawn()
   #local faces[a] = faces[a] * b;
 #end
 
-#macro addp(a)
-  #declare p[np] = a;
-  #declare np = np + 1;
-#end
 union {
   //Draw points
   #for (a, 0, npoints-1)
     sphere { points[a], .01 }
   #end
   //Draw edges
+  #declare p = array[MaximumVerticesPerFace];
   #for (a, 0, nfaces-1) // TODO: This can be done more efficiently.
-    #declare p = array[MaximumVerticesPerFace];
     #declare np = 0;
     #for (b, 0, npoints-1)
-      #if(vdot(faces[a],points[b]) > 1 - 1e-5) addp(b) #end
+      #if(vdot(faces[a],points[b]) > 1 - 1e-5)
+        #declare p[np] = b;
+        #declare np = np + 1;
+      #end
     #end
     #for (c, 0, np-1)
       #for (d, 0, np-1)
@@ -1023,15 +985,15 @@ union {
   finish { ambient 0 diffuse 1 phong 1 }
 }
 
-#if(notwireframe)
 //Draw planes
+#ifndef (flashiness) #declare flashiness=1; #end
 intersection {
   #for (a, 0, nfaces-1)
     plane { faces[a], 1 / vlength(faces[a]) }
   #end
   dorot()
   pigment { colour rgbt <.8,.8,.8,.4> }
-  finish { ambient 0 diffuse 1 phong flashiness #if(withreflection) reflection { .2 } #end }
+  finish { ambient 0 diffuse 1 phong flashiness }
   photons {
     target on
     refraction on
@@ -1039,7 +1001,6 @@ intersection {
     collect on
   }
 }
-#end
 
 #for (a, 0, 11)
   light_source {
