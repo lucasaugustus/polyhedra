@@ -1,3 +1,4 @@
+#ifndef (flashiness) #declare flashiness=1; #end
 #declare rot1=rand(rotation)*pi*2;
 #declare rot2=acos(1-2*rand(rotation));
 #declare rot3=(rand(rotation)+clock)*pi*2;
@@ -73,7 +74,7 @@
     polygon { 6, pt01, pt13, pt10, pt05, pt15, pt01 }
     polygon { 6, pt02, pt12, pt09, pt03, pt14, pt02 }
     dorot()
-    pigment { colour rgbt <.8,.8,.8,.2> } finish { ambient 0 diffuse 1 phong flashiness #if(withreflection) reflection { .2 } #end }
+    pigment { colour rgbt <.8,.8,.8,.2> } finish { ambient 0 diffuse 1 phong flashiness }
     photons {
       target on
       refraction on
@@ -102,6 +103,7 @@ camera {
 }
 
 global_settings {
+  assumed_gamma 2.5
   max_trace_level 40
   photons {
     count 200000
