@@ -104,7 +104,7 @@ def rotate_axis_angle_mat(axis: Vec, degrees: float) -> Mat:
 
 TOKEN_RE = re.compile(
     r'''(
-        \#declare|\#local|\#macro|\#end|\#for|\#while|\#if|\#else|\#switch|\#case|\#break|
+        \#declare|\#local|\#macro|\#end|\#for|\#while|\#ifdef|\#ifndef|\#if|\#else|\#switch|\#case|\#break|
         [A-Za-z_][A-Za-z0-9_]* |
         \d+\.\d*([eE][+-]?\d+)? | \.\d+([eE][+-]?\d+)? | \d+([eE][+-]?\d+)? |
         <=|>=|==|!=|\|\||&&|\+|-|\*|/|<|>|=|\(|\)|\{|\}|\[|\]|,|; 
@@ -182,7 +182,7 @@ class Parser:
             return self.parse_for()
         if tok == '#while':
             return self.parse_while()
-        if tok == '#if':
+        if tok in ('#if', '#ifdef', '#ifndef'):
             return self.parse_if()
         if tok == 'union':
             return self.parse_union_like('union')
@@ -218,7 +218,7 @@ class Parser:
                     break
         self.ts.pop(')')
         statement_starters = {
-            '#declare', '#local', '#macro', '#end', '#for', '#while', '#if',
+            '#declare', '#local', '#macro', '#end', '#for', '#while', '#if', '#ifdef', '#ifndef',
             'union', 'triangle', 'polygon', 'sphere', 'cylinder', 'pigment',
             'finish', 'photons', 'background', 'camera', 'global_settings',
             'light_source', 'rotate', 'scale', 'translate'
@@ -264,26 +264,30 @@ class Parser:
         return Node('while', (cond, body))
 
     def parse_if(self) -> Node:
-        self.ts.pop('#if')
-        self.ts.pop('(')
-        cond = self.parse_expr()
-        self.ts.pop(')')
-        then_body: List[Node] = []
-        else_body: List[Node] = []
-        current = then_body
-        while True:
-            tok = self.ts.peek()
-            if tok is None:
-                raise ValueError('Unterminated #if')
-            if tok == '#else':
-                self.ts.pop('#else')
-                current = else_body
-                continue
-            if tok == '#end':
-                self.ts.pop('#end')
-                break
-            current.append(self.parse_stmt())
-        return Node('if', (cond, then_body, else_body))
+            if_tok = self.ts.pop()
+            self.ts.pop('(')
+            if if_tok == '#if':
+                cond = self.parse_expr()
+            else:
+                ident = self.ts.pop()
+                cond = Expr(if_tok[1:], value=ident)
+            self.ts.pop(')')
+            then_body: List[Node] = []
+            else_body: List[Node] = []
+            current = then_body
+            while True:
+                tok = self.ts.peek()
+                if tok is None:
+                    raise ValueError('Unterminated ' + if_tok)
+                if tok == '#else':
+                    self.ts.pop('#else')
+                    current = else_body
+                    continue
+                if tok == '#end':
+                    self.ts.pop('#end')
+                    break
+                current.append(self.parse_stmt())
+            return Node('if', (cond, then_body, else_body))
 
     def parse_union_like(self, name: str) -> Node:
         self.ts.pop(name)
@@ -514,6 +518,18 @@ class Interpreter:
         k = expr.kind
         if k == 'num':
             return expr.value
+        if k == 'ifdef':
+            try:
+                env.get(expr.value)
+                return 1.0
+            except KeyError:
+                return 0.0
+        if k == 'ifndef':
+            try:
+                env.get(expr.value)
+                return 0.0
+            except KeyError:
+                return 1.0
         if k == 'name':
             return env.get(expr.value)
         if k == 'vector':
