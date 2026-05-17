@@ -208,12 +208,10 @@ data = [
 ['class 1  octahedral geodesic of order 2'     , 'class1_geodesic( 8, 2)'            , (0,)],        # Infinite family
 ['class 1  octahedral geodesic of order 3'     , 'class1_geodesic( 8, 3)'            , (0,)],        # Infinite family
 ['class 1  octahedral geodesic of order 4'     , 'class1_geodesic( 8, 4)'            , (0,)],        # Infinite family
-['class 1  octahedral geodesic of order 5'     , 'class1_geodesic( 8, 5)'            , (0,)],        # Infinite family
 ['class 1  octahedral goldberg of order 1'     , 'class1_goldberg( 8, 1)'            , (0,)],        # Infinite family
 ['class 1  octahedral goldberg of order 2'     , 'class1_goldberg( 8, 2)'            , (0,)],        # Infinite family
 ['class 1  octahedral goldberg of order 3'     , 'class1_goldberg( 8, 3)'            , (0,)],        # Infinite family
 ['class 1  octahedral goldberg of order 4'     , 'class1_goldberg( 8, 4)'            , (0,)],        # Infinite family
-['class 1  octahedral goldberg of order 5'     , 'class1_goldberg( 8, 5)'            , (0,)],        # Infinite family
 ['class 1 tetrahedral geodesic of order 1'     , 'class1_geodesic( 4, 1)'            , (0,)],        # Infinite family
 ['class 1 tetrahedral geodesic of order 2'     , 'class1_geodesic( 4, 2)'            , (0,)],        # Infinite family
 ['class 1 tetrahedral geodesic of order 3'     , 'class1_geodesic( 4, 3)'            , (0,)],        # Infinite family
@@ -222,6 +220,18 @@ data = [
 ['class 1 tetrahedral goldberg of order 2'     , 'class1_goldberg( 4, 2)'            , (0,)],        # Infinite family
 ['class 1 tetrahedral goldberg of order 3'     , 'class1_goldberg( 4, 3)'            , (0,)],        # Infinite family
 ['class 1 tetrahedral goldberg of order 4'     , 'class1_goldberg( 4, 4)'            , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 1'     , 'class2_geodesic(20, 1)'            , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 2'     , 'class2_geodesic(20, 2)'            , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 3'     , 'class2_geodesic(20, 3)'            , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 4'     , 'class2_geodesic(20, 4)'            , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 1'     , 'class2_geodesic( 8, 1)'            , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 2'     , 'class2_geodesic( 8, 2)'            , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 3'     , 'class2_geodesic( 8, 3)'            , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 4'     , 'class2_geodesic( 8, 4)'            , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 1'     , 'class2_geodesic( 4, 1)'            , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 2'     , 'class2_geodesic( 4, 2)'            , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 3'     , 'class2_geodesic( 4, 3)'            , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 4'     , 'class2_geodesic( 4, 4)'            , (0,)],        # Infinite family
 ]
 
 atad = [
@@ -286,6 +296,7 @@ for (name, code, angles, file) in data_reduced:
         srcfilename = fileprefix + '.pov'
         imgfilename = fileprefix + '.png'
         with open(srcfilename, 'w') as srcfile, open('povcode/' + file, 'r') as tail:
+            srcfile.write('#version 3.7;\n')
             srcfile.write(code + '#declare rotation=seed(%d);\n' % rotation)
             srcfile.write(tail.read())
         
@@ -294,7 +305,7 @@ for (name, code, angles, file) in data_reduced:
                        '+I' + srcfilename, '+O' + imgfilename,
                        '+w' + resolution,  '+h' + resolution,
                        '+A', '-D',      # +A turns on antialiasing; -D suppresses the preview window.
-                       '+GD',           # Pring #debug messages
+                       '+GD',           # Print #debug messages
                        ]
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
             run(command, check=True)
