@@ -870,68 +870,9 @@ DeclareMaximumPointsPerSolid(1000)
   dual()
 #end
 
-#macro class1_geodesic(F, N)
+#macro geodesic(Class, F, N)
   #local V = F/2 + 2;
-  DeclareMaximumPointsPerSolid( ((N-1)*F/2 + V - 2) * N + 2 )
-  // The F-hedral vertices with edge length 2:
-  #if (F =  4) addpointsevensgn(<1/sq2,1/sq2,1/sq2>) #end
-  #if (F =  8) addevenpermssgn(<sq2,0,0>, <1,0,0>) #end
-  #if (F = 20) addevenpermssgn(<0,1,phi>, <0,1,1>) #end
-  #for (a, 0, V-2)
-    #local A = points[a];
-    #for (b, a+1, V-1)
-      #local B = points[b];
-      #if (abs(vlength(A - B) - 2) < 1e-6)
-       
-        // We found an edge.  Subdivide it.
-        #for (i, 1, N-1)
-          addpoint((A*i + B*(N-i)) / N)
-        #end
-       
-        #for (c, b+1, V-1)
-          #local C = points[c];
-          #if ((abs(vlength(A - C) - 2) < 1e-6) & (abs(vlength(B - C) - 2) < 1e-6))
-           
-            // We found a face.  Subdivide it.
-            #for (d, 2, N-1)
-              #local End1 = (B*d + A*(N-d)) / N;
-              #local End2 = (C*d + A*(N-d)) / N;
-              #for (e, 1, d-1)
-                addpoint((End1*e + End2*(d-e)) / d)
-              #end
-            #end
-           
-          #end // if
-        #end // for c
-       
-      #end // if
-    #end // for b
-  #end // for a
- 
-  // Finally, project all points onto the unit sphere.
-  #for (i, 0, npoints-1)
-    #declare points[i] = vnormalize(points[i]);
-  #end
-  
-  // TODO: For the octahedral and especially tetrahedral variants, we have rather poor spacing of points.
-  // Maybe add an iterative-optimization-type step, where we treat them as electrons?
-  // We would have to ensure that the topology does not change.
-  
-  convex_hull()
-#end
-
-#macro class1_goldberg(F, N)
-  class1_geodesic(F, N)
-  dual()
-#end
-
-#macro class2_geodesic(F, N)
-  #local V = F/2 + 2;
-  DeclareMaximumPointsPerSolid( max(V, 2 + (N-1)*(N-1)*(V+F-2)))
-  #debug concat("Max points: ", str(dimension_size(points,1)/2,0,0), "\n")
-  // 20: max(12, (N-1)*(N-1)*30 + 2)
-  //  8: max( 6, (N-1)*(N-1)*12 + 2)
-  //  4: max( 4, (N-1)*(N-1)* 6 + 2)
+  DeclareMaximumPointsPerSolid(max(((N-1)*F/2 + V - 2) * N + 2, max(V, 2 + (N-1)*(N-1)*(V+F-2))))
   // The F-hedral vertices with edge length 2:
   #if (F =  4) addpointsevensgn(<1/sq2,1/sq2,1/sq2>) #end
   #if (F =  8) addevenpermssgn(<sq2,0,0>, <1,0,0>) #end
@@ -944,8 +885,8 @@ DeclareMaximumPointsPerSolid(1000)
         #if (abs(vlength(A - B) - 2) < 1e-6)
          
           // We found an edge.  Subdivide it.
-          #for (i, 1, N-2)
-            addpoint((A*i + B*(N-1-i))/(N-1))
+          #for (i, 1, N-Class)
+            addpoint((A*i + B*(N-Class+1-i))/(N-Class+1))
           #end
           
           #for (c, b+1, V-1)
@@ -953,25 +894,40 @@ DeclareMaximumPointsPerSolid(1000)
             #if ((abs(vlength(A - C) - 2) < 1e-6) & (abs(vlength(B - C) - 2) < 1e-6))
               
               // We found a face.  Subdivide it.
-              #local Spacing = vlength((A-B)/(N-1)) / sq3;
-              #local ABu = vnormalize(B-A);
-              #local VSpacing = Spacing * vnormalize(A + B - 2*C);
-              // For each subdivision point D on edges AC and BC, and also for point C itself,
-              // drop the perpendicular from D to line AB.  On that perpendicular,
-              // draw set of points E between D and AB such that the distance from D to E is an integer multiple of Spacing.
-              #for (j, 0, N-2)
-                #local D1 = (A*j + C*(N-1-j)) / (N-1);
-                #local D2 = (B*j + C*(N-1-j)) / (N-1);
-                #local E1 = A + vdot(D1-A, ABu) * ABu; // point on AB closest to D1
-                #local E2 = A + vdot(D2-A, ABu) * ABu; // point on AB closest to D2
-                #local DE = vlength(D1 - E1);
-                #local i = 1;
-                #while (i * Spacing < DE - 1e-6)
-                  addpoint(D1 + i * VSpacing)
-                  #if (j > 0) addpoint(D2 + i * VSpacing) #end
-                  #local i = i + 1;
-                #end // while
-              #end // for j
+              
+              #if (Class = 1)
+                
+                #for (d, 2, N-1)
+                  #local End1 = (B*d + A*(N-d)) / N;
+                  #local End2 = (C*d + A*(N-d)) / N;
+                  #for (e, 1, d-1)
+                    addpoint((End1*e + End2*(d-e)) / d)
+                  #end
+                #end
+                
+              #else
+                
+                #local Spacing = vlength((A-B)/(N-1)) / sq3;
+                #local ABu = vnormalize(B-A);
+                #local VSpacing = Spacing * vnormalize(A + B - 2*C);
+                // For each subdivision point D on edges AC and BC, and also for point C itself,
+                // drop the perpendicular from D to line AB.  On that perpendicular,
+                // draw the points E between D and AB such that the distance from D to E is an integer multiple of Spacing.
+                #for (j, 0, N-2)
+                  #local D1 = (A*j + C*(N-1-j)) / (N-1);
+                  #local D2 = (B*j + C*(N-1-j)) / (N-1);
+                  #local E1 = A + vdot(D1-A, ABu) * ABu; // point on AB closest to D1
+                  #local E2 = A + vdot(D2-A, ABu) * ABu; // point on AB closest to D2
+                  #local DE = vlength(D1 - E1);
+                  #local i = 1;
+                  #while (i * Spacing < DE - 1e-6)
+                    addpoint(D1 + i * VSpacing)
+                    #if (j > 0) addpoint(D2 + i * VSpacing) #end
+                    #local i = i + 1;
+                  #end // while
+                #end // for j
+                
+              #end
               
             #end // if
           #end // for c
@@ -993,10 +949,13 @@ DeclareMaximumPointsPerSolid(1000)
   convex_hull()
 #end
 
-#macro class2_goldberg(F, N)
-  class2_geodesic(F, N)
+#macro goldberg(Class, F, N)
+  geodesic(Class, F, N)
   dual()
 #end
+
+
+
 
 
 
