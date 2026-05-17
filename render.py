@@ -196,54 +196,54 @@ data = [
 ['noperthedron'                                , 'noperthedron()'                    , (58,)],
 ['bilinski dodecahedron'                       , 'BilinskiDodecahedron()'            , (14,)],
 ['gyrate deltoidal icositetrahedron'           , 'gyrate_deltoidal_icositetra()'     , (13,)],
-['class 1 icosahedral geodesic of order 1'     , 'class1_geodesic(20, 1)'            , (0,)],        # Infinite family
-['class 1 icosahedral geodesic of order 2'     , 'class1_geodesic(20, 2)'            , (0,)],        # Infinite family
-['class 1 icosahedral geodesic of order 3'     , 'class1_geodesic(20, 3)'            , (0,)],        # Infinite family
-['class 1 icosahedral geodesic of order 4'     , 'class1_geodesic(20, 4)'            , (0,)],        # Infinite family
-['class 1 icosahedral goldberg of order 1'     , 'class1_goldberg(20, 1)'            , (0,)],        # Infinite family
-['class 1 icosahedral goldberg of order 2'     , 'class1_goldberg(20, 2)'            , (0,)],        # Infinite family
-['class 1 icosahedral goldberg of order 3'     , 'class1_goldberg(20, 3)'            , (0,)],        # Infinite family
-['class 1 icosahedral goldberg of order 4'     , 'class1_goldberg(20, 4)'            , (0,)],        # Infinite family
-['class 1  octahedral geodesic of order 1'     , 'class1_geodesic( 8, 1)'            , (0,)],        # Infinite family
-['class 1  octahedral geodesic of order 2'     , 'class1_geodesic( 8, 2)'            , (0,)],        # Infinite family
-['class 1  octahedral geodesic of order 3'     , 'class1_geodesic( 8, 3)'            , (0,)],        # Infinite family
-['class 1  octahedral geodesic of order 4'     , 'class1_geodesic( 8, 4)'            , (0,)],        # Infinite family
-['class 1  octahedral goldberg of order 1'     , 'class1_goldberg( 8, 1)'            , (0,)],        # Infinite family
-['class 1  octahedral goldberg of order 2'     , 'class1_goldberg( 8, 2)'            , (0,)],        # Infinite family
-['class 1  octahedral goldberg of order 3'     , 'class1_goldberg( 8, 3)'            , (0,)],        # Infinite family
-['class 1  octahedral goldberg of order 4'     , 'class1_goldberg( 8, 4)'            , (0,)],        # Infinite family
-['class 1 tetrahedral geodesic of order 1'     , 'class1_geodesic( 4, 1)'            , (0,)],        # Infinite family
-['class 1 tetrahedral geodesic of order 2'     , 'class1_geodesic( 4, 2)'            , (0,)],        # Infinite family
-['class 1 tetrahedral geodesic of order 3'     , 'class1_geodesic( 4, 3)'            , (0,)],        # Infinite family
-['class 1 tetrahedral geodesic of order 4'     , 'class1_geodesic( 4, 4)'            , (0,)],        # Infinite family
-['class 1 tetrahedral goldberg of order 1'     , 'class1_goldberg( 4, 1)'            , (0,)],        # Infinite family
-['class 1 tetrahedral goldberg of order 2'     , 'class1_goldberg( 4, 2)'            , (0,)],        # Infinite family
-['class 1 tetrahedral goldberg of order 3'     , 'class1_goldberg( 4, 3)'            , (0,)],        # Infinite family
-['class 1 tetrahedral goldberg of order 4'     , 'class1_goldberg( 4, 4)'            , (0,)],        # Infinite family
-['class 2 icosahedral geodesic of order 1'     , 'class2_geodesic(20, 1)'            , (0,)],        # Infinite family
-['class 2 icosahedral geodesic of order 2'     , 'class2_geodesic(20, 2)'            , (0,)],        # Infinite family
-['class 2 icosahedral geodesic of order 3'     , 'class2_geodesic(20, 3)'            , (0,)],        # Infinite family
-['class 2 icosahedral geodesic of order 4'     , 'class2_geodesic(20, 4)'            , (0,)],        # Infinite family
-['class 2 icosahedral goldberg of order 1'     , 'class2_goldberg(20, 1)'            , (0,)],        # Infinite family
-['class 2 icosahedral goldberg of order 2'     , 'class2_goldberg(20, 2)'            , (0,)],        # Infinite family
-['class 2 icosahedral goldberg of order 3'     , 'class2_goldberg(20, 3)'            , (0,)],        # Infinite family
-['class 2 icosahedral goldberg of order 4'     , 'class2_goldberg(20, 4)'            , (0,)],        # Infinite family
-['class 2  octahedral geodesic of order 1'     , 'class2_geodesic( 8, 1)'            , (0,)],        # Infinite family
-['class 2  octahedral geodesic of order 2'     , 'class2_geodesic( 8, 2)'            , (0,)],        # Infinite family
-['class 2  octahedral geodesic of order 3'     , 'class2_geodesic( 8, 3)'            , (0,)],        # Infinite family
-['class 2  octahedral geodesic of order 4'     , 'class2_geodesic( 8, 4)'            , (0,)],        # Infinite family
-['class 2  octahedral goldberg of order 1'     , 'class2_goldberg( 8, 1)'            , (0,)],        # Infinite family
-['class 2  octahedral goldberg of order 2'     , 'class2_goldberg( 8, 2)'            , (0,)],        # Infinite family
-['class 2  octahedral goldberg of order 3'     , 'class2_goldberg( 8, 3)'            , (0,)],        # Infinite family
-['class 2  octahedral goldberg of order 4'     , 'class2_goldberg( 8, 4)'            , (0,)],        # Infinite family
-['class 2 tetrahedral geodesic of order 1'     , 'class2_geodesic( 4, 1)'            , (0,)],        # Infinite family
-['class 2 tetrahedral geodesic of order 2'     , 'class2_geodesic( 4, 2)'            , (0,)],        # Infinite family
-['class 2 tetrahedral geodesic of order 3'     , 'class2_geodesic( 4, 3)'            , (0,)],        # Infinite family
-['class 2 tetrahedral geodesic of order 4'     , 'class2_geodesic( 4, 4)'            , (0,)],        # Infinite family
-['class 2 tetrahedral goldberg of order 1'     , 'class2_goldberg( 4, 1)'            , (0,)],        # Infinite family
-['class 2 tetrahedral goldberg of order 2'     , 'class2_goldberg( 4, 2)'            , (0,)],        # Infinite family
-['class 2 tetrahedral goldberg of order 3'     , 'class2_goldberg( 4, 3)'            , (0,)],        # Infinite family
-['class 2 tetrahedral goldberg of order 4'     , 'class2_goldberg( 4, 4)'            , (0,)],        # Infinite family
+['class 1 icosahedral geodesic of order 1'     , 'geodesic(1, 20, 1)'                , (0,)],        # Infinite family
+['class 1 icosahedral geodesic of order 2'     , 'geodesic(1, 20, 2)'                , (0,)],        # Infinite family
+['class 1 icosahedral geodesic of order 3'     , 'geodesic(1, 20, 3)'                , (0,)],        # Infinite family
+['class 1 icosahedral geodesic of order 4'     , 'geodesic(1, 20, 4)'                , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 1'     , 'goldberg(1, 20, 1)'                , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 2'     , 'goldberg(1, 20, 2)'                , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 3'     , 'goldberg(1, 20, 3)'                , (0,)],        # Infinite family
+['class 1 icosahedral goldberg of order 4'     , 'goldberg(1, 20, 4)'                , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 1'     , 'geodesic(1,  8, 1)'                , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 2'     , 'geodesic(1,  8, 2)'                , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 3'     , 'geodesic(1,  8, 3)'                , (0,)],        # Infinite family
+['class 1  octahedral geodesic of order 4'     , 'geodesic(1,  8, 4)'                , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 1'     , 'goldberg(1,  8, 1)'                , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 2'     , 'goldberg(1,  8, 2)'                , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 3'     , 'goldberg(1,  8, 3)'                , (0,)],        # Infinite family
+['class 1  octahedral goldberg of order 4'     , 'goldberg(1,  8, 4)'                , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 1'     , 'geodesic(1,  4, 1)'                , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 2'     , 'geodesic(1,  4, 2)'                , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 3'     , 'geodesic(1,  4, 3)'                , (0,)],        # Infinite family
+['class 1 tetrahedral geodesic of order 4'     , 'geodesic(1,  4, 4)'                , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 1'     , 'goldberg(1,  4, 1)'                , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 2'     , 'goldberg(1,  4, 2)'                , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 3'     , 'goldberg(1,  4, 3)'                , (0,)],        # Infinite family
+['class 1 tetrahedral goldberg of order 4'     , 'goldberg(1,  4, 4)'                , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 1'     , 'geodesic(2, 20, 1)'                , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 2'     , 'geodesic(2, 20, 2)'                , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 3'     , 'geodesic(2, 20, 3)'                , (0,)],        # Infinite family
+['class 2 icosahedral geodesic of order 4'     , 'geodesic(2, 20, 4)'                , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 1'     , 'goldberg(2, 20, 1)'                , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 2'     , 'goldberg(2, 20, 2)'                , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 3'     , 'goldberg(2, 20, 3)'                , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 4'     , 'goldberg(2, 20, 4)'                , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 1'     , 'geodesic(2,  8, 1)'                , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 2'     , 'geodesic(2,  8, 2)'                , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 3'     , 'geodesic(2,  8, 3)'                , (0,)],        # Infinite family
+['class 2  octahedral geodesic of order 4'     , 'geodesic(2,  8, 4)'                , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 1'     , 'goldberg(2,  8, 1)'                , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 2'     , 'goldberg(2,  8, 2)'                , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 3'     , 'goldberg(2,  8, 3)'                , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 4'     , 'goldberg(2,  8, 4)'                , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 1'     , 'geodesic(2,  4, 1)'                , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 2'     , 'geodesic(2,  4, 2)'                , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 3'     , 'geodesic(2,  4, 3)'                , (0,)],        # Infinite family
+['class 2 tetrahedral geodesic of order 4'     , 'geodesic(2,  4, 4)'                , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 1'     , 'goldberg(2,  4, 1)'                , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 2'     , 'goldberg(2,  4, 2)'                , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 3'     , 'goldberg(2,  4, 3)'                , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 4'     , 'goldberg(2,  4, 4)'                , (0,)],        # Infinite family
 ]
 
 atad = [
