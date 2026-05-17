@@ -3,7 +3,288 @@
 #declare sq3 = sqrt(3);
 #declare tau = 2 * pi;
 
-#declare MaximumVerticesPerFace = 20;   // If a solid has a face with > 20 vertices, include a #declare to override this.
+// A macro that exceeds any of these bounds should do the neccessary overrides.
+#declare MaximumVerticesPerFace = 20;
+#macro DeclareMaximumPointsPerSolid(MPPS)
+  #declare  points = array[MPPS * 2];
+  #declare tpoints = array[MPPS * 2];
+  #declare   faces = array[MPPS * 2];
+#end
+DeclareMaximumPointsPerSolid(1000)
+
+#declare npoints = 0;
+#declare  nfaces = 0;
+
+// Macros to add points:
+#macro addpoint(a)
+  #declare points[npoints] = a;
+  #declare npoints = npoints + 1;
+#end
+#macro addevenperms(a)
+  addpoint(a)
+  addpoint(<a.y, a.z, a.x>)
+  addpoint(<a.z, a.x, a.y>)
+#end
+#macro addperms(a)
+  addevenperms(a)
+  addevenperms(<a.x, a.z, a.y>)
+#end
+#macro addpointssgn(a, s)
+  addpoint(a)
+  #if(s.x) addpointssgn(a*<-1, 1, 1>, s*<0,1,1>) #end
+  #if(s.y) addpointssgn(a*< 1,-1, 1>, s*<0,0,1>) #end
+  #if(s.z) addpoint(    a*< 1, 1,-1>           ) #end
+#end
+#macro addevenpermssgn(a,s)
+  addpointssgn(a,s)
+  addpointssgn(<a.y, a.z, a.x>, <s.y, s.z, s.x>)
+  addpointssgn(<a.z, a.x, a.y>, <s.z, s.x, s.y>)
+#end
+#macro addpermssgn(a,s)
+  addevenpermssgn(a,s)
+  addevenpermssgn(<a.x, a.z, a.y>, <s.x, s.z, s.y>)
+#end
+#macro addpointsevensgn(a)
+  addpoint(a)
+  addpoint(a*<-1,-1, 1>)
+  addpoint(a*<-1, 1,-1>)
+  addpoint(a*< 1,-1,-1>)
+#end
+#macro addevenpermsevensgn(a)
+  addevenperms(a)
+  addevenperms(a*<-1,-1, 1>)
+  addevenperms(a*<-1, 1,-1>)
+  addevenperms(a*< 1,-1,-1>)
+#end
+#macro addpermsaltsgn(a)
+  addevenpermsevensgn(a)
+  addevenpermsevensgn(<a.x, a.z, -a.y>)
+#end
+/*#macro addevenpermssgn(a,s) //Calls addevenperms with, for each 1 in s, a.{x,y,z} replaced with {+,-}a.{x,y,z}
+  addevenperms(a)
+  #if(s.x) addevenpermssgn(a*<-1, 1, 1>, s*<0,1,1>) #end
+  #if(s.y) addevenpermssgn(a*< 1,-1, 1>, s*<0,0,1>) #end
+  #if(s.z) addevenperms(   a*< 1, 1,-1>           ) #end
+#end*/
+
+#macro addplane(a,b,c)
+  #local d = vnormalize(vcross(points[b]-points[a], points[c]-points[a]));
+  #local l = vdot(d, points[a]);
+  #local a = vnormalize(d) / l;
+  #local f=1;
+  #for (n, 0, nfaces-1)
+    #if(vlength(faces[n]-a) < 1e-5) #local f = 0; #end
+  #end
+  #if (f)
+    #declare faces[nfaces] = a;
+    #declare nfaces = nfaces + 1;
+  #end
+#end
+
+#macro rotateabout(raxis, rangle, A)   // raxis must be a unit vector
+  (  vdot(raxis,A)*raxis  +  cos(rangle)*(A-vdot(raxis,A)*raxis)  +  sin(rangle)*(vcross(raxis,A))  )
+#end
+
+#macro rotate_vtxs(raxis, rangle, thresh)   // all points in the halfspace v.raxis <= thresh.  rangle is in degrees.
+  #for (i, 0, npoints-1)
+    #if (vdot(points[i], raxis) < thresh + 1e-6)
+      #declare points[i] = rotateabout(raxis, rangle*pi/180, points[i]);
+    #end
+  #end
+#end
+
+#macro drop_vtx(n)
+  #declare npoints = npoints - 1;
+  #declare points[n] = points[npoints];
+#end
+
+#macro drop_halfspace(normalvector, thresh) // all points in the halfspace v.raxis < thresh
+  #local i = 0;
+  #while (i < npoints-.5)
+    #if (vdot(points[i], normalvector) < thresh - 1e-6)
+      #debug concat("Drop vtx ", str(i,0,0), " of ", str(npoints,0,0), " <", str(points[i].x,0,3), ",",
+                    str(points[i].y,0,3), ",", str(points[i].z,0,3), "> (", str(vdot(points[i],normalvector),0,7), ")\n")
+      drop_vtx(i)
+    #else
+      #debug concat("Keep vtx ", str(i,0,0), " of ", str(npoints,0,0), " <", str(points[i].x,0,3), ",",
+                    str(points[i].y,0,3), ",", str(points[i].z,0,3), "> (", str(vdot(points[i],normalvector),0,7), ")\n")
+      #local i=i+1;
+    #end
+  #end
+#end
+
+#macro autobalance()    // Moves the average of the vertices to the origin
+  #local cog = <0,0,0>;
+  #for (i, 0, npoints-1)
+    #local cog = cog + points[i] / npoints;
+  #end
+  #for (i, 0, npoints-1)
+    #declare points[i] = points[i] - cog;
+  #end
+#end
+
+#macro showvtxs()
+  #for (i, 0, npoints-1)
+    #debug concat("Vtx ", str(i,0,0), " of ", str(npoints,0,0), "= <",
+                  str(points[i].x,0,15), ",", str(points[i].y,0,15), ",", str(points[i].z,0,15), ">\n")
+  #end
+#end
+
+#macro dual()
+  #declare   temp = faces;
+  #declare  faces = points;
+  #declare points = temp;
+  #declare    temp = nfaces;
+  #declare  nfaces = npoints;
+  #declare npoints = temp;
+#end
+
+#macro convex_hull()
+  // This is an incremental convex-hull algorithm.  It runs in O(N^2) time.
+  #local N    = npoints;
+  #local EPS  = 1e-9;
+  #local Face              = array[2*N];    // Enough for a triangulated 3D convex hull with N points.
+  #local AffectedEdges     = array[3*N];
+  #local MarkedForDeletion = array[2*N];
+  #local EdgeMarks         = array[N][N];   // The contents will be 0s and 1s.
+  
+  // Initialize EdgeMarks to all zeros.  Only elements with first index < second will be used.
+  #for (i, 0, N-1)
+    #for (j, i+1, N-1)
+      #local EdgeMarks[i][j] = 0;
+    #end
+  #end
+  
+  // Find 4 non-coplanar points.  Step 1: Find 3 non-collinear points.
+  #local i0 = 0; #local I0 = points[i0];
+  #local i1 = 1; #local I1 = points[i1];
+  #local i2 = 2;
+  #while (vlength(vcross(I1-I0, points[i2]-I0)) < EPS)
+    #local i2 = i2 + 1;
+  #end
+  #local I2 = points[i2];
+  // Now find a fourth point that is non-coplanar with the first 3.
+  #local I01xI02 = vcross(I1-I0, I2-I0);
+  #local i3 = i2 + 1;
+  #while (abs(vdot(points[i3] - I0, I01xI02)) < EPS)
+    #local i3 = i3 + 1;
+  #end
+  #local I3 = points[i3];
+  
+  // The current hull is points i0, i1, i2, and i3.  We will incrementally expand this.
+  // The point "Inside" could be any point inside the current hull; it will stay inside the hull as it expands.
+  #local Inside = (I0 + I1 + I2 + I3) / 4;
+  
+  // Now we build the initial tetrahedron by storing its faces in "Face".
+  // A face ABC is stored in "Face" as a vector, whose elements are the indices of A, B, and C.
+  // The orientation of the face is recorded by the order of the indices:
+  // face <a,b,c> is oriented in the direction of the cross product AB x AC.
+  #local A = array[4] {I0, I0, I0, I1}; #local a = array[4] {i0, i0, i0, i1}
+  #local B = array[4] {I1, I3, I2, I3}; #local b = array[4] {i1, i3, i2, i3}
+  #local C = array[4] {I2, I1, I3, I2}; #local c = array[4] {i2, i1, i3, i2}
+  #for (i, 0, 3)
+    #if (vdot(vcross(B[i]-A[i], C[i]-A[i]), A[i]-Inside) > 0)
+      #local Face[i] = <a[i],b[i],c[i]>;
+    #else
+      #local Face[i] = <a[i],c[i],b[i]>;
+    #end
+  #end
+  
+  #local Facecount = 4; // The number of faces stored in "Face".
+  
+  // We now select a new point P and expand the hull to it.
+  // We do this by finding those faces that P can see, deleting them, figuring out what the new faces are, and adding those.
+  
+  #local MFD = 0;   // The number of faces that get marked for deletion.  This will return to zero during each deletion pass.
+  #for (p, 0, N-1)
+    #if ((p != i0) & (p != i1) & (p != i2) & (p != i3))
+      #local P = points[p];
+      
+      // Find those faces that P can see.
+      // Recall that faces are stored with an orientation, pointing outward.
+      // Build a plane's normal vector in that orientation, with its tail on the plane.
+      // Then P can see the face iff it is on the same side of the plane as the vector's head.
+      #for (f, 0, Facecount-1)
+        #local F = Face[f];
+        #local A = points[F.x];
+        #local B = points[F.y];
+        #local C = points[F.z];
+        // We are now examining the face with index f, which is through points A, B, and C.
+        // The vector AB x AC is normal to it and pointed outwards.
+        // Point P can see face F iff the projection of AP onto AB x AC is positive.
+        #local Side = vdot(P-A, vcross(B-A, C-A));
+        #if (Side > EPS)
+          #local MarkedForDeletion[MFD] = f;
+          #local MFD = MFD + 1;
+        #end
+        // If a side has > 3 vertices, then we can have Side == 0.
+        // If we treat this case as if we had Side < 0, then everything works out fine.
+      #end // for f.  Thus endeth the face-finding phase.
+      
+      // Delete the marked faces, and track how many times each edge gets affected.
+      #local MarkedEdges = 0;
+      #while (MFD > 0)
+        #local f = MarkedForDeletion[MFD-1];
+        // Face f needs to be removed.  It suffices to overwrite Face[f] with Face[F-1], and then decrement f.
+        
+        // Before removing face f, record which edges are affected.
+        // For each affected edge ab, toggle EdgeMarks[a][b] between 0 and 1.
+        // Each edge is used by exactly two faces.  Therefore,
+        // when the deletion pass is done, the exposed edges will have their EdgeMarks entries at 1,
+        //    while the unaffected and totally-deleted edges will have their EdgeMarks entries at 0.
+        #local F = Face[f];
+        #local xyzx = array[4] {F.x, F.y, F.z, F.x};
+        #for (i, 0, 2)
+          #local a = min(xyzx[i], xyzx[i+1]);
+          #local b = max(xyzx[i], xyzx[i+1]);
+          #local EdgeMarks[a][b] = 1 - EdgeMarks[a][b];
+          #local AffectedEdges[MarkedEdges] = <a,b>;
+          #local MarkedEdges = MarkedEdges + 1;
+        #end
+        
+        #local Face[f] = Face[Facecount-1];
+        #local Facecount = Facecount - 1;
+        #local MFD = MFD - 1;
+      #end // while.  Thus endeth the deletion pass.
+      
+      // Figure out what the new faces are.
+      // Each new triangle will use point P, and the opposite side will be one of the exposed edges.
+      #for (i, 0, MarkedEdges-1)
+        
+        #local Edge = AffectedEdges[i];
+        #local a = Edge.u;
+        #local b = Edge.v;
+        
+        #if (EdgeMarks[a][b])
+          
+          #local A = points[a];
+          #local B = points[b];
+          
+          // Triangle ABP is part of the new increment of the convex hull.
+          // We need to figure out its orientation and store it.
+          // It needs to be stored with the orientation that puts "Inside" on the negative side.
+          
+          #if (vdot(Inside - A, vcross(B-A, P-A)) < 0)
+            #local Face[Facecount] = <a,b,p>;
+          #else
+            #local Face[Facecount] = <b,a,p>;
+          #end
+          #local Facecount = Facecount + 1;
+          
+          #local EdgeMarks[a][b] = 0; // Unmark the no-longer-exposed edge.
+        #end // if
+        
+      #end // for i.  Thus endeth the new-face-construction phase.
+      
+    #end // if p != i0,i1,i2,i3
+  #end // for p
+  
+  // Emit planes.  Deduplication is handled by addplane().
+  #for (f, 0, Facecount-1)
+    #local F = Face[f];
+    addplane(F.x, F.y, F.z)
+  #end
+#end
 
 // Platonic:
 
@@ -129,8 +410,15 @@
     addpointssgn(<sin(tau*b/n), cos(tau*b/n), sqrt((1 - cos(tau/n)) / 2)>, <0,0,1>)
   #end
 #end
-#macro rprism(n) rprism_vtx(n) convex_hull() #end
+#macro rprism(n)
+  DeclareMaximumPointsPerSolid(2*n)
+  #declare MaximumPointsPerFace = n;
+  rprism_vtx(n)
+  convex_hull()
+#end
 #macro antiprism(n)
+  DeclareMaximumPointsPerSolid(2*n)
+  #declare MaximumPointsPerFace = n;
   #for (b, 0, 2*n-1)
     addpoint(<sin(pi*b/n), cos(pi*b/n), sqrt((cos(pi/n) - cos(tau/n)) / 2) * cos(b*pi)>)
   #end
@@ -160,52 +448,6 @@
     #end
   #end
 #end
-#macro rotateabout(raxis, rangle, A)   // raxis must be a unit vector
-  (  vdot(raxis,A)*raxis  +  cos(rangle)*(A-vdot(raxis,A)*raxis)  +  sin(rangle)*(vcross(raxis,A))  )
-#end
-#macro rotate_vtxs(raxis, rangle, thresh)   // all points in the halfspace v.raxis <= thresh.  rangle is in degrees.
-  #for (i, 0, npoints-1)
-    #if (vdot(points[i], raxis) < thresh + 1e-6)
-      #declare points[i] = rotateabout(raxis, rangle*pi/180, points[i]);
-    #end
-  #end
-#end
-#macro drop_vtx(n)
-  #declare npoints = npoints - 1;
-  #declare points[n] = points[npoints];
-#end
-#macro drop_halfspace(normalvector, thresh) // all points in the halfspace v.raxis < thresh
-  #local i = 0;
-  #while (i < npoints-.5)
-    #if (vdot(points[i], normalvector) < thresh - 1e-6)
-      #debug concat("Drop vtx ", str(i,0,0), " of ", str(npoints,0,0), " <", str(points[i].x,0,3), ",",
-                    str(points[i].y,0,3), ",", str(points[i].z,0,3), "> (", str(vdot(points[i],normalvector),0,7), ")\n")
-      drop_vtx(i)
-    #else
-      #debug concat("Keep vtx ", str(i,0,0), " of ", str(npoints,0,0), " <", str(points[i].x,0,3), ",",
-                    str(points[i].y,0,3), ",", str(points[i].z,0,3), "> (", str(vdot(points[i],normalvector),0,7), ")\n")
-      #local i=i+1;
-    #end
-  #end
-#end
-#macro autobalance()    // Moves the average of the vertices to the origin
-  #local cog = <0,0,0>;
-  #for (i, 0, npoints-1)
-    #local cog = cog + points[i];
-  #end
-  #local cog = cog / npoints;
-  #for (i, 0, npoints-1)
-    #declare points[i] = points[i] - cog;
-  #end
-#end
-
-#macro showvtxs()
-  #for (i, 0, npoints-1)
-    #debug concat("Vtx ", str(i,0,0), " of ", str(npoints,0,0), "= <",
-                  str(points[i].x,0,15), ",", str(points[i].y,0,15), ",", str(points[i].z,0,15), ">\n")
-  #end
-#end
-
 #macro rotundify(a, b, c)
   // Construct the non-decagonal vertices of a rotunda.  Three consecutive vertices of its decagon are points[a,b,c],
   // and AB x BC points from the decagon's center to the rotunda's interior.
@@ -213,14 +455,14 @@
   #local B = points[b];
   #local C = points[c];
   #local S = vlength(A-B); // side length
-  #local O = B + phi * S * vnormalize(A - 2*B + C); // center of decagon
+  #local O = B + phi * S * vnormalize(A-2*B+C); // center of decagon
   #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
   #local U = vnormalize(A-O);
   #local V = vcross(N, U);
-  #local P = S * sqrt((2+  phi)/5);
-  #for (i, 0, 4)
-    addpoint(O + P    *N + P*phi * (cos((4*i-1)*pi/10) * U + sin((4*i-1)*pi/10) * V));
-    addpoint(O + P*phi*N + P     * (cos((4*i+1)*pi/10) * U + sin((4*i+1)*pi/10) * V));
+  #local P = S * sqrt((2+phi)/5);
+  #for (i, 0, 16, 4)
+    addpoint(O + N*P + phi*P * (U*cos((i-1)*pi/10) + V*sin((i-1)*pi/10)));
+    addpoint(O + N*P*phi + P * (U*cos((i+1)*pi/10) + V*sin((i+1)*pi/10)));
   #end
 #end
 
@@ -244,9 +486,8 @@
   #end
   #if (E > 0)
     #local J = E/2 - 1/2;
-    #local H = sqrt(2*cos(J*tau/N) - 2*cos(tau/N));
     #for (i, 0, N-1)
-      addpoint(<cos(tau*(i+J)/N), sin(tau*(i+J)/N), H>)
+      addpoint(<cos(tau*(i+J)/N), sin(tau*(i+J)/N), sqrt(2*cos(J*tau/N) - 2*cos(tau/N))>)
     #end
   #end
   
@@ -357,7 +598,7 @@
 
 #macro snub_square_antiprism() // J85
   #local A = casus_irreducibilis(sq2-1,2*sq2-6,2-2*sq2).z; // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
-  #local B = sqrt(1 - (1-1/sq2) * A*A);
+  #local B = sqrt(1 - A*A + A*A/sq2);
   #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
   addpointssgn(<  1  ,   1  ,  C>, <1,1,0>)
   addpointssgn(<A*sq2,   0  ,  B>, <1,0,0>)
@@ -527,24 +768,21 @@
   // A pair of nearest-neighbour points on the middle rings is
   //    A == < 1, 0, c >    and    C == < cos(pi/N), sin(pi/N), -c >,
   // The distance between them is
-  // sqrt((1 - cos(pi/N))^2 + sin(pi/N)^2 + 4c^2)
-  // == sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                       (1)
+  // sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                       (1)
   // The apex will be at z == c * cot(pi/(2*N))^2.
   // The neighbour of A on the upper main ring will be
   // A * q + (0,0,z) * (1-q)
   // == < q , 0 , c + z - z*q >.
   // The distance bewteen these points is
-  // sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )            (2)
-  // For aesthetics, I want (1) and (2) to be equal:
-  // sqrt( 4c^2 + 2 - 2 * cos(pi/N) )    ==    sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )
+  // sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )         (2)
+  // For aesthetics, I want (1) and (2) to be equal, which implies
   // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
   
   // In the lower middle ring, the nearest neighbours to A are C and D == <cos(pi/N), -sin(pi/N), -c>.
   // For aesthetics, I want angle CAD to be 90 degrees.
   // AC  ==  < 1 - cos(pi/N) , -sin(pi/N) , 2c >
   // AD  ==  < 1 - cos(pi/N) ,  sin(pi/N) , 2c >
-  // For the angle to be right, we need AC (dot) AD == 0:
-  // 0 == (1 - cos(pi/N))^2 - sin(pi/N)^2 + 4c^2
+  // For the angle to be right, we need AC (dot) AD == 0, which implies
   // c == sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2
   
   #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;
@@ -633,11 +871,12 @@
 #end
 
 #macro class1_geodesic(F, N)
-  // The F-hedra vertices with edge length 2:
+  #local V = F/2 + 2;
+  DeclareMaximumPointsPerSolid( ((N-1)*F/2 + V - 2) * N + 2 )
+  // The F-hedral vertices with edge length 2:
   #if (F =  4) addpointsevensgn(<1/sq2,1/sq2,1/sq2>) #end
   #if (F =  8) addevenpermssgn(<sq2,0,0>, <1,0,0>) #end
   #if (F = 20) addevenpermssgn(<0,1,phi>, <0,1,1>) #end
-  #local V = F/2 + 2;
   #for (a, 0, V-2)
     #local A = points[a];
     #for (b, a+1, V-1)
@@ -686,241 +925,80 @@
   dual()
 #end
 
-
-
-
-
-
-
-
-
-
-#macro convex_hull()
-  // This is an incremental convex-hull algorithm.  It should run in O(N^2) time.
-  #local N    = npoints;
-  #local EPS  = 1e-9;
-  #local Face              = array[2*N];    // Enough for a triangulated 3D convex hull with N points.
-  #local AffectedEdges     = array[3*N];
-  #local MarkedForDeletion = array[2*N];
-  #local EdgeMarks         = array[N][N];   // The contents will be 0s and 1s.
-  
-  // Initialize EdgeMarks to all zeros.  Only elements with first index < second will be used.
-  #for (i, 0, N-1)
-    #for (j, i+1, N-1)
-      #local EdgeMarks[i][j] = 0;
-    #end
-  #end
-  
-  // Find 4 non-coplanar points.  Step 1: Find 3 non-collinear points.
-  #local i0 = 0; #local I0 = points[i0];
-  #local i1 = 1; #local I1 = points[i1];
-  #local i2 = 2;
-  #while (vlength(vcross(I1-I0, points[i2]-I0)) < EPS)
-    #local i2 = i2 + 1;
-  #end
-  #local I2 = points[i2];
-  // Now find a fourth point that is non-coplanar with the first 3.
-  #local I01xI02 = vcross(I1-I0, I2-I0);
-  #local i3 = i2 + 1;
-  #while (abs(vdot(points[i3] - I0, I01xI02)) < EPS)
-    #local i3 = i3 + 1;
-  #end
-  #local I3 = points[i3];
-  
-  // The current hull is points i0, i1, i2, and i3.  We will incrementally expand this.
-  // The point "Inside" could be any point inside the current hull; it will stay inside the hull as it expands.
-  #local Inside = (I0 + I1 + I2 + I3) / 4;
-  
-  // Now we build the initial tetrahedron by storing its faces in "Face".
-  // A face ABC is stored in "Face" as a vector, whose elements are the indices of A, B, and C.
-  // The orientation of the face is recorded by the order of the indices:
-  // face <a,b,c> is oriented in the direction of the cross product AB x AC.
-  #local A = array[4] {I0, I0, I0, I1}; #local a = array[4] {i0, i0, i0, i1}
-  #local B = array[4] {I1, I3, I2, I3}; #local b = array[4] {i1, i3, i2, i3}
-  #local C = array[4] {I2, I1, I3, I2}; #local c = array[4] {i2, i1, i3, i2}
-  #for (i, 0, 3)
-    #if (vdot(vcross(B[i]-A[i], C[i]-A[i]), A[i]-Inside) > 0)
-      #local Face[i] = <a[i],b[i],c[i]>;
-    #else
-      #local Face[i] = <a[i],c[i],b[i]>;
-    #end
-  #end
-  
-  #local Facecount = 4; // The number of faces stored in "Face".
-  
-  // We now select a new point P and expand the hull to it.
-  // We do this by finding those faces that P can see, deleting them, figuring out what the new faces are, and adding those.
-  
-  #local MFD = 0;   // The number of faces that get marked for deletion.  This will return to zero during each deletion pass.
-  #for (p, 0, N-1)
-    #if ((p != i0) & (p != i1) & (p != i2) & (p != i3))
-      #local P = points[p];
-      
-      // Find those faces that P can see.
-      // Recall that faces are stored with an orientation, pointing outward.
-      // Build a plane's normal vector in that orientation, with its tail on the plane.
-      // Then P can see the face iff it is on the same side of the plane as the vector's head.
-      #for (f, 0, Facecount-1)
-        #local F = Face[f];
-        #local A = points[F.x];
-        #local B = points[F.y];
-        #local C = points[F.z];
-        // We are now examining the face with index f, which is through points A, B, and C.
-        // The vector AB x AC is normal to it and pointed outwards.
-        // Point P can see face F iff the projection of AP onto AB x AC is positive.
-        #local Side = vdot(P-A, vcross(B-A, C-A));
-        #if (Side > EPS)
-          #local MarkedForDeletion[MFD] = f;
-          #local MFD = MFD + 1;
-        #end
-        // If a side has > 3 vertices, then we can have Side == 0.
-        // If we treat this case as if we had Side < 0, then everything works out fine.
-      #end // for f.  Thus endeth the face-finding phase.
-      
-      // Delete the marked faces, and track how many times each edge gets affected.
-      #local MarkedEdges = 0;
-      #while (MFD > 0)
-        #local f = MarkedForDeletion[MFD-1];
-        // Face f needs to be removed.  It suffices to overwrite Face[f] with Face[F-1], and then decrement f.
-        
-        // Before removing face f, record which edges are affected.
-        // For each affected edge ab, toggle EdgeMarks[a][b] between 0 and 1.
-        // Each edge is used by exactly two faces.  Therefore,
-        // when the deletion pass is done, the exposed edges will have their EdgeMarks entries at 1,
-        //    while the unaffected and totally-deleted edges will have their EdgeMarks entries at 0.
-        #local F = Face[f];
-        #local xyzx = array[4] {F.x, F.y, F.z, F.x};
-        #for (i, 0, 2)
-          #local a = min(xyzx[i], xyzx[i+1]);
-          #local b = max(xyzx[i], xyzx[i+1]);
-          #local EdgeMarks[a][b] = 1 - EdgeMarks[a][b];
-          #local AffectedEdges[MarkedEdges] = <a,b>;
-          #local MarkedEdges = MarkedEdges + 1;
-        #end
-        
-        #local Face[f] = Face[Facecount-1];
-        #local Facecount = Facecount - 1;
-        #local MFD = MFD - 1;
-      #end // while.  Thus endeth the deletion pass.
-      
-      // Figure out what the new faces are.
-      // Each new triangle will use point P, and the opposite side will be one of the exposed edges.
-      #for (i, 0, MarkedEdges-1)
-        
-        #local Edge = AffectedEdges[i];
-        #local a = Edge.u;
-        #local b = Edge.v;
-        
-        #if (EdgeMarks[a][b])
-          
-          #local A = points[a];
-          #local B = points[b];
-          
-          // Triangle ABP is part of the new increment of the convex hull.
-          // We need to figure out its orientation and store it.
-          // It needs to be stored with the orientation that puts "Inside" on the negative side.
-          
-          #if (vdot(Inside - A, vcross(B-A, P-A)) < 0)
-            #local Face[Facecount] = <a,b,p>;
-          #else
-            #local Face[Facecount] = <b,a,p>;
+#macro class2_geodesic(F, N)
+  #local V = F/2 + 2;
+  DeclareMaximumPointsPerSolid( max(V, 2 + (N-1)*(N-1)*(V+F-2)))
+  #debug concat("Max points: ", str(dimension_size(points,1)/2,0,0), "\n")
+  // 20: max(12, (N-1)*(N-1)*30 + 2)
+  //  8: max( 6, (N-1)*(N-1)*12 + 2)
+  //  4: max( 4, (N-1)*(N-1)* 6 + 2)
+  // The F-hedral vertices with edge length 2:
+  #if (F =  4) addpointsevensgn(<1/sq2,1/sq2,1/sq2>) #end
+  #if (F =  8) addevenpermssgn(<sq2,0,0>, <1,0,0>) #end
+  #if (F = 20) addevenpermssgn(<0,1,phi>, <0,1,1>) #end
+  #if (N > 1)
+    #for (a, 0, V-2)
+      #local A = points[a];
+      #for (b, a+1, V-1)
+        #local B = points[b];
+        #if (abs(vlength(A - B) - 2) < 1e-6)
+         
+          // We found an edge.  Subdivide it.
+          #for (i, 1, N-2)
+            addpoint((A*i + B*(N-1-i))/(N-1))
           #end
-          #local Facecount = Facecount + 1;
           
-          #local EdgeMarks[a][b] = 0; // Unmark the no-longer-exposed edge.
+          #for (c, b+1, V-1)
+            #local C = points[c];
+            #if ((abs(vlength(A - C) - 2) < 1e-6) & (abs(vlength(B - C) - 2) < 1e-6))
+              
+              // We found a face.  Subdivide it.
+              #local Spacing = vlength((A-B)/(N-1)) / sq3;
+              #local ABu = vnormalize(B-A);
+              #local VSpacing = Spacing * vnormalize(A + B - 2*C);
+              // For each subdivision point D on edges AC and BC, and also for point C itself,
+              // drop the perpendicular from D to line AB.  On that perpendicular,
+              // draw set of points E between D and AB such that the distance from D to E is an integer multiple of Spacing.
+              #for (j, 0, N-2)
+                #local D1 = (A*j + C*(N-1-j)) / (N-1);
+                #local D2 = (B*j + C*(N-1-j)) / (N-1);
+                #local E1 = A + vdot(D1-A, ABu) * ABu; // point on AB closest to D1
+                #local E2 = A + vdot(D2-A, ABu) * ABu; // point on AB closest to D2
+                #local DE = vlength(D1 - E1);
+                #local i = 1;
+                #while (i * Spacing < DE - 1e-6)
+                  addpoint(D1 + i * VSpacing)
+                  #if (j > 0) addpoint(D2 + i * VSpacing) #end
+                  #local i = i + 1;
+                #end // while
+              #end // for j
+              
+            #end // if
+          #end // for c
+          
         #end // if
-        
-      #end // for i.  Thus endeth the new-face-construction phase.
-      
-    #end // if p != i0,i1,i2,i3
-  #end // for p
+      #end // for b
+    #end // for a
+  #end // if (N > 1)
   
-  // Emit planes.  Deduplication is handled by addplane().
-  #for (f, 0, Facecount-1)
-    #local F = Face[f];
-    addplane(F.x, F.y, F.z)
+  // Finally, project all points onto the unit sphere.
+  #for (i, 0, npoints-1)
+    #declare points[i] = vnormalize(points[i]);
   #end
+  
+  // TODO: For the octahedral and especially tetrahedral variants, we have rather poor spacing of points.
+  // Maybe add an iterative-optimization-type step, where we treat them as electrons?
+  // We would have to ensure that the topology does not change.
+  
+  convex_hull()
 #end
 
 
 
 
-#declare  points = array[1000];
-#declare tpoints = array[1000];
-#declare npoints = 0;
-#declare   faces = array[1000];
-#declare  nfaces = 0;
-#macro addpoint(a)
-  #declare points[npoints] = a;
-  #declare npoints = npoints + 1;
-#end
-#macro addevenperms(a)
-  addpoint(a)
-  addpoint(<a.y, a.z, a.x>)
-  addpoint(<a.z, a.x, a.y>)
-#end
-#macro addperms(a)
-  addevenperms(a)
-  addevenperms(<a.x, a.z, a.y>)
-#end
-#macro addpointssgn(a, s)
-  addpoint(a)
-  #if(s.x) addpointssgn(a*<-1, 1, 1>, s*<0,1,1>) #end
-  #if(s.y) addpointssgn(a*< 1,-1, 1>, s*<0,0,1>) #end
-  #if(s.z) addpoint(    a*< 1, 1,-1>           ) #end
-#end
-#macro addevenpermssgn(a,s)
-  addpointssgn(a,s)
-  addpointssgn(<a.y, a.z, a.x>, <s.y, s.z, s.x>)
-  addpointssgn(<a.z, a.x, a.y>, <s.z, s.x, s.y>)
-#end
-#macro addpermssgn(a,s)
-  addevenpermssgn(a,s)
-  addevenpermssgn(<a.x, a.z, a.y>, <s.x, s.z, s.y>)
-#end
-#macro addpointsevensgn(a)
-  addpoint(a)
-  addpoint(a*<-1,-1, 1>)
-  addpoint(a*<-1, 1,-1>)
-  addpoint(a*< 1,-1,-1>)
-#end
-#macro addevenpermsevensgn(a)
-  addevenperms(a)
-  addevenperms(a*<-1,-1, 1>)
-  addevenperms(a*<-1, 1,-1>)
-  addevenperms(a*< 1,-1,-1>)
-#end
-#macro addpermsaltsgn(a)
-  addevenpermsevensgn(a)
-  addevenpermsevensgn(<a.x, a.z, -a.y>)
-#end
-/*#macro addevenpermssgn(a,s) //Calls addevenperms with, for each 1 in s, a.{x,y,z} replaced with {+,-}a.{x,y,z}
-  addevenperms(a)
-  #if(s.x) addevenpermssgn(a*<-1, 1, 1>, s*<0,1,1>) #end
-  #if(s.y) addevenpermssgn(a*< 1,-1, 1>, s*<0,0,1>) #end
-  #if(s.z) addevenperms(   a*< 1, 1,-1>           ) #end
-#end*/
-#macro addplane(a,b,c)
-  #local d = vnormalize(vcross(points[b]-points[a], points[c]-points[a]));
-  #local l = vdot(d, points[a]);
-  #local a = vnormalize(d) / l;
-  #local f=1;
-  #for (n, 0, nfaces-1)
-    #if(vlength(faces[n]-a) < 1e-5) #local f = 0; #end
-  #end
-  #if (f)
-    #declare faces[nfaces] = a;
-    #declare nfaces = nfaces + 1;
-  #end
-#end
-#macro dual()
-  #declare   temp = faces;
-  #declare  faces = points;
-  #declare points = temp;
-  #declare    temp = nfaces;
-  #declare  nfaces = npoints;
-  #declare npoints = temp;
-#end
+
+
+
 
 This_shape_will_be_drawn()
 
@@ -949,11 +1027,11 @@ This_shape_will_be_drawn()
   #local faces[a] = faces[a] * b;
 #end
 
+showvtxs()
+
 union {
   //Draw points
-  #for (a, 0, npoints-1)
-    sphere { points[a], .01 }
-  #end
+  #for (a, 0, npoints-1) sphere {points[a], .01} #end
   //Draw edges
   #declare p = array[MaximumVerticesPerFace];
   #for (a, 0, nfaces-1) // TODO: This can be done more efficiently.
@@ -988,16 +1066,14 @@ union {
 //Draw planes
 #ifndef (flashiness) #declare flashiness=1; #end
 intersection {
-  #for (a, 0, nfaces-1)
-    plane { faces[a], 1 / vlength(faces[a]) }
-  #end
+  #for (a, 0, nfaces-1) plane {faces[a], 1/vlength(faces[a])} #end
   dorot()
   pigment { colour rgbt <.8,.8,.8,.4> }
   finish { ambient 0 diffuse 1 phong flashiness }
   photons {
     target on
     refraction on
-    reflection on
+    reflection off
     collect on
   }
 }
@@ -1056,6 +1132,7 @@ background { color <1,1,1> }
   }
 #end
 global_settings {
+  assumed_gamma 2.5
   max_trace_level 40
   photons {
     count 200000
