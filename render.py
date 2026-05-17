@@ -224,14 +224,26 @@ data = [
 ['class 2 icosahedral geodesic of order 2'     , 'class2_geodesic(20, 2)'            , (0,)],        # Infinite family
 ['class 2 icosahedral geodesic of order 3'     , 'class2_geodesic(20, 3)'            , (0,)],        # Infinite family
 ['class 2 icosahedral geodesic of order 4'     , 'class2_geodesic(20, 4)'            , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 1'     , 'class2_goldberg(20, 1)'            , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 2'     , 'class2_goldberg(20, 2)'            , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 3'     , 'class2_goldberg(20, 3)'            , (0,)],        # Infinite family
+['class 2 icosahedral goldberg of order 4'     , 'class2_goldberg(20, 4)'            , (0,)],        # Infinite family
 ['class 2  octahedral geodesic of order 1'     , 'class2_geodesic( 8, 1)'            , (0,)],        # Infinite family
 ['class 2  octahedral geodesic of order 2'     , 'class2_geodesic( 8, 2)'            , (0,)],        # Infinite family
 ['class 2  octahedral geodesic of order 3'     , 'class2_geodesic( 8, 3)'            , (0,)],        # Infinite family
 ['class 2  octahedral geodesic of order 4'     , 'class2_geodesic( 8, 4)'            , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 1'     , 'class2_goldberg( 8, 1)'            , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 2'     , 'class2_goldberg( 8, 2)'            , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 3'     , 'class2_goldberg( 8, 3)'            , (0,)],        # Infinite family
+['class 2  octahedral goldberg of order 4'     , 'class2_goldberg( 8, 4)'            , (0,)],        # Infinite family
 ['class 2 tetrahedral geodesic of order 1'     , 'class2_geodesic( 4, 1)'            , (0,)],        # Infinite family
 ['class 2 tetrahedral geodesic of order 2'     , 'class2_geodesic( 4, 2)'            , (0,)],        # Infinite family
 ['class 2 tetrahedral geodesic of order 3'     , 'class2_geodesic( 4, 3)'            , (0,)],        # Infinite family
 ['class 2 tetrahedral geodesic of order 4'     , 'class2_geodesic( 4, 4)'            , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 1'     , 'class2_goldberg( 4, 1)'            , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 2'     , 'class2_goldberg( 4, 2)'            , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 3'     , 'class2_goldberg( 4, 3)'            , (0,)],        # Infinite family
+['class 2 tetrahedral goldberg of order 4'     , 'class2_goldberg( 4, 4)'            , (0,)],        # Infinite family
 ]
 
 atad = [
