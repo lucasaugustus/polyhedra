@@ -62,7 +62,7 @@ For a complete enumeration of this package's coverage, see the lists `data` and 
 * The rhombic enneacontahedron
 * The noperthedron
 * The Bilinski dodecahedron
-* The class 1 geodesic and Goldberg polyhedra
+* The class 1 and 2 geodesic and Goldberg polyhedra
 
 # Credits
 
