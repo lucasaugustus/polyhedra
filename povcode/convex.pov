@@ -993,6 +993,12 @@ DeclareMaximumPointsPerSolid(1000)
   convex_hull()
 #end
 
+#macro class2_goldberg(F, N)
+  class2_geodesic(F, N)
+  dual()
+#end
+
+
 
 
 
