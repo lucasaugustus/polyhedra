@@ -60,18 +60,11 @@ DeclareMaximumPointsPerSolid(1000)
   addevenpermsevensgn(a)
   addevenpermsevensgn(<a.x, a.z, -a.y>)
 #end
-/*#macro addevenpermssgn(a,s) //Calls addevenperms with, for each 1 in s, a.{x,y,z} replaced with {+,-}a.{x,y,z}
-  addevenperms(a)
-  #if(s.x) addevenpermssgn(a*<-1, 1, 1>, s*<0,1,1>) #end
-  #if(s.y) addevenpermssgn(a*< 1,-1, 1>, s*<0,0,1>) #end
-  #if(s.z) addevenperms(   a*< 1, 1,-1>           ) #end
-#end*/
 
 #macro addplane(a,b,c)
   #local d = vnormalize(vcross(points[b]-points[a], points[c]-points[a]));
-  #local l = vdot(d, points[a]);
-  #local a = vnormalize(d) / l;
-  #local f=1;
+  #local a = vnormalize(d) / vdot(d, points[a]);
+  #local f = 1;
   #for (n, 0, nfaces-1)
     #if(vlength(faces[n]-a) < 1e-5) #local f = 0; #end
   #end
@@ -137,6 +130,44 @@ DeclareMaximumPointsPerSolid(1000)
   #declare    temp = nfaces;
   #declare  nfaces = npoints;
   #declare npoints = temp;
+#end
+
+#macro augment(n, a, b, c) // On an n-face with 3 adjacent vertices, add a pyramid or a cupola
+  #local A = points[a];
+  #local B = points[b];
+  #local C = points[c];
+  #local K = vlength(C-B) * vnormalize(vcross(C-B, A-B));
+  #switch(n)
+    #case ( 3) addpoint( (A+B+C)/3 + K*sq2/sq3 ) #break
+    #case ( 4) addpoint( (A + C)/2 + K    /sq2 ) #break
+    #case ( 5) addpoint( B + (2+phi)*(A-2*B+C)/5 + sqrt((3-phi)/5) * K ) #break
+    #case ( 6) #local P = 1      ; #local Q = sq2/sq3        ; #local R = -2/3       ; #break
+    #case ( 8) #local P = 1+1/sq2; #local Q = 1/sq2          ; #local R =  1         ; #break
+    #case (10) #local P = 1+ phi ; #local Q = sqrt((3-phi)/5); #local R = (4+2*phi)/5; #break
+  #end
+  #if (n > 5)
+    #for (T, 0, n-2, 2)
+      addpoint( B + (A-2*B+C)*P + K*Q + ((A-B)*cos(T*tau/n) + (C-B)*cos((T-1)*tau/n)) * R )
+    #end
+  #end
+#end
+
+#macro rotundify(a, b, c)
+  // Construct the non-decagonal vertices of a rotunda.  Three consecutive vertices of its decagon are points[a,b,c],
+  // and AB x BC points from the decagon's center to the rotunda's interior.
+  #local A = points[a];
+  #local B = points[b];
+  #local C = points[c];
+  #local S = vlength(A-B); // side length
+  #local O = B + phi * S * vnormalize(A-2*B+C); // center of decagon
+  #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
+  #local U = vnormalize(A-O);
+  #local V = vcross(N, U);
+  #local P = S * sqrt((2+phi)/5);
+  #for (i, 0, 16, 4)
+    addpoint(O + N*P + phi*P * (U*cos((i-1)*pi/10) + V*sin((i-1)*pi/10)));
+    addpoint(O + N*P*phi + P * (U*cos((i+1)*pi/10) + V*sin((i+1)*pi/10)));
+  #end
 #end
 
 #macro convex_hull()
@@ -281,18 +312,13 @@ DeclareMaximumPointsPerSolid(1000)
   
   // Emit planes.  Deduplication is handled by addplane().
   #for (f, 0, Facecount-1)
-    #local F = Face[f];
-    addplane(F.x, F.y, F.z)
+    addplane(Face[f].x, Face[f].y, Face[f].z)
   #end
 #end
 
 // Platonic:
 
-#macro dodecahedron()
-  pyracupolarotunda(2,5,0,1,1)
-  dual()
-#end
-
+#macro dodecahedron() pyracupolarotunda(2,5,0,1,1) dual() #end
 // The other four Platonics are handled by pyracupolarotunda().
 
 // Archimedean:
@@ -403,72 +429,15 @@ DeclareMaximumPointsPerSolid(1000)
 #macro         tetrakishexahedron( )        truncatedoctahedron( ) dual() #end
 #macro          triakisoctahedron( )        truncatedhexahedron(0) dual() #end
 
-// Prisms, biprisms, antiprisms, and trapezohedra:
+// Some infinite families:
 
-#macro rprism_vtx(n)
-  #for (b, 0, n-1)
-    addpointssgn(<sin(tau*b/n), cos(tau*b/n), sqrt((1 - cos(tau/n)) / 2)>, <0,0,1>)
-  #end
-#end
-#macro rprism(n)
-  DeclareMaximumPointsPerSolid(2*n)
-  #declare MaximumPointsPerFace = n;
-  rprism_vtx(n)
-  convex_hull()
-#end
-#macro antiprism(n)
-  DeclareMaximumPointsPerSolid(2*n)
-  #declare MaximumPointsPerFace = n;
-  #for (b, 0, 2*n-1)
-    addpoint(<sin(pi*b/n), cos(pi*b/n), sqrt((cos(pi/n) - cos(tau/n)) / 2) * cos(b*pi)>)
-  #end
-  convex_hull()
-#end
-#macro     bipyramid(n)    rprism(n) dual() #end
-#macro trapezohedron(n) antiprism(n) dual() #end
-
-// Helper macros for the Johnson solids:
-
-#macro augment(n, a, b, c) // On an n-face with 3 adjacent vertices, add a pyramid or a cupola
-  #local A = points[a];
-  #local B = points[b];
-  #local C = points[c];
-  #local K = vlength(C-B) * vnormalize(vcross(C-B, A-B));
-  #switch(n)
-    #case ( 3) addpoint( (A+B+C)/3 + K*sq2/sq3 ) #break
-    #case ( 4) addpoint( (A + C)/2 + K    /sq2 ) #break
-    #case ( 5) addpoint( B + (2+phi)*(A-2*B+C)/5 + sqrt((3-phi)/5) * K ) #break
-    #case ( 6) #local P = 1      ; #local Q = sq2/sq3        ; #local R = -2/3       ; #break
-    #case ( 8) #local P = 1+1/sq2; #local Q = 1/sq2          ; #local R =  1         ; #break
-    #case (10) #local P = 1+ phi ; #local Q = sqrt((3-phi)/5); #local R = (4+2*phi)/5; #break
-  #end
-  #if (n > 5)
-    #for (T, 0, n-2, 2)
-      addpoint( B + (A-2*B+C)*P + K*Q + ((A-B)*cos(T*tau/n) + (C-B)*cos((T-1)*tau/n)) * R )
-    #end
-  #end
-#end
-#macro rotundify(a, b, c)
-  // Construct the non-decagonal vertices of a rotunda.  Three consecutive vertices of its decagon are points[a,b,c],
-  // and AB x BC points from the decagon's center to the rotunda's interior.
-  #local A = points[a];
-  #local B = points[b];
-  #local C = points[c];
-  #local S = vlength(A-B); // side length
-  #local O = B + phi * S * vnormalize(A-2*B+C); // center of decagon
-  #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
-  #local U = vnormalize(A-O);
-  #local V = vcross(N, U);
-  #local P = S * sqrt((2+phi)/5);
-  #for (i, 0, 16, 4)
-    addpoint(O + N*P + phi*P * (U*cos((i-1)*pi/10) + V*sin((i-1)*pi/10)));
-    addpoint(O + N*P*phi + P * (U*cos((i+1)*pi/10) + V*sin((i+1)*pi/10)));
-  #end
-#end
+// The prisms and antiprisms are handled by pyracupolarotunda().
+#macro     bipyramid(n) pyracupolarotunda(1,n,0,0,0) dual() #end
+#macro trapezohedron(n) pyracupolarotunda(2,n,0,0,0) dual() #end
 
 // Johnson:
 
-#macro pyracupolarotunda(E, N, G, A, B) // J1-25 and J27-48
+#macro pyracupolarotunda(E, N, G, A, B) // J1-25, J27-48, prisms, antiprisms, and a few more
   // The ((gyro)elongated) N-gonal (ortho,gyro)(bi)(pyramid,cupola,rotunda).
   // E: Elongation type.  0: None.  1: Ordinary.  2: Gyroelongation.
   // N: the number of sides for the "core".  For cupolae and rotundae, this is twice the number implied by the English name.
@@ -515,7 +484,9 @@ DeclareMaximumPointsPerSolid(1000)
 
 #macro augmented_prisms(n, facelist) // J49-57
   // n = prism base, facelist = string with faces to cap
-  rprism_vtx(n)
+  #for (b, 0, n-1) // TODO: Use pyracupolarotunda here, and then figure out how that alters the point numbering.
+    addpointssgn(<sin(tau*b/n), cos(tau*b/n), sqrt((1 - cos(tau/n)) / 2)>, <0,0,1>)
+  #end
   #for (i, 1, strlen(facelist))
     #local facenum = mod(val(substr(facelist,i,1)), n); // convert ith char given to a number 0..(n-1)
     augment(4, 2*facenum+1, 2*facenum, mod(2*facenum+2, 2*n))
@@ -648,7 +619,7 @@ DeclareMaximumPointsPerSolid(1000)
   addpointssgn(<1+2*k, 1, 0>, <1,1,0>)
   addpointssgn(<1, 0, -c>, <1,0,0>)
   addpointssgn(<0, a + b, b*b/2> / a, <0,1,0>)
-  addpointssgn(<0, b*c + k + 1, (2*k-1)*c*a*a / (1 - k) - b> / (2*a*a), <0,1,0>)
+  addpointssgn(<0, b*c + k + 1, (2*k*k+k-1)*c - b> / (2*a*a), <0,1,0>)
   autobalance()
   convex_hull()
 #end
@@ -883,7 +854,7 @@ DeclareMaximumPointsPerSolid(1000)
       #for (b, a+1, V-1)
         #local B = points[b];
         #if (abs(vlength(A - B) - 2) < 1e-6)
-         
+          
           // We found an edge.  Subdivide it.
           #for (i, 1, N-Class)
             addpoint((A*i + B*(N-Class+1-i))/(N-Class+1))
@@ -911,8 +882,8 @@ DeclareMaximumPointsPerSolid(1000)
                 #local ABu = vnormalize(B-A);
                 #local VSpacing = Spacing * vnormalize(A + B - 2*C);
                 // For each subdivision point D on edges AC and BC, and also for point C itself,
-                // drop the perpendicular from D to line AB.  On that perpendicular,
-                // draw the points E between D and AB such that the distance from D to E is an integer multiple of Spacing.
+                // drop the perpendicular from D to line AB.  On that perpendicular, draw the
+                // points E between D and AB such that the distance from D to E is an integer multiple of Spacing.
                 #for (j, 0, N-2)
                   #local D1 = (A*j + C*(N-1-j)) / (N-1);
                   #local D2 = (B*j + C*(N-1-j)) / (N-1);
