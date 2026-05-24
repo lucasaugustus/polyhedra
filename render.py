@@ -42,24 +42,24 @@ data = [
 ['disdyakis   triacontahedron'                 , 'disdyakistriacontahedron()'        , (1556,)],      # Catalan
 ['pentagonal icositetrahedron'                 , 'pentagonalicositetrahedron(-1)'    , (7771,)],      # Catalan
 ['pentagonal  hexecontahedron'                 , 'pentagonalhexecontahedron(-1)'     , (1046,)],      # Catalan
-[    'triangular     prism'                    , 'rprism(3)'                         , (6620,)],      # Infinite family
-[        'square     prism'                    , 'rprism(4)'                         , (6620,)],      # Infinite family
-[    'pentagonal     prism'                    , 'rprism(5)'                         , (6620,)],      # Infinite family
-[     'hexagonal     prism'                    , 'rprism(6)'                         , (6620,)],      # Infinite family
-[    'heptagonal     prism'                    , 'rprism(7)'                         , (6620,)],      # Infinite family
-[     'octagonal     prism'                    , 'rprism(8)'                         , (6620,)],      # Infinite family
-[     'nonagonal     prism'                    , 'rprism(9)'                         , (6620,)],      # Infinite family
-[     'decagonal     prism'                    , 'rprism(10)'                        , (6620,)],      # Infinite family
-[       'digonal antiprism'                    , 'antiprism(2)'                      , (6620,)],      # Infinite family.  Also tetrahedron.
-[    'triangular antiprism'                    , 'antiprism(3)'                      , (6620,)],      # Infinite family.  Also octahedron.
-[        'square antiprism'                    , 'antiprism(4)'                      , (6620,)],      # Infinite family
-[    'pentagonal antiprism'                    , 'antiprism(5)'                      , (6620,)],      # Infinite family
-[     'hexagonal antiprism'                    , 'antiprism(6)'                      , (6620,)],      # Infinite family
-[    'heptagonal antiprism'                    , 'antiprism(7)'                      , (6620,)],      # Infinite family
-[     'octagonal antiprism'                    , 'antiprism(8)'                      , (6620,)],      # Infinite family
-[     'nonagonal antiprism'                    , 'antiprism(9)'                      , (6620,)],      # Infinite family
-[     'decagonal antiprism'                    , 'antiprism(10)'                     , (6620,)],      # Infinite family
-['heptadecagonal antiprism'                    , 'antiprism(17)'                     , (6620,)],      # Infinite family
+[    'triangular     prism'                    , 'pyracupolarotunda(1, 3,0,0,0)'     , (6620,)],      # Infinite family
+[        'square     prism'                    , 'pyracupolarotunda(1, 4,0,0,0)'     , (6620,)],      # Infinite family
+[    'pentagonal     prism'                    , 'pyracupolarotunda(1, 5,0,0,0)'     , (6620,)],      # Infinite family
+[     'hexagonal     prism'                    , 'pyracupolarotunda(1, 6,0,0,0)'     , (6620,)],      # Infinite family
+[    'heptagonal     prism'                    , 'pyracupolarotunda(1, 7,0,0,0)'     , (6620,)],      # Infinite family
+[     'octagonal     prism'                    , 'pyracupolarotunda(1, 8,0,0,0)'     , (6620,)],      # Infinite family
+[     'nonagonal     prism'                    , 'pyracupolarotunda(1, 9,0,0,0)'     , (6620,)],      # Infinite family
+[     'decagonal     prism'                    , 'pyracupolarotunda(1,10,0,0,0)'     , (6620,)],      # Infinite family
+[       'digonal antiprism'                    , 'pyracupolarotunda(2, 2,0,0,0)'     , (6620,)],      # Infinite family.  Also tetrahedron.
+[    'triangular antiprism'                    , 'pyracupolarotunda(2, 3,0,0,0)'     , (6620,)],      # Infinite family.  Also octahedron.
+[        'square antiprism'                    , 'pyracupolarotunda(2, 4,0,0,0)'     , (6620,)],      # Infinite family
+[    'pentagonal antiprism'                    , 'pyracupolarotunda(2, 5,0,0,0)'     , (6620,)],      # Infinite family
+[     'hexagonal antiprism'                    , 'pyracupolarotunda(2, 6,0,0,0)'     , (6620,)],      # Infinite family
+[    'heptagonal antiprism'                    , 'pyracupolarotunda(2, 7,0,0,0)'     , (6620,)],      # Infinite family
+[     'octagonal antiprism'                    , 'pyracupolarotunda(2, 8,0,0,0)'     , (6620,)],      # Infinite family
+[     'nonagonal antiprism'                    , 'pyracupolarotunda(2, 9,0,0,0)'     , (6620,)],      # Infinite family
+[     'decagonal antiprism'                    , 'pyracupolarotunda(2,10,0,0,0)'     , (6620,)],      # Infinite family
+['heptadecagonal antiprism'                    , 'pyracupolarotunda(2,17,0,0,0)'     , (6620,)],      # Infinite family
 [    'triangular bipyramid'                    , 'bipyramid(3)'                      , (6620,)],      # Infinite family.  Also J12.
 [        'square bipyramid'                    , 'bipyramid(4)'                      , (6620,)],      # Infinite family.  Also octahedron.
 [    'pentagonal bipyramid'                    , 'bipyramid(5)'                      , (6620,)],      # Infinite family.  Also J13.
