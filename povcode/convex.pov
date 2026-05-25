@@ -56,23 +56,6 @@ DeclareMaximumPointsPerSolid(1000)
   addevenperms(a*<-1, 1,-1>)
   addevenperms(a*< 1,-1,-1>)
 #end
-#macro addpermsaltsgn(a)
-  addevenpermsevensgn(a)
-  addevenpermsevensgn(<a.x, a.z, -a.y>)
-#end
-
-#macro addplane(a,b,c)
-  #local d = vnormalize(vcross(points[b]-points[a], points[c]-points[a]));
-  #local a = vnormalize(d) / vdot(d, points[a]);
-  #local f = 1;
-  #for (n, 0, nfaces-1)
-    #if(vlength(faces[n]-a) < 1e-5) #local f = 0; #end
-  #end
-  #if (f)
-    #declare faces[nfaces] = a;
-    #declare nfaces = nfaces + 1;
-  #end
-#end
 
 #macro rotateabout(raxis, rangle, A)   // raxis must be a unit vector
   (  vdot(raxis,A)*raxis  +  cos(rangle)*(A-vdot(raxis,A)*raxis)  +  sin(rangle)*(vcross(raxis,A))  )
@@ -170,6 +153,19 @@ DeclareMaximumPointsPerSolid(1000)
   #end
 #end
 
+#macro addplane(a,b,c)
+  #local d = vnormalize(vcross(points[b]-points[a], points[c]-points[a]));
+  #local a = vnormalize(d) / vdot(d, points[a]);
+  #local f = 1;
+  #for (n, 0, nfaces-1)
+    #if(vlength(faces[n]-a) < 1e-5) #local f = 0; #end
+  #end
+  #if (f)
+    #declare faces[nfaces] = a;
+    #declare nfaces = nfaces + 1;
+  #end
+#end
+
 #macro convex_hull()
   // This is an incremental convex-hull algorithm.  It runs in O(N^2) time.
   #local N    = npoints;
@@ -263,8 +259,7 @@ DeclareMaximumPointsPerSolid(1000)
         // Each edge is used by exactly two faces.  Therefore,
         // when the deletion pass is done, the exposed edges will have their EdgeMarks entries at 1,
         //    while the unaffected and totally-deleted edges will have their EdgeMarks entries at 0.
-        #local F = Face[f];
-        #local xyzx = array[4] {F.x, F.y, F.z, F.x};
+        #local xyzx = array[4] {Face[f].x, Face[f].y, Face[f].z, Face[f].x};
         #for (i, 0, 2)
           #local a = min(xyzx[i], xyzx[i+1]);
           #local b = max(xyzx[i], xyzx[i+1]);
@@ -389,7 +384,8 @@ DeclareMaximumPointsPerSolid(1000)
 
 #macro snub_cube(s)
   #local X = (pow(sqrt(297)+17, 1/3) - pow(sqrt(297)-17, 1/3) - 1) / 3; // real root of x^3 + x^2 + x - 1
-  addpermsaltsgn(<s, s/X, s*X>)
+  addevenpermsevensgn(<s, s/X,  s*X>)
+  addevenpermsevensgn(<s, s*X, -s/X>)
   convex_hull()
 #end
 
@@ -476,7 +472,7 @@ DeclareMaximumPointsPerSolid(1000)
 #end
 
 #macro gyrobifastigium() // J26
-  addpointssgn(<1,1,0>, <1,1,0>)
+  addpointssgn(<1,1, 0  >, <1,1,0>)
   addpointssgn(<1,0, sq3>, <1,0,0>)
   addpointssgn(<0,1,-sq3>, <0,1,0>)
   convex_hull()
@@ -571,12 +567,12 @@ DeclareMaximumPointsPerSolid(1000)
   #local A = casus_irreducibilis(sq2-1,2*sq2-6,2-2*sq2).z; // Minimal polynomial: x^6 - 2x^5 - 13x^4 + 8x^3 + 32x^2 - 8x - 4
   #local B = sqrt(1 - A*A + A*A/sq2);
   #local C = sqrt(2 + 2*sq2*A - 2*A*A) + B;
-  addpointssgn(<  1  ,   1  ,  C>, <1,1,0>)
   addpointssgn(<A*sq2,   0  ,  B>, <1,0,0>)
   addpointssgn(<  0  , A*sq2,  B>, <0,1,0>)
   addpointssgn(<  A  ,   A  , -B>, <1,1,0>)
-  addpointssgn(< sq2 ,   0  , -C>, <1,0,0>)
+  addpointssgn(<  1  ,   1  ,  C>, <1,1,0>)
   addpointssgn(<  0  ,  sq2 , -C>, <0,1,0>)
+  addpointssgn(< sq2 ,   0  , -C>, <1,0,0>)
   autobalance()
   convex_hull()
 #end
@@ -633,11 +629,11 @@ DeclareMaximumPointsPerSolid(1000)
   #local E = (A*A - B*B - C*C) / (2 * (A - C));
   #local D = 1 + sqrt(4 - (A-E)*(A-E));
   addpointssgn(<0, 1,  A>, <0,1,0>)
+  addpointssgn(<1, 0, -A>, <1,0,0>)
   addpointssgn(<B, 1,  C>, <1,1,0>)
+  addpointssgn(<1, B, -C>, <1,1,0>)
   addpointssgn(<0, D,  E>, <0,1,0>)
   addpointssgn(<D, 0, -E>, <1,0,0>)
-  addpointssgn(<1, B, -C>, <1,1,0>)
-  addpointssgn(<1, 0, -A>, <1,0,0>)
   autobalance()
   convex_hull()
 #end
@@ -681,12 +677,11 @@ DeclareMaximumPointsPerSolid(1000)
 
 #macro herschel_enneahedron()
   // https://aperiodical.com/2013/10/an-enneahedron-for-herschel/
-  addpoint(    <0, 6*sq3, 0>)
-  addpointssgn(<3, 3*sq3, 6>, <1,0,1>)
-  addpointssgn(<0, 2*sq3, 8>, <0,0,1>)
-  addpointssgn(<6, 0    , 0>, <1,0,0>)
-  addpointssgn(<0, 0    , 6>, <0,0,1>)
-  autobalance()
+  addpointssgn(<0,0,8>, <0,0,1>)
+  #for (i, 1, 3)
+    addpoint(    rotateabout(<0,0,1>, i*tau/3, <0, 6, 0>)         )
+    addpointssgn(rotateabout(<0,0,1>, i*tau/3, <0,-3,-6>), <0,0,1>)
+  #end
   convex_hull()
 #end
 
@@ -715,11 +710,9 @@ DeclareMaximumPointsPerSolid(1000)
 
 #macro rhombic_icosahedron()
   addpointssgn(<0,0,5>, <0,0,1>)
-  #local P = <4, 0, 3>;
-  #local Q = <2 + 2*phi, 2*sqrt(2+phi), 1>;
   #for (i, 1, 5)
-    #local P = rotateabout(<0,0,1>, tau/5, P);
-    #local Q = rotateabout(<0,0,1>, tau/5, Q);
+    #local P = rotateabout(<0,0,1>, i*tau/5, <4, 0, 3>);
+    #local Q = rotateabout(<0,0,1>, i*tau/5, <2 + 2*phi, 2*sqrt(2+phi), 1>);
     addpoint(P) addpoint(-P)
     addpoint(Q) addpoint(-Q)
   #end
@@ -814,13 +807,10 @@ DeclareMaximumPointsPerSolid(1000)
 
 #macro noperthedron()
   // https://arxiv.org/pdf/2508.18475v1
-  #local P = < 152024884,          0,  210152163> / 259375205;
-  #local Q = <6632738028, 6106948881, 3980949609> / 1e10;
-  #local R = <8193990033, 5298215096, 1230614493> / 1e10;
   #for (i, 1, 15)
-    #local P = rotateabout(<0,0,1>, tau/15, P);
-    #local Q = rotateabout(<0,0,1>, tau/15, Q);
-    #local R = rotateabout(<0,0,1>, tau/15, R);
+    #local P = rotateabout(<0,0,1>, i*tau/15, < 152024884,          0,  210152163> / 259375205);
+    #local Q = rotateabout(<0,0,1>, i*tau/15, <6632738028, 6106948881, 3980949609> / 1e10);
+    #local R = rotateabout(<0,0,1>, i*tau/15, <8193990033, 5298215096, 1230614493> / 1e10);
     addpoint(P)  addpoint(-P)
     addpoint(Q)  addpoint(-Q)
     addpoint(R)  addpoint(-R)
