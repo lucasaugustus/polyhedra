@@ -182,7 +182,7 @@ DeclareMaximumPointsPerSolid(1000)
     #end
   #end
   
-  // Find 4 non-coplanar points.  Step 1: Find 3 non-collinear points.
+  // Find 4 non-coplanar points for the starting hull.  Step 1: Find 3 non-collinear points.
   #local i0 = 0; #local I0 = points[i0];
   #local i1 = 1; #local I1 = points[i1];
   #local i2 = 2;
@@ -198,14 +198,11 @@ DeclareMaximumPointsPerSolid(1000)
   #end
   #local I3 = points[i3];
   
-  // The current hull is points i0, i1, i2, and i3.  We will incrementally expand this.
-  // The point "Inside" could be any point inside the current hull; it will stay inside the hull as it expands.
-  #local Inside = (I0 + I1 + I2 + I3) / 4;
+  #local Inside = (I0 + I1 + I2 + I3) / 4; // This point will stay inside the hull as it expands.
   
   // Now we build the initial tetrahedron by storing its faces in "Face".
   // A face ABC is stored in "Face" as a vector, whose elements are the indices of A, B, and C.
-  // The orientation of the face is recorded by the order of the indices:
-  // face <a,b,c> is oriented in the direction of the cross product AB x AC.
+  // Face <a,b,c> is oriented in the direction of the cross product AB x AC.
   #local A = array[4] {I0, I0, I0, I1}; #local a = array[4] {i0, i0, i0, i1}
   #local B = array[4] {I1, I3, I2, I3}; #local b = array[4] {i1, i3, i2, i3}
   #local C = array[4] {I2, I1, I3, I2}; #local c = array[4] {i2, i1, i3, i2}
@@ -228,17 +225,13 @@ DeclareMaximumPointsPerSolid(1000)
       #local P = points[p];
       
       // Find those faces that P can see.
-      // Recall that faces are stored with an orientation, pointing outward.
-      // Build a plane's normal vector in that orientation, with its tail on the plane.
+      // For each plane, build that plane's normal vector in that orientation, with its tail on the plane.
       // Then P can see the face iff it is on the same side of the plane as the vector's head.
       #for (f, 0, Facecount-1)
         #local F = Face[f];
         #local A = points[F.x];
         #local B = points[F.y];
         #local C = points[F.z];
-        // We are now examining the face with index f, which is through points A, B, and C.
-        // The vector AB x AC is normal to it and pointed outwards.
-        // Point P can see face F iff the projection of AP onto AB x AC is positive.
         #local Side = vdot(P-A, vcross(B-A, C-A));
         #if (Side > EPS)
           #local MarkedForDeletion[MFD] = f;
@@ -253,11 +246,8 @@ DeclareMaximumPointsPerSolid(1000)
       #while (MFD > 0)
         #local f = MarkedForDeletion[MFD-1];
         // Face f needs to be removed.  It suffices to overwrite Face[f] with Face[F-1], and then decrement f.
-        
-        // Before removing face f, record which edges are affected.
-        // For each affected edge ab, toggle EdgeMarks[a][b] between 0 and 1.
-        // Each edge is used by exactly two faces.  Therefore,
-        // when the deletion pass is done, the exposed edges will have their EdgeMarks entries at 1,
+        // Before that f, record which edges ab are affected by toggling EdgeMarks[a][b] between 0 and 1.
+        // When the deletion pass is done, the exposed edges will have their EdgeMarks entries at 1,
         //    while the unaffected and totally-deleted edges will have their EdgeMarks entries at 0.
         #local xyzx = array[4] {Face[f].x, Face[f].y, Face[f].z, Face[f].x};
         #for (i, 0, 2)
@@ -287,9 +277,7 @@ DeclareMaximumPointsPerSolid(1000)
           #local B = points[b];
           
           // Triangle ABP is part of the new increment of the convex hull.
-          // We need to figure out its orientation and store it.
           // It needs to be stored with the orientation that puts "Inside" on the negative side.
-          
           #if (vdot(Inside - A, vcross(B-A, P-A)) < 0)
             #local Face[Facecount] = <a,b,p>;
           #else
@@ -859,10 +847,8 @@ DeclareMaximumPointsPerSolid(1000)
               #if (Class = 1)
                 
                 #for (d, 2, N-1)
-                  #local End1 = (B*d + A*(N-d)) / N;
-                  #local End2 = (C*d + A*(N-d)) / N;
                   #for (e, 1, d-1)
-                    addpoint((End1*e + End2*(d-e)) / d)
+                    addpoint(A + (B*e-C*e+C*d-A*d)/N)
                   #end
                 #end
                 
@@ -877,9 +863,7 @@ DeclareMaximumPointsPerSolid(1000)
                 #for (j, 0, N-2)
                   #local D1 = (A*j + C*(N-1-j)) / (N-1);
                   #local D2 = (B*j + C*(N-1-j)) / (N-1);
-                  #local E1 = A + vdot(D1-A, ABu) * ABu; // point on AB closest to D1
-                  #local E2 = A + vdot(D2-A, ABu) * ABu; // point on AB closest to D2
-                  #local DE = vlength(D1 - E1);
+                  #local DE = vlength(D1 - A - vdot(D1-A, ABu) * ABu); // distance from D1 (and D2) to AB
                   #local i = 1;
                   #while (i * Spacing < DE - 1e-6)
                     addpoint(D1 + i * VSpacing)
@@ -887,12 +871,9 @@ DeclareMaximumPointsPerSolid(1000)
                     #local i = i + 1;
                   #end // while
                 #end // for j
-                
-              #end
-              
+              #end // if Class = 
             #end // if
           #end // for c
-          
         #end // if
       #end // for b
     #end // for a
@@ -902,10 +883,6 @@ DeclareMaximumPointsPerSolid(1000)
   #for (i, 0, npoints-1)
     #declare points[i] = vnormalize(points[i]);
   #end
-  
-  // TODO: For the octahedral and especially tetrahedral variants, we have rather poor spacing of points.
-  // Maybe add an iterative-optimization-type step, where we treat them as electrons?
-  // We would have to ensure that the topology does not change.
   
   convex_hull()
 #end
