@@ -855,19 +855,15 @@ DeclareMaximumPointsPerSolid(1000)
               #else
                 
                 #local Spacing = vlength((A-B)/(N-1)) / sq3;
-                #local ABu = vnormalize(B-A);
                 #local VSpacing = Spacing * vnormalize(A + B - 2*C);
-                // For each subdivision point D on edges AC and BC, and also for point C itself,
-                // drop the perpendicular from D to line AB.  On that perpendicular, draw the
-                // points E between D and AB such that the distance from D to E is an integer multiple of Spacing.
+                // For each subdivision point D on AC and BC, and also for C itself, drop the perpendicular from D to line AB.
+                // On it, draw the points E between D and AB such that the distance |DE| is an integer multiple of Spacing.
                 #for (j, 0, N-2)
-                  #local D1 = (A*j + C*(N-1-j)) / (N-1);
-                  #local D2 = (B*j + C*(N-1-j)) / (N-1);
-                  #local DE = vlength(D1 - A - vdot(D1-A, ABu) * ABu); // distance from D1 (and D2) to AB
+                  #local D = (A*j + C*(N-1-j)) / (N-1);
                   #local i = 1;
-                  #while (i * Spacing < DE - 1e-6)
-                    addpoint(D1 + i * VSpacing)
-                    #if (j > 0) addpoint(D2 + i * VSpacing) #end
+                  #while (i * Spacing < vlength(vcross(B-A,D-A)/2) - 1e-6) // the vlength bit is |DE| (recall that |A-B|=2)
+                    addpoint(D + i*VSpacing)
+                    #if (j > 0) addpoint(D + i*VSpacing + (B-A)*j/(N-1)) #end
                     #local i = i + 1;
                   #end // while
                 #end // for j
