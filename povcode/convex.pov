@@ -861,7 +861,7 @@ DeclareMaximumPointsPerSolid(1000)
                 #for (j, 0, N-2)
                   #local D = (A*j + C*(N-1-j)) / (N-1);
                   #local i = 1;
-                  #while (i * Spacing < vlength(vcross(B-A,D-A)/2) - 1e-6) // the vlength bit is |DE| (recall that |A-B|=2)
+                  #while (i * Spacing < vlength(vcross(B-A,D-A)/2) - 1e-6) // the vlength bit is the distance from D to AB
                     addpoint(D + i*VSpacing)
                     #if (j > 0) addpoint(D + i*VSpacing + (B-A)*j/(N-1)) #end
                     #local i = i + 1;
