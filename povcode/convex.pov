@@ -216,7 +216,7 @@ DeclareMaximumPointsPerSolid(1000)
   
   #local Facecount = 4; // The number of faces stored in "Face".
   
-  // We now select a new point P and expand the hull to it.
+  // We now repeatedly select a new point P and expand the hull to it.
   // We do this by finding those faces that P can see, deleting them, figuring out what the new faces are, and adding those.
   
   #local MFD = 0;   // The number of faces that get marked for deletion.  This will return to zero during each deletion pass.
@@ -272,19 +272,15 @@ DeclareMaximumPointsPerSolid(1000)
         #local b = Edge.v;
         
         #if (EdgeMarks[a][b])
-          
           #local A = points[a];
           #local B = points[b];
-          
-          // Triangle ABP is part of the new increment of the convex hull.
-          // It needs to be stored with the orientation that puts "Inside" on the negative side.
+          // ABP is part of the new increment of the convex hull.  We orient it so that "Inside" is on the negative side.
           #if (vdot(Inside - A, vcross(B-A, P-A)) < 0)
             #local Face[Facecount] = <a,b,p>;
           #else
             #local Face[Facecount] = <b,a,p>;
           #end
           #local Facecount = Facecount + 1;
-          
           #local EdgeMarks[a][b] = 0; // Unmark the no-longer-exposed edge.
         #end // if
         
@@ -541,8 +537,8 @@ DeclareMaximumPointsPerSolid(1000)
 #macro snub_disphenoid() // J84
   #local q = casus_irreducibilis(11/2,2,-1/2).z;
   #local a = sqrt(q);
-  #local b = sqrt((1-q) / (2*q));
-  #local c = 2*a*b;
+  #local c = sqrt(2-2*q);
+  #local b = c/(2*a);
   addpointssgn(<c, 0, -a>, <1,0,0>)
   addpointssgn(<0, c,  a>, <0,1,0>)
   addpointssgn(<1, 0,  b>, <1,0,0>)
@@ -731,28 +727,22 @@ DeclareMaximumPointsPerSolid(1000)
   // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
   
   // In the lower middle ring, the nearest neighbours to A are C and D == <cos(pi/N), -sin(pi/N), -c>.
-  // For aesthetics, I want angle CAD to be 90 degrees.
-  // AC  ==  < 1 - cos(pi/N) , -sin(pi/N) , 2c >
-  // AD  ==  < 1 - cos(pi/N) ,  sin(pi/N) , 2c >
-  // For the angle to be right, we need AC (dot) AD == 0, which implies
-  // c == sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2
+  // For aesthetics, I want angle CAD to be 90 degrees.  This implies AC (dot) AD == 0, so
+  // c == sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2.
   
   #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;
-  #local p = 1 / tan(pi/(2*N));
   // I actually want the upper and lower rings to be a bit closer than I described above.
-  #local q = 1 - sqrt( 4*c*c + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c*c * p*p*p*p ) * 0.75;
+  #local q = 1 - sqrt( 4*c*c + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c*c / pow(tan(pi/(2*N)), 4) ) * 0.75;
   
   #for (I, 0, 2*N-1)    // The points on the middle rings.  Even indices are upper middle; odd indices are lower middle.
     addpoint(<cos(I * pi/N), sin(I * pi/N),  c * cos(I * pi)>)
   #end
   
   #local V = vcross(points[0] - points[1], points[1] - points[2]); // Normal vector to an upper face
-  #local Apex = <0, 0, c + V.x / V.z>;
   // The upper upper ring will be the weighted average of the upper middle ring and Apex,
-  // with the ring weighted by q and Apex weighted by 1-q, and similarly for the lower lower ring.
-  
+  // with the ring weighted by q and the apex weighted by 1-q, and similarly for the lower lower ring.
   #for (I, 0, 2*N-1)    // The points on the upper upper and lower lower rings.
-    addpoint(points[I] * q + Apex * (1-q) * cos(I * pi))
+    addpoint(points[I] * q + <0, 0, c + V.x / V.z> * (1-q) * cos(I * pi))
   #end
   
   convex_hull()
@@ -835,7 +825,7 @@ DeclareMaximumPointsPerSolid(1000)
           
           // We found an edge.  Subdivide it.
           #for (i, 1, N-Class)
-            addpoint((A*i + B*(N-Class+1-i))/(N-Class+1))
+            addpoint((A*i + B*(N-Class+1-i)) / (N-Class+1))
           #end
           
           #for (c, b+1, V-1)
