@@ -141,12 +141,11 @@ DeclareMaximumPointsPerSolid(1000)
   #local A = points[a];
   #local B = points[b];
   #local C = points[c];
-  #local S = vlength(A-B); // side length
-  #local O = B + phi * S * vnormalize(A-2*B+C); // center of decagon
+  #local O = B + phi * vlength(A-B) * vnormalize(A-2*B+C); // center of decagon
   #local N = vnormalize(vcross(B-A, C-B)); // unit normal from O to interior of rotunda
   #local U = vnormalize(A-O);
   #local V = vcross(N, U);
-  #local P = S * sqrt((2+phi)/5);
+  #local P = vlength(A-B) * sqrt((2+phi)/5);
   #for (i, 0, 16, 4)
     addpoint(O + N*P + phi*P * (U*cos((i-1)*pi/10) + V*sin((i-1)*pi/10)));
     addpoint(O + N*P*phi + P * (U*cos((i+1)*pi/10) + V*sin((i+1)*pi/10)));
@@ -174,9 +173,7 @@ DeclareMaximumPointsPerSolid(1000)
   #local AffectedEdges     = array[3*N];
   #local MarkedForDeletion = array[2*N];
   #local EdgeMarks         = array[N][N];   // The contents will be 0s and 1s.
-  
-  // Initialize EdgeMarks to all zeros.  Only elements with first index < second will be used.
-  #for (i, 0, N-1)
+  #for (i, 0, N-1) // Initialize EdgeMarks to all zeros.  Only elements with first index < second will be used.
     #for (j, i+1, N-1)
       #local EdgeMarks[i][j] = 0;
     #end
@@ -213,12 +210,10 @@ DeclareMaximumPointsPerSolid(1000)
       #local Face[i] = <a[i],c[i],b[i]>;
     #end
   #end
-  
   #local Facecount = 4; // The number of faces stored in "Face".
   
   // We now repeatedly select a new point P and expand the hull to it.
   // We do this by finding those faces that P can see, deleting them, figuring out what the new faces are, and adding those.
-  
   #local MFD = 0;   // The number of faces that get marked for deletion.  This will return to zero during each deletion pass.
   #for (p, 0, N-1)
     #if ((p != i0) & (p != i1) & (p != i2) & (p != i3))
@@ -257,7 +252,6 @@ DeclareMaximumPointsPerSolid(1000)
           #local AffectedEdges[MarkedEdges] = <a,b>;
           #local MarkedEdges = MarkedEdges + 1;
         #end
-        
         #local Face[f] = Face[Facecount-1];
         #local Facecount = Facecount - 1;
         #local MFD = MFD - 1;
@@ -266,11 +260,9 @@ DeclareMaximumPointsPerSolid(1000)
       // Figure out what the new faces are.
       // Each new triangle will use point P, and the opposite side will be one of the exposed edges.
       #for (i, 0, MarkedEdges-1)
-        
         #local Edge = AffectedEdges[i];
         #local a = Edge.u;
         #local b = Edge.v;
-        
         #if (EdgeMarks[a][b])
           #local A = points[a];
           #local B = points[b];
@@ -283,7 +275,6 @@ DeclareMaximumPointsPerSolid(1000)
           #local Facecount = Facecount + 1;
           #local EdgeMarks[a][b] = 0; // Unmark the no-longer-exposed edge.
         #end // if
-        
       #end // for i.  Thus endeth the new-face-construction phase.
       
     #end // if p != i0,i1,i2,i3
@@ -470,7 +461,6 @@ DeclareMaximumPointsPerSolid(1000)
   #for (i, 1, strlen(facelist))
     #local facenum = mod(val(substr(facelist,i,1)), n); // convert ith char given to a number 0..(n-1)
     augment(4, 2*facenum+1, 2*facenum, mod(2*facenum+2, 2*n))
-    //#debug concat("Augment face ",str(facenum,0,0)," of ",str(n,0,0), " <",str(points[npoints-1].x,0,3),",",str(points[npoints-1].y,0,3),",",str(points[npoints-1].z,0,3),"> \n")
   #end
   autobalance()
   convex_hull()
@@ -712,7 +702,6 @@ DeclareMaximumPointsPerSolid(1000)
 
 #macro truncated_trapezohedron(N)
   #declare MaximumVerticesPerFace = max(5,N);
-  
   // A pair of nearest-neighbour points on the middle rings is
   //    A == < 1, 0, c >    and    C == < cos(pi/N), sin(pi/N), -c >,
   // The distance between them is
@@ -725,44 +714,33 @@ DeclareMaximumPointsPerSolid(1000)
   // sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )         (2)
   // For aesthetics, I want (1) and (2) to be equal, which implies
   // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
-  
   // In the lower middle ring, the nearest neighbours to A are C and D == <cos(pi/N), -sin(pi/N), -c>.
   // For aesthetics, I want angle CAD to be 90 degrees.  This implies AC (dot) AD == 0, so
   // c == sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2.
-  
   #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;
   // I actually want the upper and lower rings to be a bit closer than I described above.
   #local q = 1 - sqrt( 4*c*c + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c*c / pow(tan(pi/(2*N)), 4) ) * 0.75;
-  
   #for (I, 0, 2*N-1)    // The points on the middle rings.  Even indices are upper middle; odd indices are lower middle.
     addpoint(<cos(I * pi/N), sin(I * pi/N),  c * cos(I * pi)>)
   #end
-  
   #local V = vcross(points[0] - points[1], points[1] - points[2]); // Normal vector to an upper face
   // The upper upper ring will be the weighted average of the upper middle ring and Apex,
   // with the ring weighted by q and the apex weighted by 1-q, and similarly for the lower lower ring.
   #for (I, 0, 2*N-1)    // The points on the upper upper and lower lower rings.
     addpoint(points[I] * q + <0, 0, c + V.x / V.z> * (1-q) * cos(I * pi))
   #end
-  
   convex_hull()
 #end
 
 #macro diminished_trapezohedron(N)
   #declare MaximumVerticesPerFace = max(4,N);
-  
-  // TODO: This c is copied from truncated_tetrahedron.
-  // Since we are reducing the radius of the upper ring, is that really the best c to use here?
-  #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;
-  
+  #local c = sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2;  // Is this really the best c to use here?
   #for (I, 0, 2*N-1)  // Even-I points are the upper ring; odd-I points are the lower.
     #local R = (5 - cos(I*pi)) / 6; // R=1 for even I; R=2/3 for odd
     addpoint(<R * cos(I * pi/N), R * sin(I * pi/N), c * cos(I*pi)>)
   #end
-  
   #local V = vcross(points[0] - points[1], points[1] - points[2]); // Normal vector to an upper face
   addpoint(<0, 0, c + (2 * V.x) / (3 * V.z)>) // The apex of the solid
-  
   convex_hull()
 #end
 
@@ -822,28 +800,21 @@ DeclareMaximumPointsPerSolid(1000)
       #for (b, a+1, V-1)
         #local B = points[b];
         #if (abs(vlength(A - B) - 2) < 1e-6)
-          
           // We found an edge.  Subdivide it.
           #for (i, 1, N-Class)
             addpoint((A*i + B*(N-Class+1-i)) / (N-Class+1))
           #end
-          
           #for (c, b+1, V-1)
             #local C = points[c];
             #if ((abs(vlength(A - C) - 2) < 1e-6) & (abs(vlength(B - C) - 2) < 1e-6))
-              
               // We found a face.  Subdivide it.
-              
               #if (Class = 1)
-                
                 #for (d, 2, N-1)
                   #for (e, 1, d-1)
                     addpoint(A + (B*e-C*e+C*d-A*d)/N)
                   #end
                 #end
-                
               #else
-                
                 #local Spacing = vlength((A-B)/(N-1)) / sq3;
                 #local VSpacing = Spacing * vnormalize(A + B - 2*C);
                 // For each subdivision point D on AC and BC, and also for C itself, drop the perpendicular from D to line AB.
@@ -864,12 +835,10 @@ DeclareMaximumPointsPerSolid(1000)
       #end // for b
     #end // for a
   #end // if (N > 1)
-  
   // Finally, project all points onto the unit sphere.
   #for (i, 0, npoints-1)
     #declare points[i] = vnormalize(points[i]);
   #end
-  
   convex_hull()
 #end
 
