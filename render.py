@@ -385,10 +385,10 @@ for (name, code, angles, file) in data_reduced:
             if 'gif' in filetypes and not (which('ffmpeg') is None):
                 print(filetypes)
                 command = ['ffmpeg',
-                           '-y',    # Overwrite
-                           '-i', fileprefix + '.mp4',   # Input filename
-                           '-vf', 'fps=30,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
-                           fileprefix + '.gif'  # Output filename
+                           '-y',                            # Overwrite
+                           '-i', fileprefix + '.mp4',       # Input filename
+                           '-vf', 'fps=30,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+                           fileprefix + '.gif'              # Output filename
                           ]
                 run(command, check=True)
                 if 'mp4' not in filetypes: remove(fileprefix + '.mp4')
