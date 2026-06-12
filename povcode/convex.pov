@@ -703,17 +703,13 @@ DeclareMaximumPointsPerSolid(1000)
 #macro truncated_trapezohedron(N)
   #declare MaximumVerticesPerFace = max(5,N);
   // A pair of nearest-neighbour points on the middle rings is
-  //    A == < 1, 0, c >    and    C == < cos(pi/N), sin(pi/N), -c >,
-  // The distance between them is
-  // sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                       (1)
+  //    A == < 1, 0, c >    and    C == < cos(pi/N), sin(pi/N), -c >.
+  // The distance between them is sqrt( 4c^2 + 2 - 2 * cos(pi/N) ).                               (1)
   // The apex will be at z == c * cot(pi/(2*N))^2.
-  // The neighbour of A on the upper main ring will be
-  // A * q + (0,0,z) * (1-q)
-  // == < q , 0 , c + z - z*q >.
-  // The distance bewteen these points is
-  // sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q )         (2)
+  // The neighbour of A on the upper main ring will be A * q + (0,0,z) * (1-q) == < q , 0 , c + z - z*q >.
+  // The distance bewteen these points is sqrt( 1 + c^2 * cot(pi/(2*N))^4 )  *  ( 1 - q ).        (2)
   // For aesthetics, I want (1) and (2) to be equal, which implies
-  // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 )
+  // q == 1  -  sqrt( 4c^2 + 2 - 2 * cos(pi/N) )  /  sqrt( 1 + c^2 * cot(pi/(2*N))^4 ).
   // In the lower middle ring, the nearest neighbours to A are C and D == <cos(pi/N), -sin(pi/N), -c>.
   // For aesthetics, I want angle CAD to be 90 degrees.  This implies AC (dot) AD == 0, so
   // c == sqrt(2 * cos(pi/N) - cos(tau/N) - 1) / 2.
@@ -847,16 +843,11 @@ DeclareMaximumPointsPerSolid(1000)
   dual()
 #end
 
-
-
-
-
-
-
-
-
-
-
+//////////////////////////////////////////////////////
+//                                                  //
+//    Thus endeth the definitions of the solids.    //
+//                                                  //
+//////////////////////////////////////////////////////
 
 This_shape_will_be_drawn()
 
@@ -958,28 +949,35 @@ background { color <1,1,1> }
   }
 #else
   // some auto-framing.  Not for animated versions.
-  #declare camera_loc = <0,0,-4.8>;
-  #declare max_elevation = 0;
-  #declare max_bearing = 0;
-  #for (i, 0, npoints-1)
-    #declare sighting = points[i];
-    #declare sighting = vaxis_rotate(sighting, y, rot1*180/pi);
-    #declare sighting = vaxis_rotate(sighting, x, rot2*180/pi);
-    #declare sighting = vaxis_rotate(sighting, y, rot3*180/pi);
-    #declare sighting = sighting - camera_loc;
-    #declare elevation = sighting.y / sighting.z;
-    #declare bearing = sighting.x / sighting.z;
-    #declare max_elevation = max(max_elevation, abs(elevation));
-    #declare max_bearing = max(max_bearing, abs(bearing));
-  #end
-  #debug concat("Maximum: Elevation = ", str(max_elevation,4,4), "  Bearing = ", str(max_bearing,4,4), "\n")
-  #if(1) // 1:1 aspect ratio
-    #declare max_bearing = max(max_elevation, max_bearing);
-    #declare max_elevation = max_bearing;
-  #end
-  #if(1) // 5% border
-    #declare max_bearing = 1.05 * max_bearing;
-    #declare max_elevation = 1.05 * max_elevation;
+  #ifndef (Animating) #declare Animating=0; #end
+  #if (Animating)
+    #declare camera_loc = <0,0,-4.8>;
+    #declare max_elevation = 1/4.8;
+    #declare max_bearing = 1/4.8;
+  #else
+    #declare camera_loc = <0,0,-4.8>;
+    #declare max_elevation = 0;
+    #declare max_bearing = 0;
+    #for (i, 0, npoints-1)
+      #declare sighting = points[i];
+      #declare sighting = vaxis_rotate(sighting, y, rot1*180/pi);
+      #declare sighting = vaxis_rotate(sighting, x, rot2*180/pi);
+      #declare sighting = vaxis_rotate(sighting, y, rot3*180/pi);
+      #declare sighting = sighting - camera_loc;
+      #declare elevation = sighting.y / sighting.z;
+      #declare bearing = sighting.x / sighting.z;
+      #declare max_elevation = max(max_elevation, abs(elevation));
+      #declare max_bearing = max(max_bearing, abs(bearing));
+    #end
+    #debug concat("Maximum: Elevation = ", str(max_elevation,4,4), "  Bearing = ", str(max_bearing,4,4), "\n")
+    #if(1) // 1:1 aspect ratio
+      #declare max_bearing = max(max_elevation, max_bearing);
+      #declare max_elevation = max_bearing;
+    #end
+    #if(1) // 5% border
+      #declare max_bearing = 1.05 * max_bearing;
+      #declare max_elevation = 1.05 * max_elevation;
+    #end
   #end
   camera {
     perspective
