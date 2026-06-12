@@ -2,7 +2,7 @@
 
 # For usage instructions, credits, and further details, see https://github.com/lucasaugustus/polyhedra/blob/main/README.md.
 
-from os import mkdir, remove
+from os import makedirs, remove
 from subprocess import run
 from shutil import which
 from time import time
@@ -295,13 +295,11 @@ for arg in argv:
 
 data_reduced = [x for x in data if x[0] in solids]
 
-try: mkdir('images')
-except: pass
+makedirs('images', exist_ok=True)
 
 for (name, code, angles, file) in data_reduced:
     solidname = name.replace(' ', '_')
-    try: mkdir('images/' + solidname)
-    except: pass
+    makedirs('images/' + solidname, exist_ok=True)
     if angle_override: angles = angle_override
     for rotation in angles:
         fileprefix = 'images/' + solidname + '/' + str(rotation)
@@ -357,13 +355,14 @@ for (name, code, angles, file) in data_reduced:
                     print(command)
                     run(command, check=True)
         
-        if 'mp4' in filetypes:
+        if 'mp4' in filetypes or 'gif' in filetypes:
             command = ['povray',
                        '+I' + srcfilename, '+O' + fileprefix + '_.png',
                        '+w' + resolution,  '+h' + resolution,
                        '+kc', '+kff' + frames,    # Cyclic animation, with number of frames
                        'Declare=flashiness=0.25',
-                       '+A', '-D'                 # +A turns on antialiasing; -D suppresses the preview window.
+                       '+A', '-D',                # +A turns on antialiasing; -D suppresses the preview window.
+                       'Declare=Animating=1',
                        ]
             if threads: command += ['+WT', threads]      # By default, use POV-Ray's default of maximum parallelism.
             run(command, check=True)
@@ -382,6 +381,17 @@ for (name, code, angles, file) in data_reduced:
                 if not keepframes:
                     for i in range(1, int(frames) + 1):
                         remove((fileprefix + '_%%0%dd.png' % len(frames)) % i)
+            
+            if 'gif' in filetypes and not (which('ffmpeg') is None):
+                print(filetypes)
+                command = ['ffmpeg',
+                           '-y',    # Overwrite
+                           '-i', fileprefix + '.mp4',   # Input filename
+                           '-vf', 'fps=30,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+                           fileprefix + '.gif'  # Output filename
+                          ]
+                run(command, check=True)
+                if 'mp4' not in filetypes: remove(fileprefix + '.mp4')
         
         if 'pov' not in filetypes: remove(srcfilename)
     
@@ -401,3 +411,4 @@ for (name, code, angles, file) in data_reduced:
 
 print('\nDone.')
 print('Wall time: %d seconds.' % int(time() - starttime))
+
