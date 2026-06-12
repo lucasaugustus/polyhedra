@@ -14,7 +14,7 @@ In the Python file `render.py`, there are two lists (`data` and `atad`) of lists
 # Usage:
 
 ```bash
-./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=mp4,png,pov,stl,svg]
+./render.py [target="X[,Y[,Z...]]"] [res=N] [filetypes=gif,mp4,png,pov,stl,svg]
             [frames=120] [keepframes=yes] [angles=0[,1[,2[,3...]]]]
 ```
 
@@ -32,13 +32,13 @@ has the same effect as the previous command.
 
 By default, the image files will be 1024 × 1024 pixels.  To render at N × N pixels, use the `res=N` argument.
 
-The program will produce MP4, PNG, POV, STL, or SVG files (at the moment, only solids in `data` can be rendered as SVGs).  To specify which, use the `filetypes=` argument.  It is not case-sensitive.  For example, to produce only PNGs and STLs, one could use
+The program will produce GIF, MP4, PNG, POV, STL, or SVG files (at the moment, only solids in `data` can be rendered as SVGs).  To specify which, use the `filetypes=` argument.  It is not case-sensitive.  For example, to produce only PNGs and STLs, one could use
 ```bash
 ./render.py filetypes=PnG,stL
 ```
-By default, only PNGs will be made.  If making MP4s, they will be 360° rotations of the solids.  This works by generating a bunch of PNG files, calling `ffmpeg` to compile them into an MP4 file, and then deleting the PNGs.  By default, animations will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
+By default, only PNGs will be made.  If making GIFs, MP4s, they will be 360° rotations of the solids.  This works by generating a bunch of PNG files, calling `ffmpeg` to compile them into an MP4 file, converting the MP4 to a GIF if desired, and then deleting the PNGs (and the MP4 if MP4 output is not specified).  By default, animations will have 120 frames.  To change this, use the `frames=` argument.  The animation will run at 30 frames per second.  To change this, edit the appropriate line in `render.py`.
 
-When animating, the default behavior is to delete all the frames after compiling them into the MP4.  If FFmpeg is not available, or if the `keepframes=yes` argument is used, then the frames will not be deleted.
+When animating, the default behavior is to delete all the frames after compiling them into the MP4 or GIF.  If FFmpeg is not available, or if the `keepframes=yes` argument is used, then the frames will not be deleted.
 
 To override the built-in angles, use the `angles=` option; for example, `angles=0,7,20-27,2`.
 
