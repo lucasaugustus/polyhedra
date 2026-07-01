@@ -157,7 +157,7 @@ DeclareMaximumPointsPerSolid(1000)
   #local a = vnormalize(d) / vdot(d, points[a]);
   #local f = 1;
   #for (n, 0, nfaces-1)
-    #if(vlength(faces[n]-a) < 1e-5) #local f = 0; #end
+    #if(vlength(faces[n]-a) < 1e-7) #local f = 0; #end
   #end
   #if (f)
     #declare faces[nfaces] = a;
@@ -877,6 +877,7 @@ This_shape_will_be_drawn()
 #end
 
 showvtxs()
+#debug concat("Frame = ", str(frame_number, 0, 0), " / ", str(final_frame, 0, 0), "\n")
 
 union {
   //Draw points
@@ -952,8 +953,8 @@ background { color <1,1,1> }
   #ifndef (Animating) #declare Animating=0; #end
   #if (Animating)
     #declare camera_loc = <0,0,-4.8>;
-    #declare max_elevation = 1/4.8;
-    #declare max_bearing = 1/4.8;
+    #declare max_elevation = 1/4.5;
+    #declare max_bearing = 1/4.5;
   #else
     #declare camera_loc = <0,0,-4.8>;
     #declare max_elevation = 0;
